@@ -103,8 +103,8 @@ class BasicLoginView(APIView):
             token = user.get_token()
             user_data = CustomUserSerializer(user).data
             return Response({
-                'refresh': str(token),
-                'access': str(token.access_token),
+                'refresh_token': str(token),
+                'access_token': str(token.access_token),
                 'user': user_data
             })
         else:
@@ -125,8 +125,8 @@ class RegisterUserView(generics.CreateAPIView):
         user_data = CustomUserSerializer(user).data
 
         return Response({
-            'refresh': str(token),
-            'access': str(token.access_token),
+            'refresh_token': str(token),
+            'access_token': str(token.access_token),
             'user': user_data
         }, status=status.HTTP_201_CREATED)
     
@@ -137,16 +137,35 @@ class UpdateUserView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
 
     def get_object(self):
-        # Obtiene el ID del usuario desde la URL
-        user_id = self.kwargs.get('pk')
+        auth_header = self.request.headers.get('Authorization')
+        if not auth_header:
+            return Response({'error': 'Authorization header is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            token_type, token = auth_header.split()
+            if token_type.lower() != 'bearer':
+                return Response({'error': 'Invalid token type'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError:
+            return Response({'error': 'Invalid authorization header format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            access = AccessToken(token)
+            user_id = access['user_id']
+        except TokenError:
+            return Response({'error': 'Token is expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
             user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
         return user
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  # instance obtiene el usuario a actualizar
+        if isinstance(instance, Response):
+            return instance  # Si get_object devuelve una respuesta de error, la retornamos directamente
+        
         serializer = self.get_serializer(instance, data=request.data, partial=True)  # partial=True permite actualizaciones parciales
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -156,25 +175,103 @@ class UpdateUserView(generics.UpdateAPIView):
         return Response({
             'user': user_data
         }, status=status.HTTP_200_OK)
+    
 
 
 class DeleteUserView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
 
     def get_object(self):
-        # Obtiene el ID del usuario desde la URL
-        user_id = self.kwargs.get('pk')
+        auth_header = self.request.headers.get('Authorization')
+        if not auth_header:
+            return Response({'error': 'Authorization header is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            token_type, token = auth_header.split()
+            if token_type.lower() != 'bearer':
+                return Response({'error': 'Invalid token type'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError:
+            return Response({'error': 'Invalid authorization header format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            access = AccessToken(token)
+            user_id = access['user_id']
+        except TokenError:
+            return Response({'error': 'Token is expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
             user = CustomUser.objects.get(id=user_id)
         except CustomUser.DoesNotExist:
             return Response({'detail': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
         return user
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()  # instance obtiene el usuario a eliminar
         if isinstance(instance, Response):
-            return instance  # Retorna la respuesta de error si el usuario no se encuentra
+            return instance  # Si get_object devuelve una respuesta de error, la retornamos directamente
+        
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+
+class TokenRefreshView(APIView):
+    def post(self, request):
+        refresh = request.data.get('refresh_token')
+        if not refresh:
+            return Response({'error': 'Refresh token is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            refresh = RefreshToken(refresh)
+            user = CustomUser.objects.get(id=refresh['user_id'])
+        except TokenError:
+            return Response({'error': 'Refresh token is expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not user.is_active:
+            return Response({'error': 'User is inactive'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        access_token = str(refresh.access_token)
+        return Response({'access_token': access_token}, status=status.HTTP_200_OK)
+        
+
+class TokenDataView(APIView):
+    def post(self, request):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return Response({'error': 'Authorization header is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # El token debe estar en el formato "Bearer <token>"
+        try:
+            token_type, token = auth_header.split()
+            if token_type.lower() != 'bearer':
+                return Response({'error': 'Invalid token type'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError:
+            return Response({'error': 'Invalid authorization header format'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Intenta usar el token como un token de acceso
+            access = AccessToken(token)
+            user_id = access['user_id']
+            role = access['role']
+        except TokenError:
+            try:
+                # Si falla, intenta usar el token como un token de refresco
+                refresh = RefreshToken(token)
+                user_id = refresh['user_id']
+                role = refresh['role']
+            except TokenError:
+                return Response({'error': 'Token is expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not user.is_active:
+            return Response({'error': 'User is inactive'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({'user_id': user_id, 'role': role}, status=status.HTTP_200_OK)
