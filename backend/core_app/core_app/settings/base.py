@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'autenticacion',
+    'institucion',
+    'curso',
 ]
 
 REST_FRAMEWORK = {
@@ -146,8 +148,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # GOOGLE OAUTH CONFIGURATION
-GOOGLE_OAUTH_CLIENT_ID = "KEY_CLENT_ID"
-GOOGLE_OAUTH_CLIENT_SECRET = "KEY_SECRET_CLIENT_ID"
-GOOGLE_OAUTH_REDIRECT_URI = "REDIRECT_URI"
+GOOGLE_OAUTH_CLIENT_ID = "399216571145-n96s8i3gabl67diuk4baqlga8n2en4ge.apps.googleusercontent.com"
+GOOGLE_OAUTH_CLIENT_SECRET = "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"
+GOOGLE_OAUTH_REDIRECT_URI = "http://localhost:4200"
 
 AUTH_USER_MODEL = 'autenticacion.CustomUser'

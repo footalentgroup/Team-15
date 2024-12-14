@@ -1,6 +1,5 @@
 import secrets
 import string
-from django.shortcuts import render
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,13 +7,11 @@ from rest_framework import status
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
 from autenticacion.models import CustomUser
 from autenticacion.permissions import IsAdminUser
 from .serializer import CustomUserSerializer
 from rest_framework import generics
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
-from rest_framework_simplejwt.tokens import UntypedToken
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 
 class GoogleOAuthService(APIView):
@@ -111,7 +108,6 @@ class BasicLoginView(APIView):
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         
 
-
 class RegisterUserView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
@@ -177,7 +173,6 @@ class UpdateUserView(generics.UpdateAPIView):
         }, status=status.HTTP_200_OK)
     
 
-
 class DeleteUserView(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
     queryset = CustomUser.objects.all()
@@ -214,7 +209,6 @@ class DeleteUserView(generics.DestroyAPIView):
         
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-    
     
 
 class TokenRefreshView(APIView):
