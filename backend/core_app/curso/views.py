@@ -3,13 +3,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import AccessToken, TokenError
 from .models import Curso
-from .serializers import CursoSerializer, UpdateCursoSerializer
+from .serializers import CursoSerializer, RegisterCursoSerializer, UpdateCursoSerializer
 from institucion.models import Institucion
 from django.db import IntegrityError 
 
 class RegisterCursoView(generics.CreateAPIView):
     queryset = Curso.objects.all()
-    serializer_class = CursoSerializer
+    serializer_class = RegisterCursoSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
@@ -31,7 +31,7 @@ class RegisterCursoView(generics.CreateAPIView):
             return Response({'error': 'Token is expired or invalid'}, status=status.HTTP_400_BAD_REQUEST)
         
         data = request.data.copy()
-        institucion_id = data.get('institucion')
+        institucion_id = data.get('institucion_id')
         if not institucion_id:
             return Response({'error': 'Institution ID is required'}, status=status.HTTP_400_BAD_REQUEST)
         

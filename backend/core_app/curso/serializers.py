@@ -6,7 +6,7 @@ class CursoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Curso
-        fields = ['id', 'institucion', 'nombre']
+        fields = ['id', 'institucion_id', 'nombre']
 
 
 class UpdateCursoSerializer(serializers.ModelSerializer):
@@ -17,3 +17,10 @@ class UpdateCursoSerializer(serializers.ModelSerializer):
         model = Curso
         fields = ['id', 'nombre']
 
+class RegisterCursoSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(required=True)
+    institucion_id = serializers.IntegerField(required=True)
+
+    class Meta:
+        model = Curso
+        fields = ['nombre', 'institucion_id']
