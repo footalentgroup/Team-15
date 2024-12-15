@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'autenticacion',
     'institucion',
     'curso',
+    'materia',
 ]
 
 REST_FRAMEWORK = {
