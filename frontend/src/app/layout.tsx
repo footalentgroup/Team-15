@@ -4,6 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Pal Profe",
   description: "Tu ayuda en la planificación de clases",
+  manifest: "/manifest.js",
 };
 
 export default function RootLayout({
