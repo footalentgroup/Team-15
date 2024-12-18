@@ -3,3 +3,9 @@ export interface ICourses {
   subjectName: string
   courseName: string
 }
+
+export interface Month {
+  month: string
+  color: string
+  content: string[]
+}
