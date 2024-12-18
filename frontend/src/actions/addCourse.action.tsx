@@ -1,5 +1,7 @@
 'use server'
 
+import { Month } from "@/interfaces/ICourses.interface";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addCourseAction(prevState: any, formData: FormData) {
   console.log('addCourseAction', formData);
@@ -31,3 +33,12 @@ export async function AddContentAction(prevState: any, list: string[]) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function AddPlanificationAction(list: Month[]) {
+  console.log('AddPlanificationAction', list);
+
+  return {
+    data: list,
+    success: true
+  }
+}
