@@ -11,14 +11,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from datetime import timedelta
-from pathlib import Path
+# from pathlib import Path
+from core_app.env import BASE_DIR, env
+# import environ
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Lo agregue temporalmente porque no me funcionaba el import de la variable SECRET_KEY
-SECRET_KEY = 'django-insecure-hk-2z^vq7zbr2gjr%k59o5d)%brh#x%fvkvoutouuin$4f4b9q' 
+# Initialize environment variables
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
+SECRET_KEY = env('SECRET_KEY')
 
 # Application definition
 
@@ -149,9 +151,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# GOOGLE OAUTH CONFIGURATION
-GOOGLE_OAUTH_CLIENT_ID = "399216571145-n96s8i3gabl67diuk4baqlga8n2en4ge.apps.googleusercontent.com"
-GOOGLE_OAUTH_CLIENT_SECRET = "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"
-GOOGLE_OAUTH_REDIRECT_URI = "http://localhost:4200"
+GOOGLE_OAUTH_CLIENT_ID = env('GOOGLE_OAUTH_CLIENT_ID')
+GOOGLE_OAUTH_CLIENT_SECRET = env('GOOGLE_OAUTH_CLIENT_SECRET')
+GOOGLE_OAUTH_REDIRECT_URI = env('GOOGLE_OAUTH_REDIRECT_URI')
+
 
 AUTH_USER_MODEL = 'autenticacion.CustomUser'
