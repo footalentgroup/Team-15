@@ -1,8 +1,9 @@
 "use client"
 import { addCourseAction } from "@/actions/addCourse.action";
+import { ICourses } from "@/interfaces/ICourses.interface";
 import { CourseCard } from "@/ui";
 import ButtonContinue from "@/ui/buttons/buttonContinue";
-import { startTransition, useActionState } from "react"
+import { startTransition, useActionState, useEffect } from "react"
 import { useState } from "react";
 
 const INITIAL_STATE = {
@@ -27,21 +28,32 @@ const INPUTS_INFO = [
   }
 ]
 
-export default function AddCourseForm({ setActiveTab }: { setActiveTab: (index: number) => void }) {
+interface Props {
+  setActiveTab: (index: number) => void;
+  setCourseId: (id: number) => void;
+}
+
+export default function AddCourseForm({ setActiveTab, setCourseId }: Props) {
   const [formState, formAction] = useActionState(
     addCourseAction,
     INITIAL_STATE
   );
-  console.log(formState);
+  const [data, setData] = useState<ICourses>({
+    schoolName: '',
+    courseName: '',
+    subjectName: ''
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
-
-    startTransition(() => {
-      formAction(formData);
+    setData({
+      schoolName: formData.get("schoolName") as string,
+      courseName: formData.get("courseName") as string,
+      subjectName: formData.get("subjectName") as string
     });
+
     setIsModalOpen(true);
   };
 
@@ -49,14 +61,23 @@ export default function AddCourseForm({ setActiveTab }: { setActiveTab: (index: 
     console.log(formState);
     setIsModalOpen(false);
     startTransition(() => {
-      formAction(formState);
+      formAction(data);
     });
-    setActiveTab(1);
+    //setActiveTab(1);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    if (formState.success) {
+      console.log('course id', formState.data.course.curso.id);
+      setCourseId(formState.data.course.curso.id);
+      setActiveTab(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formState.success]);
 
   return (
     <>
@@ -92,9 +113,9 @@ export default function AddCourseForm({ setActiveTab }: { setActiveTab: (index: 
             <p>Tu clase está casi lista y queremos que todo quede perfecto</p>
             <div className="flex justify-center mb-4">
               <CourseCard courses={{
-                schoolName: formState.data?.get("schoolName") as string || '',
-                subjectName: formState.data?.get("subjectName") as string || '',
-                courseName: formState.data?.get("courseName") as string || ''
+                schoolName: data.schoolName || '',
+                subjectName: data.subjectName || '',
+                courseName: data.courseName || ''
               }} color="" />
             </div>
             <p>¿Se ve bien? Más Adelante podrás modificar y crear todas las clases que necesites.😊</p>

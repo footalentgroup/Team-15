@@ -8,10 +8,11 @@ import { useState } from 'react';
 export default function MultiStepForm() {
   const [activeTab, setActiveTab] = useState(0);
   const [contentList, setContentList] = useState<string[]>([])
+  const [courseId, setCourseId] = useState<number | null>(null);
 
   const formElements = [
-    <AddCourseForm setActiveTab={setActiveTab} key={0} />,
-    <AddStudentForm setActiveTab={setActiveTab} key={1} />,
+    <AddCourseForm setCourseId={setCourseId} setActiveTab={setActiveTab} key={0} />,
+    <AddStudentForm courseId={courseId} setActiveTab={setActiveTab} key={1} />,
     <AddPlanification setActiveTab={setActiveTab} contentList={contentList} setContentList={setContentList} key={2} />,
     <AddToCalendar contentList={contentList} key={3} />
   ];
