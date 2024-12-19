@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -9,13 +10,16 @@ type AuthFormProps = {
 const AuthForm = ({ type }: AuthFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (type === "login") {
       console.log("Se inició la sesión con:", { email, password });
+      router.push("/home");
     } else {
       console.log("Se registró la cuenta con:", { email, password });
+      router.push("/onboarding");
     }
     // API
   };
