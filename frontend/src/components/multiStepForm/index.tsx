@@ -1,4 +1,5 @@
 'use client'
+import { Content } from "@/interfaces/ICourses.interface";
 import AddCourseForm from "./addCourse";
 import AddPlanification from "./addPlanification";
 import AddStudentForm from "./addStudents";
@@ -7,7 +8,7 @@ import { useState } from 'react';
 
 export default function MultiStepForm() {
   const [activeTab, setActiveTab] = useState(0);
-  const [contentList, setContentList] = useState<string[]>([])
+  const [contentList, setContentList] = useState<Content[]>([])
   const [courseId, setCourseId] = useState<number | null>(null);
 
   const formElements = [

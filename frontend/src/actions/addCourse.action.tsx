@@ -1,6 +1,6 @@
 'use server'
 
-import { ICourses, Month } from "@/interfaces/ICourses.interface";
+import { Content, ICourses, Month } from "@/interfaces/ICourses.interface";
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
 
 const API_URL = process.env.BASE_URL;
@@ -164,7 +164,7 @@ export async function ImportStudentsAction(formData: FormData) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function AddContentAction(prevState: any, list: string[]) {
+export async function AddContentAction(prevState: any, list: Content[]) {
   console.log('AddContentAction', list);
 
   return {

@@ -4,14 +4,15 @@ import ButtonContinue from '@/ui/buttons/buttonContinue'
 import { startTransition, useActionState, useEffect, useState } from 'react'
 import LoadingFile from './loadingFile'
 import { useRouter } from 'next/navigation'
+import { Content } from '@/interfaces/ICourses.interface'
 
 const INITIAL_STATE = {
   data: null
 }
 
 interface Props {
-  contentList: string[]
-  setContentList: (contentList: string[]) => void
+  contentList: Content[]
+  setContentList: (contentList: Content[]) => void
   setActiveTab: (index: number) => void
 }
 
@@ -29,19 +30,19 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
   const handleAddContent = () => {
     if (contentName.trim()) {
-      setContentList([...contentList, contentName.trim()])
+      setContentList([...contentList, { id: contentList.length + 1, text: contentName }])
       setContentName("")
     }
   }
 
   const handleEditItem = (index: number) => {
     setEditIndex(index)
-    setEditValue(contentList[index])
+    setEditValue(contentList[index].text)
   }
 
   const saveEditItem = () => {
     if (editIndex === null) return
-    setContentList(contentList.map((item, i) => i === editIndex ? editValue : item))
+    setContentList(contentList.map((item, i) => i === editIndex ? { ...item, text: editValue } : item))
     setEditIndex(null)
   }
 
@@ -57,17 +58,18 @@ export default function AddPlanification({ contentList, setContentList, setActiv
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
+
       setContentList([
-        "Edad Antigua",
-        "Edad Media",
-        "Edad Moderna",
-        "Edad Contemporánea",
-        "Revolución Industrial",
-        "Guerras Mundiales",
-        "Guerra Fría",
-        "Globalización",
-        "Historia de América",
-        "Historia de Europa",
+        { id: 1, text: "Edad Antigua" },
+        { id: 2, text: "Edad Media" },
+        { id: 3, text: "Edad Moderna" },
+        { id: 4, text: "Edad Contemporánea" },
+        { id: 5, text: "Revolución Industrial" },
+        { id: 6, text: "Guerras Mundiales" },
+        { id: 7, text: "Guerra Fría" },
+        { id: 8, text: "Globalización" },
+        { id: 9, text: "Historia de América" },
+        { id: 10, text: "Historia de Europa" },
       ])
     }, 3000)
   }
@@ -113,7 +115,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
 
             </div>
-            <ul className="flex flex-wrap text-wrap gap-6 mt-4 px-32 max-h-[360px] overflow-scroll">
+            <ul className="flex flex-wrap text-wrap gap-6 mt-4 px-32 max-h-[360px] overflow-y-auto">
               {contentList.map((content, index) => (
 
                 <li key={index} className="w-[310px] h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2">
@@ -129,7 +131,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
                     </>
                   ) : (
                     <>
-                      <p>{content}</p>
+                      <p>{content.text}</p>
                       <div className='flex gap-2'>
                         <button type='button' onClick={() => { handleEditItem(index) }}>🖊</button>
                         <button type="button" onClick={() => setContentList(contentList.filter((_, i) => i !== index))}>
@@ -142,9 +144,9 @@ export default function AddPlanification({ contentList, setContentList, setActiv
               ))}
             </ul>
           </div>
-          <div className='flex mt-auto justify-center'>
+          <div className='flex mt-auto justify-center gap-8'>
+            <ButtonContinue type='button' text="Omitir por ahora" color="bg-white" onClick={handleSkip} />
             <ButtonContinue text="Continuar" onClick={() => handleSubmit} />
-
           </div>
         </div>
       ) : (
