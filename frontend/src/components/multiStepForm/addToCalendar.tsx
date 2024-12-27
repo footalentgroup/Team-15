@@ -8,9 +8,11 @@ import { DndContext, DragEndEvent, DragOverlay, PointerSensor, TouchSensor, useS
 import { DraggableContent } from "./dnd-kit/DraggableContent"
 import { DroppableMonth } from "./dnd-kit/DroppableMonth"
 import ButtonArrowPink from "@/ui/buttons/buttonArrowPink"
+import StepIndicator from "./stepIndicator"
 
 interface Props {
   contentList: Content[]
+  planificationStep: number
 }
 
 const MONTHS: Month[] = [
@@ -89,12 +91,13 @@ const MONTHS: Month[] = [
   },
 ]
 
-export default function AddToCalendar({ contentList }: Props) {
+export default function AddToCalendar({ contentList, planificationStep }: Props) {
   const [monthContent, setMonthContent] = useState(MONTHS)
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
   const [currentMonthsView, setCurrentMonthsView] = useState(monthContent.slice(currentMonthIndex, 4))
   const [activeId, setActiveId] = useState<string | null>(null);
   const router = useRouter()
+  const [newContentList, setNewContentList] = useState<Content[]>(contentList)
 
   const handleRemoveContent = (monthIndex: number, contentIndex: number) => {
     const updatedMonthContent = [...monthContent]
@@ -134,9 +137,28 @@ export default function AddToCalendar({ contentList }: Props) {
       const contentIndex = parseInt((active.id as string).replace('content-', ''), 10);
       const monthIndex = parseInt((over.id as string).replace('month-', ''), 10);
 
-      const content = contentList[contentIndex];
+      const content = newContentList[contentIndex];
       const updatedMonthContent = [...monthContent];
-      updatedMonthContent[monthIndex].content.push(content);
+
+      //revisar logica
+      //actualmente busca el indice del contenido en el mes y si existe lo suma
+      //deberia buscar el contenido en todos los meses y ahi modificar la cantidad por la cantidad de veces
+      //que se encuentra en los meses
+      const existingContentIndex = updatedMonthContent[monthIndex].content.findIndex(
+        (item) => item.text === content.text
+      );
+
+      if (existingContentIndex !== -1) {
+        const existingContent = updatedMonthContent[monthIndex].content[existingContentIndex];
+        const newContent = { ...existingContent, quantity: (existingContent.quantity || 1) + 1 };
+
+        updatedMonthContent[monthIndex].content[existingContentIndex] = newContent;
+
+        setNewContentList(newContentList.map((item) => item.text === content.text ? newContent : item));
+      } else {
+        updatedMonthContent[monthIndex].content.push(content);
+      }
+
       setMonthContent(updatedMonthContent);
     }
   };
@@ -158,16 +180,17 @@ export default function AddToCalendar({ contentList }: Props) {
     <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors} >
 
       <div className='w-full h-screen flex flex-col gap-2 p-16'>
-        <div>
-          <h3 className="font-bold text-4xl">Calendarizá los contenidos</h3>
-          <div className="text-gray-600 text-xl my-6 mb-8">
+        <h3 className="font-bold text-4xl">¿Quieres crear tu planificación anual?</h3>
+        <div className="px-32">
+          <StepIndicator step={planificationStep} />
+          <div className="text-gray-600 text-xl my-2">
             <p>Ya que tenés los contenidos, arrastralos al mes que elijas para su dictado.</p>
             <p>Luego podrás cambiar su organización. </p>
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <ul className="flex flex-wrap text-wrap gap-6 mt-4 px-32 max-h-[180px] overflow-auto">
-            {contentList.map((content, index) => (
+          <ul className="flex flex-wrap text-wrap gap-6 px-32 max-h-[180px] overflow-auto">
+            {newContentList.map((content, index) => (
               <DraggableContent key={index} content={content} index={index} />
 
             ))}
@@ -177,13 +200,13 @@ export default function AddToCalendar({ contentList }: Props) {
           <div className="w-full flex justify-between">
             {currentMonthIndex > 0 && (
               <div className="w-full text-end flex justify-start gap-2 items-center">
-                <ButtonArrowPink rotate onClick={handlePreviousMonths} />
-                Meses Anteriores
+                <ButtonArrowPink rotate onClick={handlePreviousMonths} text="Meses Anteriores" />
+
               </div>
             )}
             {currentMonthIndex < MONTHS.length - 4 && (
               <div className="w-full text-end flex justify-end gap-2 items-center">
-                Próximos Meses <ButtonArrowPink onClick={handleNextMonths} />
+                <ButtonArrowPink onClick={handleNextMonths} text="Próximos Meses" />
               </div>
             )}
           </div>
@@ -202,7 +225,7 @@ export default function AddToCalendar({ contentList }: Props) {
       <DragOverlay>
         {activeId ? (
           <DraggableContent
-            content={contentList[parseInt(activeId.replace('content-', ''), 10)]}
+            content={newContentList[parseInt(activeId.replace('content-', ''), 10)]}
             index={parseInt(activeId.replace('content-', ''), 10)}
           />
         ) : null}

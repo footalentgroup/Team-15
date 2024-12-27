@@ -5,6 +5,9 @@ import { CourseCard } from "@/ui";
 import ButtonContinue from "@/ui/buttons/buttonContinue";
 import { startTransition, useActionState, useEffect } from "react"
 import { useState } from "react";
+import SmileImage from '/public/media/img/smile.svg';
+import DialogImage from '/public/media/img/dialog-box.svg';
+import Image from "next/image";
 
 const INITIAL_STATE = {
   data: null
@@ -80,7 +83,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId }: Props) {
   }, [formState.success]);
 
   return (
-    <>
+    <div className="relative">
       <form onSubmit={handleSubmit} className="w-full h-screen flex flex-col items-center p-9">
         <div className="flex px-4 py-8 justify-start w-full">
           <h2 className="font-bold text-4xl">Configura una clase</h2>
@@ -102,6 +105,14 @@ export default function AddCourseForm({ setActiveTab, setCourseId }: Props) {
         </div>
         <ButtonContinue text="Continuar" />
       </form>
+
+      <div className="absolute bottom-16 left-9 flex gap-2">
+        <Image src={SmileImage} alt="Smile" className="mb-16" />
+        <div className="relative content-center">
+          <Image src={DialogImage} alt="Dialog" />
+          <p className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 min-w-max text-lg">Comienza configurando tu primer grupo.</p>
+        </div>
+      </div>
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
@@ -128,6 +139,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId }: Props) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

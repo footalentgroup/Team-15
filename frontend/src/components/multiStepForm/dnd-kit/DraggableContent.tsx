@@ -24,7 +24,7 @@ export const DraggableContent: React.FC<DraggableContentProps> = ({ content, ind
       {...attributes}
       className="w-[310px] h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2 cursor-pointer touch-none"
     >
-      <p>{content.text}</p>
+      <p>{content.text} <span className='text-red-800'>{content.quantity ? `(${content.quantity})` : ''}</span></p>
     </li>
   );
 };

@@ -10,16 +10,16 @@ interface Props {
 
 const ButtonArrowPink = ({ onClick, color, text, rotate }: Props) => {
   return (
-    <button type="button" onClick={onClick} className={`size-8 ${color ? color : 'bg-pink-500 text-white'} border justify-items-center border-black rounded-full filter drop-shadow-[1px_1px_0px_#000000]`}>
+    <button type="button" onClick={onClick} className="flex items-center gap-2">
       {text && rotate ? (
         <>
-          <IconArrow rotate />
-          <span className="text-white">{text}</span>
+          <IconArrow rotate classNames={`${color ? color : 'bg-pink-500 text-white'} rotate-180 size-8 rounded-full border justify-items-center border-black rounded-full filter drop-shadow-[-1px_-1px_0px_#000000]`} />
+          <span >{text}</span>
         </>
       ) : (
         <>
-          <span className="text-white">{text}</span>
-          <IconArrow />
+          <span>{text}</span>
+          <IconArrow classNames={`${color ? color : 'bg-pink-500 text-white'} size-8 rounded-full border justify-items-center border-black rounded-full filter drop-shadow-[1px_1px_0px_#000000]`} />
         </>
       )}
     </button>

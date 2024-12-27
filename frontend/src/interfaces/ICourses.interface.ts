@@ -14,4 +14,5 @@ export interface Month {
 export interface Content {
   id: number
   text: string
+  quantity?: number
 }
