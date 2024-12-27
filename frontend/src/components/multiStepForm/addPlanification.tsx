@@ -76,6 +76,10 @@ export default function AddPlanification({ contentList, setContentList, setActiv
     router.push('/home')
   }
 
+  const handleGoBack = () => {
+    setActiveTab(1);
+  }
+
   useEffect(() => {
     if (formState.success) {
       setActiveTab(3)
@@ -183,7 +187,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
           <div className='text-gray-600 mt-8'>
             <p>ℹ ¿No tienes el documento a mano?</p>
             <p>No te preocupes, siempre podrás añadir contenidos manualmente más adelante</p>
-            <ButtonContinue type="button" text="Volver atrás" onClick={() => console.log('deberia volver atras pero todavia no estoy implementado')} color="bg-gray-500 text-white mt-4" />
+            <ButtonContinue type="button" text="Volver atrás" onClick={handleGoBack} color="bg-white text-black mt-4" />
           </div>
         </>
       )}
