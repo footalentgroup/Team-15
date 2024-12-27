@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Onboarding from "../../components/onboarding/onboarding";
+import { useRouter } from 'next/navigation';
 
 const onboardingSteps = [
     {
@@ -35,12 +36,14 @@ const onboardingSteps = [
 
 export default function OnboardingPage() {
     const [currentStep, setCurrentStep] = useState(1);
+    const router = useRouter();
 
     const handleNext = () => {
         if (currentStep < onboardingSteps.length) {
             setCurrentStep(currentStep + 1);
         } else {
             setCurrentStep(currentStep - 3);
+            router.push('/add-course');
         }
     };
 
