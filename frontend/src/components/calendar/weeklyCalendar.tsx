@@ -11,12 +11,16 @@ import { WeeklyEventCard } from '@/ui';
 const localizer = momentLocalizer(moment);
 
 moment.locale('es');
+interface Props {
+  setDate: (date: Date) => void;
+  setIsDaily: (isDaily: boolean) => void;
+}
 
-const WeeklyCalendar: React.FC = () => {
+function WeeklyCalendar({ setDate, setIsDaily }: Props) {
   const events = [
     {
-      start: new Date(2024, 11, 18, 8, 0, 0),
-      end: new Date(2024, 11, 18, 12, 0, 0),
+      start: new Date(2025, 0, 2, 8, 0, 0),
+      end: new Date(2025, 0, 2, 12, 0, 0),
       title: 'Revolución Rusa',
       themes: ['Revolución Rusa 1905', 'Fábrica Kirov'],
       course: {
@@ -26,8 +30,8 @@ const WeeklyCalendar: React.FC = () => {
       }
     },
     {
-      start: new Date(2024, 11, 18, 12, 30, 0),
-      end: new Date(2024, 11, 18, 16, 30, 0),
+      start: new Date(2025, 0, 2, 12, 12, 30, 0),
+      end: new Date(2025, 0, 2, 12, 16, 30, 0),
       title: 'Revolución industrial',
       themes: ['Inicios', 'Contexto'],
       course: {
@@ -49,21 +53,16 @@ const WeeklyCalendar: React.FC = () => {
   const maxTime = new Date();
   maxTime.setHours(18, 0, 0);
 
-  const dayPropGetter = (date: Date) => {
-    const style: React.CSSProperties = {};
-    style.border = 'none';
-    if (moment(date).isSame(new Date(), 'day')) {
-      style.backgroundColor = '#f3f4f6';
-    }
-    return { style };
-  };
+  //refactorizar, convertir en un componente sin calendario, que tenga los 5 primeros dias de esa semana, sin sabado y domingo
+  //y que se pueda cambiar de semanas con botones
+  //al hacer click en un dia, se muestren los eventos de ese dia
 
   return (
-    <div className='h-full'>
+    <div className='h-full max-h-[474px] px-16'>
       <Calendar
         components={{
           event: ({ event }) => (
-            <WeeklyEventCard event={event} />
+            <WeeklyEventCard event={event} setDate={setDate} setIsDaily={setIsDaily} />
           ),
           timeGutterWrapper: () => <div style={{ display: 'none' }} />,
           timeGutterHeader: () => <div style={{ display: 'none' }} />,
@@ -72,7 +71,6 @@ const WeeklyCalendar: React.FC = () => {
             header: () => <div style={{ display: 'none' }} />,
           }
         }}
-        dayPropGetter={dayPropGetter}
         localizer={localizer}
         events={events}
         startAccessor="start"

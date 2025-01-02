@@ -11,33 +11,33 @@ import 'swiper/css/scrollbar';
 
 import { ICourses } from '@/interfaces/ICourses.interface'
 import { CourseCard } from '@/ui'
+import { useState } from 'react';
+interface Props {
+  list: ICourses[]
+  setIsVisible: (value: boolean) => void
+}
 
-export function Slider({ list }: { list: ICourses[] }) {
+export function Slider({ list, setIsVisible }: Props) {
+  const [currentCourse, setCurrentCourse] = useState<string>("")
 
   return (
     <div className="flex relative">
       <Swiper
         modules={[Navigation, Scrollbar, A11y]}
-        spaceBetween={8}
-        slidesPerView={4}
+        spaceBetween={36}
+        slidesPerView={5}
         navigation
         pagination={{ clickable: true }}
         scrollbar={{ hide: true, }}
-        style={{ padding: '0 64px' }}
+        style={{ padding: '8px 64px', minWidth: '100%' }}
       >
         {
           list.map((item, i) => (
-            <SwiperSlide key={i}>
-              <CourseCard courses={item} color="" />
+            <SwiperSlide key={i} onClick={() => setCurrentCourse(item.subjectName)}>
+              <CourseCard setIsVisible={setIsVisible} currentCourse={currentCourse} courses={item} color={item.color!} />
             </SwiperSlide>
           ))
         }
-        <SwiperSlide>
-          <div className='flex flex-col min-h-[156px] bg-[#e0e0e0] rounded-xl relative p-4 gap-2 items-center drop-shadow-md text-center justify-center'>
-            ➕
-          </div>
-        </SwiperSlide>
-        ...
       </Swiper>
     </div>
   )
