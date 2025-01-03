@@ -7,7 +7,8 @@ interface OnboardingCardProps {
     currentStep: number;
     totalSteps: number;
     buttonText: string;
-    onClick?: () => void;
+    onClickNext?: () => void;
+    onClickBack?: () => void;
 }
 
 const OnboardingCard: React.FC<OnboardingCardProps> = ({
@@ -17,33 +18,42 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
     currentStep,
     totalSteps,
     buttonText,
-    onClick,
+    onClickNext,
+    onClickBack,
 }) => {
     return (
         <div className="flex items-center justify-center min-h-screen text-center w-full">
             <div className="w-[60%]">
-                <h2 className="text-xl font-bold mb-16">{title}</h2>
+                <h2 className="text-xl font-medium my-16">
+                    {title}
+                </h2>
                 <div>
-                    <div className="h-52 flex justify-center">
-                        <img src={imageSrc} alt="Onboarding" />
+                    <div className="h-64 flex justify-center items-center">
+                        <button onClick={onClickBack} type="button" className={`h-12 w-12 mx-16 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-full filter drop-shadow-[4px_4px_0px_#000000] ${currentStep === 1 ? "invisible" : ""}`}>
+                            {"<"}
+                        </button>
+                        <img src={imageSrc} alt="Onboarding" className="h-full"/>
+                        <button onClick={onClickNext} type="button" className={`h-12 w-12 mx-16 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-full filter drop-shadow-[4px_4px_0px_#000000] ${currentStep === totalSteps ? "invisible" : ""}`}>
+                            {">"}
+                        </button>
                     </div>
-                    <p className="text-md font-medium text-gray-800 my-6 px-16 text-justify h-16">
+                    <p className="text-md font-bold text-gray-800 my-6 px-8 text-center h-16">
                         {description}
                     </p>
                 </div>
                 <div>
-                    <div className="flex space-x-1 justify-center items-center mt-12 mb-20">
+                    <div className="flex space-x-0.5 justify-center items-center my-12">
                         {Array.from({ length: totalSteps }).map((_, index) => (
                             <div
                                 key={index}
                                 className={`${index === currentStep - 1
-                                        ? "w-3 h-3 bg-gray-800"
-                                        : "w-3 h-3 bg-gray-400"
-                                    } rounded-full`}
+                                        ? "w-4 h-4 bg-cyan-700 rounded-full"
+                                        : "w-2 h-4 bg-sky-200 rounded-[50%]"
+                                    }`}
                             ></div>
                         ))}
                     </div>
-                        <button onClick={onClick} type="button" className="h-9 text-black bg-white border-2 border-black shadow-[3px_3px_0px_black] focus:outline-none hover:bg-pink-600 hover:text-white font-semibold rounded-md text-sm px-4 py-2">
+                        <button onClick={onClickNext} type="button" className="my-12 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
                             {buttonText}
                         </button>
                 </div>
