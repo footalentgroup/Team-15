@@ -6,6 +6,7 @@ export default {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/ui/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@fortawesome/fontawesome-free/**/*',
   ],
   theme: {
     extend: {
