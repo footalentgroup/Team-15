@@ -32,7 +32,7 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                         <button onClick={onClickBack} type="button" className={`h-12 w-12 mx-16 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-full filter drop-shadow-[4px_4px_0px_#000000] ${currentStep === 1 ? "invisible" : ""}`}>
                             {"<"}
                         </button>
-                        <img src={imageSrc} alt="Onboarding" className="h-full"/>
+                        <img src={imageSrc} alt="Onboarding" className="h-full" />
                         <button onClick={onClickNext} type="button" className={`h-12 w-12 mx-16 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-full filter drop-shadow-[4px_4px_0px_#000000] ${currentStep === totalSteps ? "invisible" : ""}`}>
                             {">"}
                         </button>
@@ -47,15 +47,15 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                             <div
                                 key={index}
                                 className={`${index === currentStep - 1
-                                        ? "w-4 h-4 bg-cyan-700 rounded-full"
-                                        : "w-2 h-4 bg-sky-200 rounded-[50%]"
+                                    ? "w-4 h-4 bg-cyan-700 rounded-full"
+                                    : "w-2 h-4 bg-sky-200 rounded-[50%]"
                                     }`}
                             ></div>
                         ))}
                     </div>
-                        <button onClick={onClickNext} type="button" className="my-12 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
-                            {buttonText}
-                        </button>
+                    <button onClick={onClickNext} type="button" className="my-12 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
+                        {buttonText}
+                    </button>
                 </div>
             </div>
         </div>
