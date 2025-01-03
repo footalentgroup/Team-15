@@ -19,6 +19,7 @@ export default {
         'black-300': '#191F2B',
         'blue-light-100': '#B0EFFD',
         'blue-light-500': '#01CAF8',
+        'blue-800': '#0488A6',
         'pink-100': '#FDB0D9',
         'pink-500': '#EB3883',
         'yellow-light': '#F6FFDC',

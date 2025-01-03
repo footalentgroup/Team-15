@@ -5,7 +5,14 @@ export interface ICourses {
 }
 
 export interface Month {
+  id: number
   month: string
   color: string
-  content: string[]
+  content: Content[]
+}
+
+export interface Content {
+  id: number
+  text: string
+  quantity?: number
 }
