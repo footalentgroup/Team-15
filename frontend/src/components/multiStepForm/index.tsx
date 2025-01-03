@@ -7,7 +7,7 @@ import AddToCalendar from "./addToCalendar";
 import { useState } from 'react';
 
 export default function MultiStepForm() {
-  const [activeTab, setActiveTab] = useState(2);
+  const [activeTab, setActiveTab] = useState(0);
   const [contentList, setContentList] = useState<Content[]>([])
   const [courseId, setCourseId] = useState<number | null>(null);
   const [planificationStep, setPlanificationStep] = useState<number>(1);

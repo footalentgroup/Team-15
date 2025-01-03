@@ -137,7 +137,7 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
             <ButtonNormal text="Importar de excel" onClick={handleImport} />
 
           </div>
-          <span className="text-gray-500 mt-2"><IconInfo /> Tu lista quedará ordenará automáticamente por orden alfabético</span>
+          <div className="text-gray-500 mt-2 flex gap-2"><IconInfo /> <span>Tu lista quedará ordenará automáticamente por orden alfabético</span></div>
           <ul className="flex flex-wrap text-wrap gap-2 mt-4 px-32 max-h-[360px] overflow-y-scroll">
             {studentList.alumnos.sort().map((student, index) => (
               <li key={index} className="w-48 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2">
