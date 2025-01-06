@@ -47,6 +47,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId }: Props) {
     subjectName: ''
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -79,6 +80,12 @@ export default function AddCourseForm({ setActiveTab, setCourseId }: Props) {
       setCourseId(formState.data.course.curso.id);
       setActiveTab(1);
     }
+
+    if (formState.error) {
+      console.log('error', formState.data.error);
+      console.log('error', formState.data);
+      setError(formState.data.error);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.success]);
 
@@ -104,6 +111,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId }: Props) {
           ))}
         </div>
         <ButtonContinue text="Continuar" />
+        {error && <p className="text-red-500">{error}</p>}
       </form>
 
       <div className="absolute bottom-16 left-9 flex gap-2">

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { setUserCookie } from "@/actions/authActions";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -40,8 +41,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
         if (!token) {
           throw new Error("Token no encontrado");
         }
-        
+
         localStorage.setItem("token", token);
+        setUserCookie(data);
         router.push("/home");
 
       } else {
@@ -56,6 +58,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
             last_name,
             email,
             password,
+            role: "user"
           }),
         });
         if (!response.ok) {

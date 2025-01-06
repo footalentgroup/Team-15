@@ -2,7 +2,7 @@
 import { AddStudentAction, ImportStudentsAction } from "@/actions/addCourse.action";
 import ButtonContinue from "@/ui/buttons/buttonContinue";
 import ButtonNormal from "@/ui/buttons/buttonNormal";
-import { startTransition, useActionState, useEffect, useState } from "react"
+import { startTransition, useActionState, useState } from "react"
 import LoadingFile from "./loadingFile";
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { IconInfo } from "@/icons";
@@ -56,9 +56,13 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
 
   const handleConfirm = () => {
     setIsModalOpen(false);
+    setImportSuccess('Estudiantes importados correctamente, será redirigido en breve...');
     startTransition(() => {
       formAction(studentList);
     });
+    setTimeout(() => {
+      setActiveTab(2);
+    }, 3000);
   };
 
   const handleCancel = () => {
@@ -83,10 +87,9 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
         const result = await ImportStudentsAction(formData);
         console.log(result);
         if (result.success) {
-          setImportSuccess('Estudiantes importados correctamente, será redirigido en breve...');
-          setTimeout(() => {
-            setActiveTab(2);
-          }, 3000);
+          setStudentList({ alumnos: result.data.alumnos });
+          setIsImportModalOpen(false);
+          setExcelFile(null);
         } else {
           setImportError('Ocurrio un error al importar estudiantes');
         }
@@ -104,12 +107,12 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
     setExcelFile(null);
   }
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (formState.success) {
       setActiveTab(2);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formState.success]);
+  }, [formState.success]); */
 
   return (
     <>

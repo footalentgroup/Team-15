@@ -2,9 +2,10 @@
 
 import { Content, ICourses, Month } from "@/interfaces/ICourses.interface";
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
+import { cookies } from "next/headers";
+import { refreshToken } from "./authActions";
 
 const API_URL = process.env.BASE_URL;
-const TOKEN = process.env.TOKEN;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addCourseAction(prevState: any, data: ICourses) {
@@ -16,6 +17,19 @@ export async function addCourseAction(prevState: any, data: ICourses) {
   //recibe el nombre de la materia y el id del curso:curso_id
   const subjectUrl = `${API_URL}/materia/register/`;
 
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  if (!TOKEN) {
+    refreshToken();
+  }
+
+  console.log('TOKEN', TOKEN);
 
   try {
     const schoolResponse = await fetch(schoolUrl, {
@@ -31,9 +45,15 @@ export async function addCourseAction(prevState: any, data: ICourses) {
 
 
     const schoolData = await schoolResponse.json();
+    console.log('schoolData', schoolData);
 
     if (!schoolData) {
-      throw new Error('No se pudo crear la institucion');
+      return {
+        ...prevState,
+        data: schoolData,
+        success: false,
+        error: true
+      }
     }
 
     const courseId = schoolData.institucion.id;
@@ -91,7 +111,8 @@ export async function addCourseAction(prevState: any, data: ICourses) {
     return {
       ...prevState,
       data: error,
-      success: false
+      success: false,
+      error: true
     }
   }
 }
@@ -101,6 +122,18 @@ export async function AddStudentAction(prevState: any, body: IStudentRequest) {
   console.log('addStudentAction', body);
 
   const studentsUrl = `${API_URL}/alumno/register/`;
+
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  if (!TOKEN) {
+    refreshToken();
+  }
 
   try {
     const response = await fetch(studentsUrl, {
@@ -133,6 +166,18 @@ export async function AddStudentAction(prevState: any, body: IStudentRequest) {
 export async function ImportStudentsAction(formData: FormData) {
   console.log('ImportStudentsAction', formData);
 
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  if (!TOKEN) {
+    refreshToken();
+  }
+
   const studentsUrl = `${API_URL}/alumno/process_excel/`;
 
   try {
@@ -145,6 +190,7 @@ export async function ImportStudentsAction(formData: FormData) {
     });
 
     const responseData = await response.json();
+    console.log('responseData', responseData);
 
     if (!response.ok) {
       throw new Error('Ocurrio un error al importar estudiantes', responseData);

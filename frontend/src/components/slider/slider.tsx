@@ -11,14 +11,14 @@ import 'swiper/css/scrollbar';
 
 import { ICourses } from '@/interfaces/ICourses.interface'
 import { CourseCard } from '@/ui'
-import { useState } from 'react';
+import ButtonArrowPink from '@/ui/buttons/buttonArrowPink';
 interface Props {
   list: ICourses[]
   setIsVisible: (value: boolean) => void
+  setCurrentCourse: (value: ICourses) => void
 }
 
-export function Slider({ list, setIsVisible }: Props) {
-  const [currentCourse, setCurrentCourse] = useState<string>("")
+export function Slider({ list, setIsVisible, setCurrentCourse }: Props) {
 
   return (
     <div className="flex relative">
@@ -26,18 +26,25 @@ export function Slider({ list, setIsVisible }: Props) {
         modules={[Navigation, Scrollbar, A11y]}
         spaceBetween={36}
         slidesPerView={5}
-        navigation
+        navigation={{ nextEl: ".next-arrow", prevEl: ".prev-arrow" }}
         pagination={{ clickable: true }}
         scrollbar={{ hide: true, }}
         style={{ padding: '8px 64px', minWidth: '100%' }}
       >
         {
           list.map((item, i) => (
-            <SwiperSlide key={i} onClick={() => setCurrentCourse(item.subjectName)}>
-              <CourseCard setIsVisible={setIsVisible} currentCourse={currentCourse} courses={item} color={item.color!} />
+            <SwiperSlide key={i} onClick={() => setCurrentCourse(item)}>
+              <CourseCard setIsVisible={setIsVisible} courses={item} color={item.color!} />
             </SwiperSlide>
           ))
         }
+
+        <div className="next-arrow bg-gray-200 h-full content-center absolute z-10 right-0 top-1/2 -translate-y-1/2 cursor-pointer select-none pe-1" >
+          <ButtonArrowPink text='' />
+        </div>
+        <div className="prev-arrow bg-gray-200 h-full content-center absolute z-10 left-0 top-1/2 -translate-y-1/2 cursor-pointer select-none ps-1" >
+          <ButtonArrowPink text='' rotate />
+        </div>
       </Swiper>
     </div>
   )
