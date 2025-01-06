@@ -1,8 +1,11 @@
 import ConfirmMail from '@/components/auth/confirmMail';
 import { cookies } from 'next/headers';
-import React from 'react';
 
-async function Page({ params }: { params: { mail: string } }) {
+async function Page({ params }: {
+  params: Promise<{
+    mail: string
+  }>
+}) {
   const { mail } = await params;
   const cookieStore = await cookies();
   const user = (await cookieStore).get("tempUser");
