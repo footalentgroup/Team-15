@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { setUserCookie } from "@/actions/authActions";
+import { setTempUser, setUserCookie } from "@/actions/authActions";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -43,7 +43,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         }
 
         localStorage.setItem("token", token);
-        setUserCookie(data);
+        await setUserCookie(data);
         router.push("/home");
 
       } else {
@@ -71,7 +71,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
           email,
           password,
         });
-        router.push("/onboarding");
+        setTempUser({ email, password });
+        router.push(`/register/confirm/${email}`);
       }
     } catch (error) {
       console.error("Error:", error);

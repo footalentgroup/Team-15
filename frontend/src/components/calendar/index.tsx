@@ -10,6 +10,7 @@ interface Props {
 }
 
 function HomeCalendar({ events }: Props) {
+  console.log(events);
   const [isDaily, setIsDaily] = useState(false);
   const [date, setDate] = useState(new Date());
   console.log(date);
