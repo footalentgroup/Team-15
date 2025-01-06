@@ -43,6 +43,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         }
 
         localStorage.setItem("token", token);
+        localStorage.setItem("username", JSON.stringify(data.user.username));
         await setUserCookie(data);
         router.push("/home");
 
@@ -71,6 +72,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
           email,
           password,
         });
+        localStorage.setItem("username", JSON.stringify(username));
         setTempUser({ email, password });
         router.push(`/register/confirm/${email}`);
       }

@@ -4,7 +4,7 @@ import Onboarding from "../../components/onboarding/onboarding";
 
 const onboardingSteps = [
     {
-        title: "¡Bienvenido [Nombre de usuario]!",
+        title: "¡Bienvenido",
         description:
             "PalProfe te ayudara a organizar tu trabajo docente de manera sencilla y eficiente. Una plataforma donde todo está conectado: planificación, seguimiento de alumnos, notas rápidas y recursos, todo en un solo lugar.",
         imageSrc: "../media/img/ob-1.png",
@@ -35,6 +35,7 @@ const onboardingSteps = [
 
 export default function OnboardingPage() {
     const [currentStep, setCurrentStep] = useState(1);
+    const username = localStorage.getItem("username");
 
     const handleNext = () => {
         if (currentStep < onboardingSteps.length) {
@@ -57,6 +58,7 @@ export default function OnboardingPage() {
     return (
         <Onboarding
             title={stepData.title}
+            username={username}
             description={stepData.description}
             imageSrc={stepData.imageSrc}
             currentStep={currentStep}

@@ -1,18 +1,25 @@
+import { useState } from "react";
+
 export interface IconProps {
   classNames?: string;
   rotate?: boolean;
   color?: string;
+  hoverColor?: string;
 }
 
-export const IconArrow = ({ rotate, classNames, color }: IconProps) => {
+export const IconArrow: React.FC<IconProps> = ({ rotate, classNames, color, hoverColor }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <svg
       width='32px' height='32px' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'
       rotate={rotate ? '180deg' : ''} className={classNames}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <path
         d='M10.0001 6L8.59009 7.41L13.1701 12L8.59009 16.59L10.0001 18L16.0001 12L10.0001 6Z'
-        fill={color ?? '#F2F2F2'}
+        fill={isHovered ? hoverColor ?? color : color ?? '#F2F2F2'}
       />
     </svg>
   );

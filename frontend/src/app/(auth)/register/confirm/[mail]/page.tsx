@@ -10,6 +10,8 @@ async function Page({ params }: {
   const cookieStore = await cookies();
   const user = (await cookieStore).get("tempUser");
   const password = user ? JSON.parse(user.value).password : '';
+  console.log('user', user);
+  console.log('pass', password);
 
   return (
     <>
