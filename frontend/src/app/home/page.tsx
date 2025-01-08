@@ -13,6 +13,10 @@ export default async function HomePage() {
     redirect('/login')
   }
 
+  if (data.length === 0) {
+    redirect('/add-course')
+  }
+
   return (
     <Home data={data} />
   );

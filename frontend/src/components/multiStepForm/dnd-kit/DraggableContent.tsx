@@ -4,16 +4,25 @@ import { Content } from "@/interfaces/ICourses.interface";
 interface DraggableContentProps {
   content: Content;
   index: number;
+  parentIndex: number;
+  setCurrentContent: (content: Content) => void;
 }
 
-export const DraggableContent: React.FC<DraggableContentProps> = ({ content, index }) => {
+export const DraggableContent: React.FC<DraggableContentProps> = ({ content, index, parentIndex, setCurrentContent }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: `content-${index}`,
+    id: `content-${index}-${parentIndex}`,
   });
 
   const style = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
     opacity: isDragging ? 0.5 : 1,
+  };
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) {
+      return text;
+    }
+    return text.slice(0, maxLength) + '...';
   };
 
   return (
@@ -22,9 +31,10 @@ export const DraggableContent: React.FC<DraggableContentProps> = ({ content, ind
       style={style}
       {...listeners}
       {...attributes}
-      className="w-[310px] h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2 cursor-pointer touch-none"
+      className="w-3/4 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2 cursor-pointer touch-none"
+      onClick={() => setCurrentContent(content)}
     >
-      <p>{content.text} <span className='text-red-800'>{content.quantity ? `(${content.quantity})` : ''}</span></p>
+      <p className='flex w-full'>{truncateText(content.tema, 22)} <span className='text-red-800 ms-auto'>{content.quantity ? `(${content.quantity})` : ''}</span></p>
     </li>
   );
 };

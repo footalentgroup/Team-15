@@ -21,13 +21,13 @@ interface Props {
 
 const StepIndicator = ({ step }: Props) => {
   return (
-    <div className='flex gap-2 py-5'>
+    <div className='flex gap-6 py-5'>
       {STEPS.map((item, index) => (
-        <div key={index} className='flex gap-2 flex-1 items-center'>
-          <div className={`size-12 rounded-full text-center py-1 text-[28px] ${step >= item.step ? 'bg-blue-800 text-white font-extrabold leading-9' : 'bg-gray-300'}`} >
+        <div key={index} className='flex gap-2 flex-1 items-center min-w-max'>
+          <div className={`size-8 rounded-full text-center pt-[2px] text-xl ${step >= item.step ? 'bg-blue-800 text-white font-bold' : 'bg-gray-300 text-white'}`} >
             {item.step}
           </div>
-          <p className={`text-xl ${step >= item.step ? 'text-blue-800 font-semibold' : ''}`}>{item.title}</p>
+          <p className={`${step >= item.step ? 'text-blue-800 font-semibold' : 'text-gray-300'}`}>{item.title}</p>
         </div>
       ))}
     </div>
