@@ -15,9 +15,11 @@ const AuthForm = ({ type }: AuthFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const [error, setError] = useState("");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setError("");
     try {
       if (type === "login") {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/basic-login/`, {
@@ -31,15 +33,19 @@ const AuthForm = ({ type }: AuthFormProps) => {
           }),
         });
 
-        if (!response.ok) {
-          throw new Error("Error al iniciar sesión");
+        const data = await response.json();
+        console.log(data);
+
+        if (data.error) {
+          setError(data.error);
+          return;
         }
 
-        const data = await response.json();
         const token = data.access_token;
 
         if (!token) {
-          throw new Error("Token no encontrado");
+          setError("Token no encontrado");
+          return;
         }
 
         localStorage.setItem("token", token);
@@ -62,8 +68,12 @@ const AuthForm = ({ type }: AuthFormProps) => {
             role: "user"
           }),
         });
-        if (!response.ok) {
-          throw new Error("Error en la creación del usuario");
+        const data = await response.json();
+        if (!data.message) {
+          for (const [key, value] of Object.entries(data as { [key: string]: string[] })) {
+            setError(`${key}: ${value.join(", ")}`);
+          }
+          return;
         }
         console.log("Se registró la cuenta con:", {
           username,
@@ -198,6 +208,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
         >
           {type === "login" ? "Iniciar Sesión" : "Registrarme"}
         </button>
+        {error && (
+          <p className="mt-4 text-sm text-center text-red-600">{error}</p>
+        )}
       </form>
     </div>
   );

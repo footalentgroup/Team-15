@@ -121,3 +121,33 @@ export const IconSearch = ({ classNames, color }: IconProps) => {
 
   )
 }
+
+export const IconBookmark = ({ classNames }: IconProps) => {
+  return (
+    <svg width="131" height="137" viewBox="0 0 131 137" fill="none" xmlns="http://www.w3.org/2000/svg" className={classNames}>
+      <g filter="url(#filter0_d_1201_5763)">
+        <path d="M2 131V-5H129V131L67 105L2 131Z" fill="#FEEEBE" shapeRendering="crispEdges" />
+        <path d="M2 131V-5H129V131L67 105L2 131Z" stroke="#EB3883" strokeOpacity="0.55" strokeWidth="4" strokeLinejoin="round" shapeRendering="crispEdges" />
+      </g>
+      <defs>
+        <filter id="filter0_d_1201_5763" x="0" y="-7" width="131" height="144" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+          <feOffset dy="4" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix type="matrix" values="0 0 0 0 0.920833 0 0 0 0 0.218698 0 0 0 0 0.513595 0 0 0 1 0" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1201_5763" />
+          <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1201_5763" result="shape" />
+        </filter>
+      </defs>
+    </svg>
+  )
+}
+
+export const IconCalendarInput = ({ classNames, color }: IconProps) => {
+  return (
+    <svg className={classNames} width="28" height="25" viewBox="0 0 28 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9.33333 7.76562V3.76562M18.6667 7.76562V3.76562M8.16667 11.7656H19.8333M5.83333 21.7656H22.1667C23.4553 21.7656 24.5 20.8702 24.5 19.7656V7.76562C24.5 6.66106 23.4553 5.76562 22.1667 5.76562H5.83333C4.54467 5.76562 3.5 6.66106 3.5 7.76562V19.7656C3.5 20.8702 4.54467 21.7656 5.83333 21.7656Z" stroke={color ?? "#EB3883"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}

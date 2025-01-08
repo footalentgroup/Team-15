@@ -6,6 +6,7 @@ import { startTransition, useActionState, useState } from "react"
 import LoadingFile from "./loadingFile";
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { IconInfo } from "@/icons";
+import FlagStepIndicator from "./flagStepIndicator";
 
 const INITIAL_STATE = {
   data: null
@@ -115,7 +116,8 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
   }, [formState.success]); */
 
   return (
-    <>
+    <div className="relative">
+      <FlagStepIndicator step={2} title="Alumnos" />
       <form onSubmit={handleSubmit} className="w-full h-screen p-16 flex flex-col">
         <div className="flex flex-col items-baseline gap-2">
           <h2 className="font-semibold text-4xl">¿Quieres añadir tu lista de alumnos?</h2>
@@ -219,6 +221,6 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
         </div>
       )}
       {loading && <LoadingFile setLoading={setLoading} />}
-    </>
+    </div>
   );
 }

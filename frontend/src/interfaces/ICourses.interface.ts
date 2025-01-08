@@ -13,8 +13,9 @@ export interface Month {
 }
 
 export interface Content {
-  id: number
-  text: string
+  unidad?: number
+  tema: string
+  subtemas: string[]
   quantity?: number
 }
 
@@ -34,4 +35,18 @@ export interface Subject {
   id: number
   nombre: string
   curso_id: number
+}
+
+export interface Period {
+  [key: string]: string
+}
+
+export interface PeriodFromAction {
+  duracion: string
+  periodos: PeriodTime[]
+}
+
+export interface PeriodTime {
+  fecha_inicio: string
+  fecha_cierre: string
 }

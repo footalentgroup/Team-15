@@ -50,3 +50,32 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+[type='date']::-webkit-inner-spin-button {
+  display: none;
+}
+
+[type='date']::-webkit-calendar-picker-indicator {
+  background: url('/icons/calendar.svg') 90% 0% no-repeat;
+  background-size: 20px;
+  margin: 0 4px;
+}
+
+[type='date']::-webkit-datetime-edit {
+  padding: 2px 4px;
+}
+
+/* Estilizar el popup del date input en navegadores WebKit */
+[type='date']::-webkit-calendar-picker-indicator:focus {
+  background-color: #f0f0f0; /* Cambia el color de fondo del popup */
+  color: #000; /* Cambia el color del texto */
+}
+
+/* Estilizar el popup del date input en navegadores Firefox */
+input[type='date']::-moz-focus-inner {
+  border: 0;
+}
+
+input[type='date']::-moz-focus-outer {
+  border: 0;
+}
