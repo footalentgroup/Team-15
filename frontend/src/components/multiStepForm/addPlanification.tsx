@@ -93,6 +93,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       setPlanificationStep(3)
       setActiveTab(3)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.success])
 
   return (

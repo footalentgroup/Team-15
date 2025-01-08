@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { setTempUser, setUserCookie } from "@/actions/authActions";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -40,8 +41,10 @@ const AuthForm = ({ type }: AuthFormProps) => {
         if (!token) {
           throw new Error("Token no encontrado");
         }
-        
+
         localStorage.setItem("token", token);
+        localStorage.setItem("username", JSON.stringify(data.user.username));
+        await setUserCookie(data);
         router.push("/home");
 
       } else {
@@ -56,6 +59,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
             last_name,
             email,
             password,
+            role: "user"
           }),
         });
         if (!response.ok) {
@@ -68,7 +72,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
           email,
           password,
         });
-        router.push("/onboarding");
+        localStorage.setItem("username", JSON.stringify(username));
+        setTempUser({ email, password });
+        router.push(`/register/confirm/${email}`);
       }
     } catch (error) {
       console.error("Error:", error);

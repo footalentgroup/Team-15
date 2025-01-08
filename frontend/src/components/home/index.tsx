@@ -45,11 +45,12 @@ interface Props {
 }
 function Home({ data }: Props) {
   const [isVisible, setIsVisible] = useState(false)
+  const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null)
   console.log(data);
 
   return (
     <>
-      <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} />
+      <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} data={data} currentCourse={currentCourse} />
       <div className='px-10 flex flex-col gap-4 h-full'>
         <>
           <div className='flex py-8'>
@@ -61,7 +62,7 @@ function Home({ data }: Props) {
               <ButtonContinue text='Ver todas las clases' color='h-12 bg-white text-dark' type='button' />
             </div>
           </div>
-          <Slider list={data} setIsVisible={setIsVisible} />
+          <Slider list={data} setIsVisible={setIsVisible} setCurrentCourse={setCurrentCourse} />
         </>
         <HomeCalendar events={data} />
       </div>

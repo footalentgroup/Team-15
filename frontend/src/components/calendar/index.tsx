@@ -1,27 +1,25 @@
 'use client'
-import ButtonContinue from "@/ui/buttons/buttonContinue";
 import { useState } from "react";
 import WeeklyCalendar from "./weeklyCalendar";
 import DailyCalendar from "./dailyCalendar";
 import { ICourses } from "@/interfaces/ICourses.interface";
+import SelectView from "@/ui/selects/selectView";
 
 interface Props {
   events: ICourses[];
 }
 
 function HomeCalendar({ events }: Props) {
+  console.log(events);
   const [isDaily, setIsDaily] = useState(false);
   const [date, setDate] = useState(new Date());
   console.log(date);
   return (
     <div className='h-full overflow-hidden mt-8'>
       <div className='flex'>
-        <h2 className='text-[32px] font-semibold mb-6'>Calendario General</h2>
-        {isDaily ? (
-          <ButtonContinue text='Diaria' color='ms-auto me-24 h-12 bg-white text-dark' type='button' onClick={() => setIsDaily(!isDaily)} />
-        ) : (
-          <ButtonContinue text='Semanal' color='ms-auto me-24 h-12 bg-white text-dark' type='button' onClick={() => setIsDaily(!isDaily)} />
-        )}
+        <h2 className='text-[32px] font-semibold mb-6 me-auto'>Calendario General</h2>
+
+        <SelectView options={['Semanal', 'Diario']} value={isDaily ? "Diario" : "Semanal"} isDaily={isDaily} onChange={setIsDaily} />
       </div>
       {/* aca al hacer click en cada dia te debe llevar a la vista diaria de ese dia, o al hacer click en el select te tiene que dejar cambiar a la vista diaria actual */}
       {isDaily ? (

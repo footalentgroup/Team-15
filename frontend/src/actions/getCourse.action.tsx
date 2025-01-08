@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
 import { Course, ICourses, School, Subject } from "@/interfaces/ICourses.interface";
 import { getColorByPosition } from "@/utils/getRandomColor";
+import { cookies } from "next/headers";
+import { refreshToken } from "./authActions";
 
 
 const API_URL = process.env.BASE_URL;
-const TOKEN = process.env.TOKEN;
 
 export async function getCourses() {
   console.log('estoy usando el getCourses');
@@ -17,8 +17,19 @@ export async function getCourses() {
   //recibe el nombre de la materia y el id del curso:curso_id
   const subjectUrl = `${API_URL}/materia/list/`;
 
-  //id del docente para filtrar los resultados
-  const professorId = 2;
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let professorId = 0;
+  if (user) {
+    professorId = JSON.parse(user.value).user.id;
+  }
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  refreshToken();
 
   try {
     const schoolResponse = await fetch(schoolUrl, {
@@ -32,11 +43,13 @@ export async function getCourses() {
 
     const schoolData = await schoolResponse.json();
 
+    console.log('schoolData', schoolData);
+
     if (!schoolData) {
       throw new Error('No se pudo obtener la institucion');
     }
 
-    const professorSchools = schoolData.filter((school: School) => school.docente === professorId);
+    const professorSchools = schoolData.filter((school: School) => school.docente === Number(professorId));
 
     const courseResponse = await fetch(courseUrl, {
       method: 'GET',

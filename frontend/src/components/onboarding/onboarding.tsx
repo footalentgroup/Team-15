@@ -1,7 +1,9 @@
+import { IconArrow } from "@/icons";
 import React from "react";
 
 interface OnboardingCardProps {
     title: string;
+    username: string | null;
     description: string;
     imageSrc: string;
     currentStep: number;
@@ -13,6 +15,7 @@ interface OnboardingCardProps {
 
 const OnboardingCard: React.FC<OnboardingCardProps> = ({
     title,
+    username,
     description,
     imageSrc,
     currentStep,
@@ -25,16 +28,16 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
         <div className="flex items-center justify-center min-h-screen text-center w-full">
             <div className="w-[60%]">
                 <h2 className="text-xl font-medium my-16">
-                    {title}
+                    {currentStep === 1 && username ? title + " " + username + "!" : title}
                 </h2>
                 <div>
-                    <div className="h-72 flex justify-center items-center">
-                        <button onClick={onClickBack} type="button" className={`h-12 w-12 mx-16 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-full filter drop-shadow-[4px_4px_0px_#000000] ${currentStep === 1 ? "invisible" : ""}`}>
-                            {"<"}
+                    <div className="h-72 flex justify-center items-center rota">
+                        <button onClick={onClickBack} type="button" className={`h-12 w-12 mx-16 bg-yellow-light hover:bg-pink-500 hover:text-white border-2 border-black font-semibold rounded-full filter drop-shadow-[4px_4px_0px_#000000] justify-items-center ${currentStep === 1 ? "invisible" : ""}`}>
+                            <IconArrow color="black" hoverColor="white" classNames="rotate-180 text-white h-full w-full" />
                         </button>
                         <img src={imageSrc} alt="Onboarding" className="h-full" />
-                        <button onClick={onClickNext} type="button" className={`h-12 w-12 mx-16 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-full filter drop-shadow-[4px_4px_0px_#000000] ${currentStep === totalSteps ? "invisible" : ""}`}>
-                            {">"}
+                        <button onClick={onClickNext} type="button" className={`h-12 w-12 mx-16 bg-yellow-light hover:bg-pink-500 hover:text-white border-2 border-black font-semibold rounded-full filter drop-shadow-[4px_4px_0px_#000000] justify-items-center ${currentStep === totalSteps ? "invisible" : ""}`}>
+                            <IconArrow color="black" hoverColor="white" classNames="h-full w-full" />
                         </button>
                     </div>
                     <p className="text-md font-bold text-gray-800 my-6 px-8 text-center h-16">
