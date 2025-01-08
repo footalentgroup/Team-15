@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void }) => {
     const [selectedButton, setSelectedButton] = useState<string | null>(null);
 
@@ -10,8 +11,8 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
 
     const buttons = ["Diario", "Semanal", "Mensual", "Cuatrimestral", "Trimestral"];
     const [conceptualScale, setConceptualScale] = useState<string[]>([
-            "Deficiente", "Bien", "Muy Bien", "Excelente"
-        ]);
+        "Deficiente", "Bien", "Muy Bien", "Excelente"
+    ]);
 
     const addConceptualValue = () => {
         setConceptualScale([...conceptualScale, ""]);

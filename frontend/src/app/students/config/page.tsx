@@ -46,6 +46,7 @@ export default function Config() {
 
     useEffect(() => {
         validateForm();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cuatrimestreData, homeworkData, examData, attitudinalData, attendanceData]);
 
     return (
@@ -56,7 +57,7 @@ export default function Config() {
                 <ExamConfig onDataChange={setExamData} />
                 <AttitudinalConfig onDataChange={setAttitudinalData} />
                 <AttendanceConfig onDataChange={setAttendanceData} />
-                
+
                 <Link href="/students" className="flex gap-4 w-full justify-center my-12">
                     <button
                         type="button"

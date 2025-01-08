@@ -1,5 +1,5 @@
 'use client'
-import { IconCalendar, IconFollowUp, IconHome, IconNotes, IconResources } from '@/icons';
+import { IconCalendar, IconFollowUp, IconHome, } from '@/icons';
 import { ICourses } from '@/interfaces/ICourses.interface';
 import { CourseCard } from '@/ui';
 import ButtonSideBar from '@/ui/buttons/buttonSidebar';
@@ -22,24 +22,24 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse }: Props) {
     },
     {
       name: 'Seguimiento',
-      url: '#',
+      url: '/students',
       icon: <IconFollowUp color={`${pathname === '/follow-up' ? 'white' : ''}`} />
     },
     {
       name: 'Planificación',
-      url: '#',
+      url: '/planification',
       icon: <IconCalendar color={`${pathname === '/planification' ? 'white' : ''}`} />
     },
-    {
-      name: 'Mis Recursos',
-      url: '#',
-      icon: <IconResources color={`${pathname === '/resources' ? 'white' : ''}`} />
-    },
-    {
-      name: 'Notas Rápidas',
-      url: '#',
-      icon: <IconNotes color={`${pathname === '/notes' ? 'white' : ''}`} />
-    }
+    /*     {
+          name: 'Mis Recursos',
+          url: '#',
+          icon: <IconResources color={`${pathname === '/resources' ? 'white' : ''}`} />
+        },
+        {
+          name: 'Notas Rápidas',
+          url: '#',
+          icon: <IconNotes color={`${pathname === '/notes' ? 'white' : ''}`} />
+        } */
   ]
 
   const index = data.findIndex((course) => course.courseName === currentCourse?.courseName)

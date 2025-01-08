@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => void }) => {
     const [examPercentage, setExamPercentage] = useState<number | "">(0);
     const [taskPercentage, setTaskPercentage] = useState<number | "">(0);

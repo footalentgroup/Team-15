@@ -1,16 +1,45 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { IStudents } from "@/interfaces/IStudents.interface";
+import { getStudentsAction } from "@/actions/studentsActions";
+import { ICourses } from "@/interfaces/ICourses.interface";
+import { useRouter } from "next/navigation";
 
 const Students: React.FC = () => {
     const [isSaved, setIsSaved] = useState(false);
+    const [data, setData] = useState<IStudents[] | null>(null)
+    const router = useRouter();
+
+    const getData = async (currentCourse: ICourses) => {
+        if (currentCourse) {
+            const courseId = currentCourse.courseId;
+            await getStudentsAction(courseId!).then((response) => {
+                setData(response);
+            });
+        }
+    }
 
     useEffect(() => {
-        const configData = localStorage.getItem("configData");
+        const configData = window.localStorage.getItem("configData");
+        const currentCourse = window.localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const course = JSON.parse(currentCourse);
+            getData(course);
+        }
         if (configData) {
             setIsSaved(true);
         }
-    }, []);
+
+        if (configData && data && data?.length > 0) {
+            //logica para guardar los alumnos en la aplicacion general y redirigir
+            localStorage.setItem("studentsData", JSON.stringify(data));
+            router.push("/students/homework");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data]);
+
+    console.log('data', data);
 
     return (
         <div>
@@ -39,8 +68,8 @@ const Students: React.FC = () => {
                             <i className="fa-regular fa-copy pl-4"></i>
                         </button>
                     </Link>
-                    <button type="button" className="my-12 min-w-[300px] min-h-12 bg-yellow-500 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
-                        <i className="fa-regular fa-square pr-4"></i>
+                    <button type="button" className={`my-12 min-w-[300px] min-h-12  text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${data && data.length > 0 ? ' bg-white line-through' : 'bg-yellow-500'}`}>
+                        <i className={`pr-4 ${data && data.length > 0 ? "fa-solid fa-square-check text-green-500" : "fa-regular fa-square"}`}></i>
                         Cargá la lista de alumnos
                         <i className="fa-solid fa-arrow-up pl-4"></i>
                     </button>

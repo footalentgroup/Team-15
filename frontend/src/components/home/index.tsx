@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../sidebar/sidebar';
 import Link from 'next/link';
 import ButtonContinue from '@/ui/buttons/buttonContinue';
@@ -47,6 +47,14 @@ function Home({ data }: Props) {
   const [isVisible, setIsVisible] = useState(false)
   const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null)
   console.log(data);
+
+  useEffect(() => {
+    if (currentCourse) {
+      console.log('currentCourse', currentCourse)
+      //manejar logica para guardar el curso seleccionado y poder usarlo en otras paginas
+      localStorage.setItem('currentCourse', JSON.stringify(currentCourse))
+    }
+  }, [currentCourse])
 
   return (
     <>
