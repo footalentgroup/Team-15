@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Onboarding from "../../components/onboarding/onboarding";
 import { useRouter } from "next/navigation";
 
@@ -36,7 +36,7 @@ const onboardingSteps = [
 
 export default function OnboardingPage() {
     const [currentStep, setCurrentStep] = useState(1);
-    const username = localStorage.getItem("username");
+    const [username, setUsername] = useState<string | null>(null);
     const router = useRouter();
 
     const handleNext = () => {
@@ -56,6 +56,11 @@ export default function OnboardingPage() {
     };
 
     const stepData = onboardingSteps[currentStep - 1];
+
+    useEffect(() => {
+        const user = localStorage.getItem("username");
+        setUsername(user);
+    }, []);
 
     return (
         <Onboarding

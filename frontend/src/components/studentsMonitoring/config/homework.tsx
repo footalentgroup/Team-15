@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void }) => {
     const [gradeType, setGradeType] = useState<string | null>("numeric");
     const [minGrade, setMinGrade] = useState<number | "">("");

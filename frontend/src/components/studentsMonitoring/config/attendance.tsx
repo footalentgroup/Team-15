@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AttendanceConfig = ({ onDataChange }: { onDataChange: (data: any) => void }) => {
     const [selectedButtons, setSelectedButtons] = useState<string[]>([]);
     const [justificationOption, setJustificationOption] = useState<string>("");

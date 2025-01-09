@@ -3,6 +3,8 @@ export interface ICourses {
   subjectName: string
   courseName: string
   color?: string
+  courseId?: number
+  subjectId?: number
 }
 
 export interface Month {

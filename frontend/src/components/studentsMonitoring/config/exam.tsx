@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ExamConfig = ({ onDataChange }: { onDataChange: (data: any) => void }) => {
     const [minGrade, setMinGrade] = useState<number | "">("");
     const [maxGrade, setMaxGrade] = useState<number | "">("");
