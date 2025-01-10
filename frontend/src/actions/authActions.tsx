@@ -85,7 +85,22 @@ export async function login(email: string, password: string) {
 
   } catch (error) {
     console.log('error', error);
-    throw error;
   }
 
+}
+
+export async function verifyEmailAction(token: string) {
+  try {
+    const response = await fetch(`${API_URL}/auth/verify-email/${token}/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
 }
