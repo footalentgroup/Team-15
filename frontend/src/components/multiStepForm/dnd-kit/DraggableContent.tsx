@@ -18,13 +18,6 @@ export const DraggableContent: React.FC<DraggableContentProps> = ({ content, ind
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) {
-      return text;
-    }
-    return text.slice(0, maxLength) + '...';
-  };
-
   return (
     <li
       ref={setNodeRef}
@@ -34,7 +27,7 @@ export const DraggableContent: React.FC<DraggableContentProps> = ({ content, ind
       className="w-3/4 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2 cursor-pointer touch-none"
       onClick={() => setCurrentContent(content)}
     >
-      <p className='flex w-full'>{truncateText(content.tema, 22)} <span className='text-red-800 ms-auto'>{content.quantity ? `(${content.quantity})` : ''}</span></p>
+      <p className='flex w-[90%] whitespace-nowrap overflow-hidden overflow-ellipsis' title={content.tema}>{content.tema}<span className='text-red-800 ms-auto'>{content.quantity ? `(${content.quantity})` : ''}</span></p>
     </li>
   );
 };

@@ -58,7 +58,7 @@ function WeeklyCalendar({ setDate, setIsDaily }: Props) {
   //al hacer click en un dia, se muestren los eventos de ese dia
 
   return (
-    <div className='h-full max-h-[474px] px-16'>
+    <div className='h-full max-h-[474px] px-16 weekly-calendar'>
       <Calendar
         components={{
           event: ({ event }) => (

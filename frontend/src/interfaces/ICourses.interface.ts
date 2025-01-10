@@ -1,3 +1,5 @@
+import { ITheme } from './IPlanification.interfaces'
+
 export interface ICourses {
   schoolName: string
   subjectName: string
@@ -51,4 +53,11 @@ export interface PeriodFromAction {
 export interface PeriodTime {
   fecha_inicio: string
   fecha_cierre: string
+}
+
+export interface PLanificationMonth {
+  id: number
+  month: string
+  color: string
+  content: ITheme[]
 }

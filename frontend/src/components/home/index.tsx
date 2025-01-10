@@ -58,7 +58,7 @@ function Home({ data }: Props) {
 
   return (
     <>
-      <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} data={data} currentCourse={currentCourse} />
+      <Sidebar isHome isVisible={isVisible} setIsVisible={setIsVisible} data={data} currentCourse={currentCourse} />
       <div className='px-10 flex flex-col gap-4 h-full'>
         <>
           <div className='flex py-8'>

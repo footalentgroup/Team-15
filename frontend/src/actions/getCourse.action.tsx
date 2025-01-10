@@ -100,6 +100,8 @@ export async function getCourses() {
             schoolName: school.nombre,
             courseName: course.nombre,
             subjectName: subject.nombre,
+            courseId: course.id,
+            subjectId: subject.id
           });
         });
       });

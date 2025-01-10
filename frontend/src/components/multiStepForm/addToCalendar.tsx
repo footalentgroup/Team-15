@@ -11,88 +11,13 @@ import ButtonArrowPink from "@/ui/buttons/buttonArrowPink"
 import StepIndicator from "./stepIndicator"
 import FlagStepIndicator from "./flagStepIndicator"
 import OmitModal from "./omitModal"
+import { INITIAL_MONTHS } from "@/utils/initialMonths"
 
 interface Props {
   contentList: Content[]
   planificationStep: number
   period: PeriodFromAction | null
 }
-
-const MONTHS: Month[] = [
-  {
-    "id": 0,
-    "month": "Enero",
-    "color": "bg-green-100",
-
-    "content": []
-  },
-  {
-    "id": 1,
-    "month": "Febrero",
-    "color": "bg-pink-100",
-    "content": []
-  },
-  {
-    "id": 2,
-    "month": "Marzo",
-    "color": "bg-yellow-100",
-    "content": []
-  },
-  {
-    "id": 3,
-    "month": "Abril",
-    "color": "bg-blue-light-100",
-    "content": []
-  },
-  {
-    "id": 4,
-    "month": "Mayo",
-    "color": "bg-green-100",
-    "content": []
-  },
-  {
-    "id": 5,
-    "month": "Junio",
-    "color": "bg-pink-100",
-    "content": []
-  },
-  {
-    "id": 6,
-    "month": "Julio",
-    "color": "bg-yellow-100",
-    "content": []
-  },
-  {
-    "id": 7,
-    "month": "Agosto",
-    "color": "bg-blue-light-100",
-    "content": []
-  },
-  {
-    "id": 8,
-    "month": "Septiembre",
-    "color": "bg-green-100",
-    "content": []
-  },
-  {
-    "id": 9,
-    "month": "Octubre",
-    "color": "bg-pink-100",
-    "content": []
-  },
-  {
-    "id": 10,
-    "month": "Noviembre",
-    "color": "bg-yellow-100",
-    "content": []
-  },
-  {
-    "id": 11,
-    "month": "Diciembre",
-    "color": "bg-blue-light-100",
-    "content": []
-  },
-]
 
 export default function AddToCalendar({ contentList, planificationStep, period }: Props) {
   console.log(contentList);
@@ -101,7 +26,7 @@ export default function AddToCalendar({ contentList, planificationStep, period }
   const [currentPeriodIndex, setCurrentPeriodIndex] = useState(0)
   const [currentPeriod, setCurrentPeriod] = useState<PeriodTime | undefined>(period?.periodos[currentPeriodIndex])
   const [currentPeriodTitle, setCurrentPeriodTitle] = useState<string | undefined>(`${currentPeriodIndex + 1}° ${periodTitle}`)
-  const [monthContent, setMonthContent] = useState(MONTHS)
+  const [monthContent, setMonthContent] = useState<Month[]>(INITIAL_MONTHS as Month[])
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
   const [currentMonthsView, setCurrentMonthsView] = useState(monthContent.slice(currentMonthIndex, monthsLength))
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -126,11 +51,11 @@ export default function AddToCalendar({ contentList, planificationStep, period }
     setCurrentPeriod(period?.periodos[newPeriodIndex])
     setCurrentPeriodTitle(`${newPeriodIndex + 1}° ${periodTitle}`)
     setCurrentMonthIndex(newIndex)
-    setCurrentMonthsView(MONTHS.slice(newIndex, newIndex + monthsLength))
+    setCurrentMonthsView((INITIAL_MONTHS as Month[]).slice(newIndex, newIndex + monthsLength))
   }
 
   const handleNextMonths = () => {
-    const newIndex = Math.min(currentMonthIndex + monthsLength, MONTHS.length - 4)
+    const newIndex = Math.min(currentMonthIndex + monthsLength, INITIAL_MONTHS.length - 4)
     const newPeriodIndex = currentPeriodIndex + 1
     console.log("newPeriodIndex", newPeriodIndex);
     if (newPeriodIndex >= period!.periodos.length) {
@@ -140,7 +65,7 @@ export default function AddToCalendar({ contentList, planificationStep, period }
     setCurrentPeriodTitle(`${newPeriodIndex + 1}° ${periodTitle}`)
     console.log("currentMonthIndex", newIndex);
     setCurrentMonthIndex(newIndex)
-    setCurrentMonthsView(MONTHS.slice(newIndex, newIndex + monthsLength))
+    setCurrentMonthsView((INITIAL_MONTHS as Month[]).slice(newIndex, newIndex + monthsLength))
     setCurrentPeriod(period?.periodos[newPeriodIndex])
   }
 
@@ -263,7 +188,7 @@ export default function AddToCalendar({ contentList, planificationStep, period }
                   )}
                   <span className="font-semibold text-[22px]">{currentPeriodTitle}</span>
                   <span className="text-gray">({formatDate(currentPeriod!.fecha_inicio)} - {formatDate(currentPeriod!.fecha_cierre)})</span>
-                  {currentMonthIndex < MONTHS.length - monthsLength && currentMonthIndex <= 3 && (
+                  {currentMonthIndex < INITIAL_MONTHS.length - monthsLength && currentMonthIndex <= 3 && (
                     <div className="text-end flex gap-2 items-center">
                       <ButtonArrowPink onClick={handleNextMonths} text="" />
                     </div>

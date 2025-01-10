@@ -46,11 +46,6 @@ body {
   background-clip: content-box;
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
 [type='date']::-webkit-inner-spin-button {
   display: none;
 }
@@ -78,4 +73,21 @@ input[type='date']::-moz-focus-inner {
 
 input[type='date']::-moz-focus-outer {
   border: 0;
+}
+
+.trapezoid {
+  --p: 17px;
+  width: 50px;
+  aspect-ratio: 2 / 3;
+  clip-path: polygon(80% var(--p), 80% calc(100% - var(--p)), 0 100%, 0 0);
+  background: #f6ffdc;
+}
+
+.horizontal-line {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) calc(50% - 1px),
+    rgba(0, 0, 0, 1) calc(50%),
+    rgba(0, 0, 0, 0) calc(50% + 1px)
+  );
 }

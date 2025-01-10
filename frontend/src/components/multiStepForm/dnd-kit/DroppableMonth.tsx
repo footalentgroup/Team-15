@@ -8,12 +8,12 @@ interface DroppableMonthProps {
 }
 
 export const DroppableMonth: React.FC<DroppableMonthProps> = ({ month, index, handleDelete }) => {
-  const { setNodeRef } = useDroppable({
+  const { setNodeRef, isOver } = useDroppable({
     id: `month-${index}`,
   });
 
   return (
-    <div ref={setNodeRef} className={`flex flex-col border-2 border-black rounded-lg min-h-[340px] min-w-[300px] max-w-1/4 flex-1`}>
+    <div ref={setNodeRef} className={`flex flex-col border-2 border-black rounded-lg min-h-[340px] min-w-[300px] max-w-1/4 flex-1 ${isOver ? 'border-red-500' : ''}`}>
       <div className={`${month.color} p-3 border-b-2 border-black rounded-t-md`}>
         <h4 className="font-bold text-2xl">{month.month}</h4>
       </div>
