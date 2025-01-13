@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import { ISubtheme } from '@/interfaces/IPlanification.interfaces';
-import { IconHand, IconMenuDotsHorizontal } from '@/icons';
+import { IconHand } from '@/icons';
 
 interface Props {
   item: ISubtheme;
@@ -9,7 +9,7 @@ interface Props {
   setShowOptions?: (value: boolean) => void;
 }
 
-export const DraggableItem: React.FC<Props> = ({ item, setCurrentItem, showOptions, setShowOptions }) => {
+export const DraggableItem: React.FC<Props> = ({ item, setCurrentItem }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `${item.id_tema}-${item.id}-dragItem`,
   });

@@ -18,10 +18,11 @@ function DailyPlanification({ date, startDate, endDate, data }: Props) {
   const [currentDate, setCurrentDate] = useState(new Date(date))
   const [currentOption, setCurrentOption] = useState(TYPE_CLASS[0]);
   const [currentThemes, setCurrentThemes] = useState<string[]>(["Revolución Francesa"]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentResources, setCurrentResources] = useState<string[]>(["Revolucion Francesa"]);
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
-  const [isResourceModalOpen, setIsResourceModalOpen] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState<string>('');
+/*   const [isResourceModalOpen, setIsResourceModalOpen] = useState(false);
+ */  const [currentTheme, setCurrentTheme] = useState<string>('');
   console.log('currentDate', currentDate);
   console.log("startDate", startDate);
   console.log("endDate", endDate);

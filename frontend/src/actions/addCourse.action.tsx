@@ -141,7 +141,7 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
 export async function AddStudentAction(prevState: any, body: IStudentRequest) {
   console.log('addStudentAction', body);
 
-  const studentsUrl = `${API_URL}/alumno/register/`;
+  const studentsUrl = `${API_URL}/alumno/list-register/`;
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
