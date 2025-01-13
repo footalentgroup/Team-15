@@ -18,22 +18,28 @@ import { useState } from 'react';
 interface Props {
   setCurrentItem: (item: ISubtheme) => void;
   data: IPlanification[]
+  setInitialData: (data: IPlanification[]) => void;
 }
 
-export function ContentSlider({ setCurrentItem, data }: Props) {
+export function ContentSlider({ setCurrentItem, data, setInitialData }: Props) {
   const [currentData, setCurrentData] = useState<IPlanification[]>(data)
   const [showOptions, setShowOptions] = useState(false)
   const [activeId, setActiveId] = useState<number | null>(null)
   const [editItemId, setEditItemId] = useState<number | null>(null)
   const [editValue, setEditValue] = useState('')
+  const [showSubthemeOptions, setShowSubthemeOptions] = useState(false)
 
   const handleShowOptions = (id: number) => {
     setShowOptions(!showOptions)
     setActiveId(id)
   }
 
-  const handleDelete = () => {
+  const handleDelete = (themeId: number) => {
     console.log('delete', activeId);
+    const newTheme = currentData[0].temas.filter((item) => item.id !== themeId)
+    const newData = [{ ...currentData[0], temas: newTheme }]
+    setCurrentData(newData)
+    setInitialData(newData)
     setShowOptions(false)
   }
 
@@ -80,7 +86,7 @@ export function ContentSlider({ setCurrentItem, data }: Props) {
             <div key={i}  >
               {item.temas.map((item, i) => (
                 <SwiperSlide key={i} >
-                  <div className='h-36 py-2'>
+                  <div className='h-44 py-2'>
                     <div className="relative w-full min-h-10 flex justify-between items-center border border-black bg-yellow-100 px-2 py-2.5 rounded-md gap-2">
 
                       {editItemId === i ? (
@@ -108,13 +114,13 @@ export function ContentSlider({ setCurrentItem, data }: Props) {
                         </>
                       )}
                       {showOptions && activeId === i && (
-                        <div className='absolute top-12 right-1 w-4/5 p-4 flex gap-2 flex-col bg-yellow-100 border border-grey-200 rounded-md filter drop-shadow-[4px_4px_0px_#bebebe]'>
+                        <div className='absolute top-10 right-1 w-4/5 p-4 flex gap-2 flex-col bg-yellow-100 border border-[#d9d9d9] rounded-md filter drop-shadow-[4px_4px_0px_#d9d9d9]'>
                           <button className='flex justify-between' onClick={() => handleEdit(item.nombre)}>
                             <span>Editar nombre</span>
                             <IconEdit />
                           </button>
                           <div className='horizontal-line w-full h-2' />
-                          <button className='flex justify-between' type='button' onClick={handleDelete}>
+                          <button className='flex justify-between' type='button' onClick={() => handleDelete(item.id)}>
                             <span>Eliminar unidad</span>
                             <IconTrash />
                           </button>
@@ -123,8 +129,25 @@ export function ContentSlider({ setCurrentItem, data }: Props) {
                     </div>
                     <div className='flex flex-col gap-2 items-center w-full h-full overflow-y-auto pb-14 mt-2'>
                       {item.subtemas.map((item, i) => (
-                        <DraggableItem key={i} item={item} setCurrentItem={setCurrentItem} />
+                        <DraggableItem key={i} item={item} setCurrentItem={setCurrentItem} showOptions={showSubthemeOptions} setShowOptions={setShowSubthemeOptions} />
                       ))}
+                      {showSubthemeOptions && (
+                        <div className='absolute top-10 right-1 w-4/5 p-4 flex gap-2 flex-col bg-yellow-100 border border-[#d9d9d9] rounded-md filter drop-shadow-[4px_4px_0px_#d9d9d9]' >
+                          <button className='flex justify-between' onClick={() => handleEdit(item.nombre)}>
+                            <span>Editar nombre</span>
+                            <IconEdit />
+                          </button>
+                          <div className='horizontal-line w-full h-2' />
+                          <button className='flex justify-between' type='button' onClick={() => handleDelete(item.id)}>
+                            <span>Eliminar tema</span>
+                            <IconTrash />
+                          </button>
+                          <button className='flex justify-between' type='button' onClick={() => handleDelete(item.id)}>
+                            <span>Añadir nuevo tema</span>
+                            <span className='font-bold text-2xl'>+</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </SwiperSlide>

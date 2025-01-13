@@ -80,7 +80,7 @@ input[type='date']::-moz-focus-outer {
   width: 50px;
   aspect-ratio: 2 / 3;
   clip-path: polygon(80% var(--p), 80% calc(100% - var(--p)), 0 100%, 0 0);
-  background: #f6ffdc;
+  background: #fde69e;
 }
 
 .horizontal-line {

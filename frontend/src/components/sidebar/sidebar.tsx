@@ -30,8 +30,8 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
     },
     {
       name: 'Planificación',
-      url: '/planification/' + currentCourse?.subjectId,
-      icon: <IconCalendar color={`${pathname === '/planification' ? 'white' : ''}`} />
+      url: currentCourse?.havePlanification ? '/planification/' + currentCourse?.subjectId : '/planification',
+      icon: <IconCalendar color={`${pathname.includes('planification') ? 'white' : ''}`} />
     },
     /*     {
           name: 'Mis Recursos',
@@ -55,7 +55,7 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
             'left-[70.5rem]'
     return (
       <aside className={`fixed top-0 left-0 h-full w-full text-black  z-10 ${isVisible || isExpanded ? 'translate-x-0 bg-black/70' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
-        <div className='flex flex-col w-72 items-center p-9 gap-12 bg-yellow-light h-full border-r-2 border-r-black' onClick={(e) => e.stopPropagation()}>
+        <div className='flex flex-col w-72 items-center p-9 gap-12 bg-yellow-200 h-full border-r-2 border-r-black' onClick={(e) => e.stopPropagation()}>
           <div className="rounded-full w-20 h-20 border-2 border-black bg-white text-center content-center mt-6">Logo</div>
           {/* Esto tiene que ser dinamico */}
           <select className="w-full py-2 px-4 border-2 border-black rounded-md filter drop-shadow-[4px_4px_0px_#000000] capitalize">
@@ -63,7 +63,7 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
               <option key={course.courseName} value={course.courseName} className='text-xs capitalize font-bold p-0!'>{`${course.schoolName} ${course.subjectName} ${course.courseName}`}</option>
             ))}
           </select>
-          <div className='trapezoid absolute left-[264px] flex items-center justify-center cursor-pointer' onClick={() => setIsExpanded!(false)}>
+          <div className='trapezoid absolute top-16 left-[264px] flex items-center justify-center cursor-pointer' onClick={() => setIsExpanded!(false)}>
             <IconForward classNames='rotate-180' />
           </div>
           <nav className="mt-4 w-full">
@@ -93,9 +93,9 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
     return (
       <>
         <aside className={`fixed top-0 left-0 h-full text-black z-10 transition-transform duration-300 ease-in-out`}>
-          <div className='flex flex-col w-28 items-center p-9 gap-48 bg-yellow-light h-full' onClick={(e) => e.stopPropagation()}>
+          <div className='flex flex-col w-28 items-center p-9 gap-48 bg-yellow-200 h-full' onClick={(e) => e.stopPropagation()}>
             <div className="rounded-full size-10 mt-10 border-2 border-black bg-white text-center content-center">Logo</div>
-            <div className='trapezoid absolute left-24 flex items-center justify-center cursor-pointer' onClick={() => setIsExpanded!(true)}>
+            <div className='trapezoid absolute top-16 left-24 flex items-center justify-center cursor-pointer' onClick={() => setIsExpanded!(true)}>
               <IconForward />
             </div>
             <nav className="w-full">

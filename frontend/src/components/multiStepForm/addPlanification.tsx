@@ -1,5 +1,5 @@
 "use client"
-import { AddPlanificationAction, ImportPlanificationAction } from '@/actions/addCourse.action'
+import { AddPlanificationAction, ImportPlanificationAction, ImportPlanificationPdfAction } from '@/actions/addCourse.action'
 import ButtonContinue from '@/ui/buttons/buttonContinue'
 import { startTransition, useActionState, useEffect, useState } from 'react'
 import LoadingFile from './loadingFile'
@@ -9,6 +9,7 @@ import StepIndicator from './stepIndicator'
 import { IconEdit, IconInfo, IconTrash } from '@/icons'
 import FlagStepIndicator from './flagStepIndicator'
 import OmitModal from './omitModal'
+import { IPlanification } from '@/interfaces/IPlanification.interfaces'
 
 const INITIAL_STATE = {
   data: null
@@ -21,9 +22,10 @@ interface Props {
   planificationStep: number
   setPlanificationStep: (step: number) => void
   subjectId: number | null
+  setCurrentPlanification: (planification: IPlanification) => void
 }
 
-export default function AddPlanification({ contentList, setContentList, setActiveTab, planificationStep, setPlanificationStep, subjectId }: Props) {
+export default function AddPlanification({ contentList, setContentList, setActiveTab, planificationStep, setPlanificationStep, subjectId, setCurrentPlanification }: Props) {
   const [formState, formAction] = useActionState(
     AddPlanificationAction,
     INITIAL_STATE
@@ -86,13 +88,11 @@ export default function AddPlanification({ contentList, setContentList, setActiv
     setEditSubContentIndex({ contentIndex: null, subIndex: null });
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    startTransition(() => {
+    await startTransition(() => {
       formAction({ subjectId, list: contentList })
     })
-    setPlanificationStep(3)
-    setActiveTab(3)
   }
 
   const dummyHandleImportData = async () => {
@@ -101,26 +101,51 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
     if (planificationFile) {
       const formData = new FormData();
-
       formData.append('file', planificationFile);
+
+      if (planificationFile.type === 'application/pdf') {
+        console.log('pdf file');
+        try {
+          const result = await ImportPlanificationPdfAction(formData)
+          console.log('result', result);
+
+          if (result.success) {
+            console.log('result', result)
+            setContentList(result.data)
+            setPlanificationFile(null)
+          } else {
+            setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+          }
+        } catch (error) {
+          console.log(error);
+          setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      if (planificationFile.type === 'application/msword' || planificationFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        console.log('word file');
+        try {
+          const result = await ImportPlanificationAction(formData)
+
+          if (result.success) {
+            console.log('result', result)
+            setContentList(result.data)
+            setPlanificationFile(null)
+          } else {
+            setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+          }
+        } catch (error) {
+          console.log(error);
+          setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+        } finally {
+          setLoading(false)
+        }
+      }
+
       /* formData.append('subjectId', subjectId!.toString()); */
       console.log(subjectId);
-      try {
-        const result = await ImportPlanificationAction(formData)
-
-        if (result.success) {
-          console.log('result', result)
-          setContentList(result.data)
-          setPlanificationFile(null)
-        } else {
-          setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
-        }
-      } catch (error) {
-        console.log(error);
-        setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
-      } finally {
-        setLoading(false)
-      }
     }
     setPlanificationStep(2)
   }
@@ -131,6 +156,10 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
   useEffect(() => {
     if (formState.success) {
+      console.log('formState', formState);
+      console.log('formState.data', formState.data);
+      console.log("formstate.data.planificacion", formState.data.planificacion);
+      setCurrentPlanification(formState.data.planificacion)
       setPlanificationStep(3)
       setActiveTab(3)
     }
@@ -201,7 +230,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
               <div className="flex flex-col gap-4 overflow-hidden">
                 <ul className="columns-1 sm:columns-2 lg:columns-3 gap-4 mt-4 overflow-y-auto">
                   {contentList.map((content, index) => (
-                    <div key={content.tema} className='break-inside-avoid mb-4'>
+                    <div key={content.tema + index} className='break-inside-avoid mb-4'>
                       <div className='flex flex-col gap-2 items-center'>
                         <li className="w-[310px] min-h-10 flex justify-between items-center border border-black bg-yellow-100 px-2 py-3 rounded-md gap-2">
                           {editIndex === index ? (
@@ -227,12 +256,13 @@ export default function AddPlanification({ contentList, setContentList, setActiv
                           )}
                         </li>
                         {content.subtemas.map((subtema, i) => (
-                          <div key={subtema} className="w-[90%] min-h-10 items-center border border-black px-2 py-3 rounded-md gap-2">
+                          <div key={subtema + i} className="w-[90%] min-h-10 items-center border border-black px-2 py-3 rounded-md gap-2">
                             <li className='flex justify-between' >
                               {editSubContentIndex.contentIndex === index && editSubContentIndex.subIndex === i ? (
                                 <>
                                   <input
-                                    className="w-full"
+                                    className="w-full bg-transparent"
+                                    autoFocus
                                     type="text"
                                     value={editSubContent}
                                     onChange={(e) => setEditSubContent(e.target.value)}
@@ -241,7 +271,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
                                 </>
                               ) : (
                                 <>
-                                  <p className='font-semibold'>{truncateText(subtema, 20)}</p>
+                                  <p className='font-semibold flex w-[85%] whitespace-nowrap overflow-hidden overflow-ellipsis' title={subtema}>{subtema}</p>
                                   <div className='flex gap-2'>
                                     <button type="button" onClick={() => setContentList(contentList.map((item, j) => j === index ? { ...item, subtemas: item.subtemas.filter((_, k) => k !== i) } : item))}>
                                       <IconTrash />
@@ -257,8 +287,9 @@ export default function AddPlanification({ contentList, setContentList, setActiv
                           <div className='flex w-[90%] h-10 border-2 rounded-md border-black px-2'>
                             <input
                               type="text"
+                              autoFocus
                               value={addSubContent}
-                              className='w-full'
+                              className='w-full bg-transparent px-2'
                               onChange={(e) => setAddSubContent(e.target.value)}
                             />
                             <button type="button" onClick={() => handleAddSubContent(index)}>💾</button>
@@ -281,9 +312,9 @@ export default function AddPlanification({ contentList, setContentList, setActiv
           </>
         ) : (
           <>
-            <h3 className="font-bold text-4xl">¿Quieres crear tu planificación anual?</h3>
+            <h3 className="font-bold text-4xl">¿Quieres subir tu planificación anual?</h3>
 
-            <div className="text-gray-600 text-xl mt-4 mb-12 items-center">
+            <div className="text-gray-600 mt-2 mb-10 items-center">
               <p>Sube el documento con los temas oficiales y extraeremos los contenidos automáticamente.</p>
               <p>Después, podrás ordenarlos fácilmente en el calendario. </p>
             </div>

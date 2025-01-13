@@ -127,7 +127,7 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
           <label htmlFor="studentName" className="mr-2 font-bold text-2xl">Apellido y nombre del alumno:</label>
           <div className="flex content-center items-center gap-4">
             <input
-              className="h-12 border-2 border-black py-2 px-4 text-xl rounded-md focus-visible:outline-none mr-2"
+              className="bg-transparent h-12 border-2 border-black py-2 px-4 text-xl rounded-md focus-visible:outline-none mr-2"
               type="text"
               id="studentName"
               name="studentName"
@@ -139,14 +139,14 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
             <ButtonNormal text="Añadir a la lista" color="bg-[#fbc82d]" onClick={handleAddStudent} />
             <span className="text-lg font-bold mx-4">O</span>
 
-            <ButtonNormal text="Importar de excel" onClick={handleImport} />
+            <ButtonNormal text="Importar de excel" color="bg-transparent" onClick={handleImport} />
 
           </div>
           <div className="text-gray-500 mt-2 flex gap-2"><IconInfo /> <span>Tu lista quedará ordenará automáticamente por orden alfabético</span></div>
           <ul className="flex flex-wrap text-wrap gap-2 mt-4 px-32 max-h-[360px] overflow-y-scroll">
             {studentList.alumnos.sort().map((student, index) => (
               <li key={index} className="w-48 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2">
-                <p>{`${student.apellido} ${student.nombre}`}</p>
+                <p><span className="capitalize">{student.apellido}</span> <span className="capitalize">{student.nombre}</span></p>
                 <button type="button" onClick={() => setStudentList({ alumnos: studentList.alumnos.filter((_, i) => i !== index) })}>
                   ✖
                 </button>

@@ -5,11 +5,13 @@ import { IconHand, IconMenuDotsHorizontal } from '@/icons';
 interface Props {
   item: ISubtheme;
   setCurrentItem: (item: ISubtheme) => void;
+  showOptions?: boolean;
+  setShowOptions?: (value: boolean) => void;
 }
 
-export const DraggableItem: React.FC<Props> = ({ item, setCurrentItem }) => {
+export const DraggableItem: React.FC<Props> = ({ item, setCurrentItem, showOptions, setShowOptions }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: `${item.id_tema}-${item.id}`,
+    id: `${item.id_tema}-${item.id}-dragItem`,
   });
 
   const style = {
@@ -31,7 +33,12 @@ export const DraggableItem: React.FC<Props> = ({ item, setCurrentItem }) => {
       </span>
       <div className='flex justify-center items-center gap-2'>
         <IconHand />
-        <IconMenuDotsHorizontal />
+        {/* <button type='button' onClick={(e) => {
+          e.stopPropagation()
+          setShowOptions!(!showOptions)
+        }}>
+          <IconMenuDotsHorizontal />
+        </button> */}
       </div>
     </div>
   )

@@ -8,13 +8,20 @@ interface Props {
   months: PLanificationMonth[]
   startMonthIndex: number
   endMonthIndex: number
+  setCurrentMonthIndex: (index: number) => void
 }
 
-function MonthlyCalendar({ months, startMonthIndex, endMonthIndex }: Props) {
+function MonthlyCalendar({ months, startMonthIndex, endMonthIndex, setCurrentMonthIndex }: Props) {
+  console.log(months);
   return (
-    <div className="w-full flex gap-4 h-[500px] px-2 py-4 justify-between">
+    <div className="w-full flex gap-4 h-[460px] px-2 py-4 justify-between">
       {months.slice(startMonthIndex, endMonthIndex).map((month) => (
-        <PlanificationDroppableMonth key={month.id} month={month} index={month.id} />
+        <PlanificationDroppableMonth
+          key={month.id}
+          month={month}
+          index={month.id}
+          setCurrentMonthIndex={setCurrentMonthIndex}
+        />
       ))}
     </div>
   );

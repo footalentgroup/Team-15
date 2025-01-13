@@ -1,47 +1,43 @@
 'use client'
 
 import React from 'react';
-import { Calendar, DateLocalizer, momentLocalizer } from 'react-big-calendar';
+import { Calendar, DateLocalizer, momentLocalizer, ToolbarProps, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/es';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './weeklyCalendar.styles.css';
 import { WeeklyEventCard } from '@/ui';
+import { CalendarEvent } from '@/interfaces/IPlanification.interfaces';
+import { normalizeDate } from '@/utils/utils';
+import WeeklyCustomToolbar from './weeklyCalendar/weeklyToolbar';
+import WeeklyCustomHeader from './weeklyCalendar/weeklyHeader';
 
 const localizer = momentLocalizer(moment);
 
 moment.locale('es');
 interface Props {
+  date: Date;
   setDate: (date: Date) => void;
   setIsDaily: (isDaily: boolean) => void;
+  events: CalendarEvent[]
+  setCurrentPlanification?: (planification: CalendarEvent) => void;
 }
 
-function WeeklyCalendar({ setDate, setIsDaily }: Props) {
-  const events = [
-    {
-      start: new Date(2025, 0, 2, 8, 0, 0),
-      end: new Date(2025, 0, 2, 12, 0, 0),
-      title: 'Revolución Rusa',
-      themes: ['Revolución Rusa 1905', 'Fábrica Kirov'],
-      course: {
-        schoolName: 'Colegio San Agustin',
-        subjectName: 'Historia',
-        courseName: '1ro A',
-      }
-    },
-    {
-      start: new Date(2025, 0, 2, 12, 12, 30, 0),
-      end: new Date(2025, 0, 2, 12, 16, 30, 0),
-      title: 'Revolución industrial',
-      themes: ['Inicios', 'Contexto'],
-      course: {
-        schoolName: 'Colegio San Agustin',
-        subjectName: 'Historia',
-        courseName: '1ro A',
-      }
-    },
-  ];
-
+function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanification }: Props) {
+  console.log("date from calendar", date);
+  console.log("events from calendar", events);
+  console.log(events[0].start);
+  /* const newEvents = events.map((content) => {
+    const title = content.subtema?.nombre
+    return ({
+      title: title,
+      start: normalizeDate(new Date(content.fecha)),
+      end: normalizeDate(new Date(content.fecha)),
+      resource: content,
+    }
+    )
+  }).flat();
+  console.log("newEvents", newEvents); */
   const formats = {
     dayFormat: (date: Date, culture?: string, localizer?: DateLocalizer) =>
       localizer!.format(date, 'dddd DD', culture),
@@ -57,33 +53,39 @@ function WeeklyCalendar({ setDate, setIsDaily }: Props) {
   //y que se pueda cambiar de semanas con botones
   //al hacer click en un dia, se muestren los eventos de ese dia
 
+  const handleClick = (date: Date) => {
+    console.log('Header clicked:', date);
+    setDate(date);
+    setIsDaily(true);
+  }
+
   return (
-    <div className='h-full max-h-[474px] px-16 weekly-calendar'>
+    <div className='h-full max-h-[490px] px-16 weekly-calendar'>
       <Calendar
         components={{
           event: ({ event }) => (
-            <WeeklyEventCard event={event} setDate={setDate} setIsDaily={setIsDaily} />
+            <WeeklyEventCard event={event} setCurrentPlanification={setCurrentPlanification} />
           ),
           timeGutterWrapper: () => <div style={{ display: 'none' }} />,
           timeGutterHeader: () => <div style={{ display: 'none' }} />,
           timeSlotWrapper: () => <div style={{ display: 'none' }} />,
           week: {
-            header: () => <div style={{ display: 'none' }} />,
-          }
+            header: WeeklyCustomHeader,
+          },
+          toolbar: (toolbarProps: ToolbarProps<CalendarEvent, object>) => <WeeklyCustomToolbar toolbarProps={toolbarProps} />,
         }}
+        date={date}
         localizer={localizer}
+        onNavigate={(date) => handleClick(date)}
         events={events}
-        startAccessor="start"
-        endAccessor="end"
-        defaultView="work_week"
-        views={['work_week']}
-        step={60}
-        timeslots={2}
+        startAccessor={(event: CalendarEvent) => (event.start ? normalizeDate(new Date(event.start)) : new Date('0000-00-00'))}
+        endAccessor={(event: CalendarEvent) => (event.end ? new Date(event.end) : new Date('0000-00-00'))}
+        defaultView={Views.WORK_WEEK}
+        views={[Views.WORK_WEEK]}
         min={minTime}
         max={maxTime}
         formats={formats}
-        toolbar={false}
-        date={new Date()}
+        toolbar={true}
         culture='es'
         style={{ border: 'none!important' }}
       />
