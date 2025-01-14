@@ -19,6 +19,11 @@ const AuthForm = ({ type }: AuthFormProps) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    const isValidPassword = password.length >= 6 && password.length <= 20 && password.match(/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/);
+    if (!isValidPassword) {
+      setError('La contraseña debe tener entre 6 y 20 caracteres, al menos una letra mayúscula, una letra minúscula y un número.');
+      return;
+    }
     setError("");
     try {
       if (type === "login") {
