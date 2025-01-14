@@ -50,7 +50,7 @@ export default function Config() {
     }, [cuatrimestreData, homeworkData, examData, attitudinalData, attendanceData]);
 
     return (
-        <div className="px-24">
+        <div className="px-24 bg-[#FFFAEB]">
             <form>
                 <CuatrimestreConfig onDataChange={setCuatrimestreData} />
                 <HomeworkConfig onDataChange={setHomeworkData} />
@@ -58,10 +58,10 @@ export default function Config() {
                 <AttitudinalConfig onDataChange={setAttitudinalData} />
                 <AttendanceConfig onDataChange={setAttendanceData} />
 
-                <Link href="/students" className="flex gap-4 w-full justify-center my-12">
+                <Link href="/students" className="flex gap-4 w-full justify-center mt-12 pb-12">
                     <button
                         type="button"
-                        className="min-w-[130px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                        className="min-w-[130px] min-h-[48px] bg-white text-black border-2 border-black font-semibold text-[16px] px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
                     >
                         Cerrar
                     </button>
@@ -69,7 +69,7 @@ export default function Config() {
                         type="button"
                         onClick={handleSave}
                         disabled={!isFormValid}
-                        className="min-w-[130px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] disabled:opacity-75 disabled:cursor-not-allowed"
+                        className="min-w-[130px] min-h-[48px] bg-pink-500 text-white border-2 border-black font-semibold text-[16px] px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] disabled:opacity-75 disabled:cursor-not-allowed"
                     >
                         Guardar
                     </button>

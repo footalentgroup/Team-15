@@ -1,36 +1,60 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { IStudents } from "@/interfaces/IStudents.interface";
+import { IHomework } from "@/interfaces/IHomework.interfaces";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
-import Dropdown from "@/components/studentsMonitoring/dropdown";
-import { IStudents } from "@/interfaces/IStudents.interface";
+import DropdownHomework from "@/components/studentsMonitoring/dropdown/dropdownHomework";
 
 export default function Homework() {
     const [mounted, setMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [taskName, setTaskName] = useState("");
-    const [taskDate, setTaskDate] = useState("");
-    const [taskType, setTaskType] = useState("");
-    const [taskTheme, setTaskTheme] = useState("");
+    const [homeworkName, setHomeworkName] = useState("");
+    const [homeworkDate, setHomeworkDate] = useState("");
+    const [homeworkType, setHomeworkType] = useState("");
+    const [homeworkTheme, setHomeworkTheme] = useState("");
     const [studentList, setStudentList] = useState<IStudents[] | null>(null);
+    const [homeworkGrade, setHomeworkGrade] = useState<string | number>("Sin asignar");
+    const [homeworkGradeType, setHomeworkGradeType] = useState("");
+    const [homeworks, setHomeworks] = useState<IHomework[]>([]);
 
-    const [tasks, setTasks] = useState<{ name: string; date: string; type: string; theme: string }[]>([]);
+    const [quarterIndex, setQuarterIndex] = useState(0);
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
 
     const pathname = usePathname();
 
     useEffect(() => {
         const studentData = localStorage.getItem("studentsData");
-        const studentList: IStudents[] = studentData ? JSON.parse(studentData) : null;
+        if (studentData) {
+            const parsedData = JSON.parse(studentData);
+            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            setStudentList(studentsArray);
+        } else {
+            setStudentList(null);
+        }
+
+        const savedHomeworks = localStorage.getItem("homeworks");
+        if (savedHomeworks) {
+            setHomeworks(JSON.parse(savedHomeworks));
+        }
+
+        const configData = localStorage.getItem("configData");
+        if (configData) {
+            const parsedConfig = JSON.parse(configData);
+            setHomeworkGradeType(parsedConfig.homework?.gradeType || "");
+        }
+        console.log("Cuatrimestre cambiado a:", quarterIndex);
 
         setMounted(true);
-        setStudentList(studentList);
-    }, []);
+    }, [quarterIndex]);
 
     if (!mounted) {
         return null;
     }
+
+    console.log(studentList)
+    const filteredHomeworks = homeworks.filter(homework => homework.cuatrimestre === quarterIndex);
 
     const isExam = pathname.includes("exam");
     const singular = isExam ? "examen" : "tarea";
@@ -38,46 +62,63 @@ export default function Homework() {
 
     const handleModalToggle = () => setIsModalOpen(!isModalOpen);
 
-    const handleSaveTask = () => {
-        const isTaskNameValid = taskName.trim() !== "";
-        const isTaskDateValid = taskDate.trim() !== "";
-        const isTaskTypeValid = taskType.trim() !== "";
+    const handleGradeChange = (grade: string | number) => {
+        setHomeworkGrade(grade);
+    };
 
-        const taskThemeSelect = document.querySelector<HTMLSelectElement>("select[disabled]");
-        const isTaskThemeValid = taskThemeSelect ? true : taskTheme.trim() !== "";
+    const handleSaveHomework = () => {
+        if (homeworkName.trim() && homeworkDate.trim() && homeworkType.trim()) {
+            const newHomework: IHomework = {
+                alumno_id: 1,
+                tarea_asignada_id: homeworks.length + 1,
+                nombre: homeworkName,
+                fecha: homeworkDate,
+                tipo_calificacion: homeworkGradeType as 'approved' | 'numeric' | 'conceptual',
+                tipo_tarea: homeworkType,
+                calificacion: homeworkGrade,
+                cuatrimestre: quarterIndex,
+            };
 
-        if (isTaskNameValid && isTaskDateValid && isTaskTypeValid && isTaskThemeValid) {
-            setTasks([...tasks, { name: taskName, date: taskDate, type: taskType, theme: taskTheme }]);
+            const updatedHomeworks = [...homeworks, newHomework];
+            setHomeworks(updatedHomeworks);
+            localStorage.setItem("homeworks", JSON.stringify(updatedHomeworks));
+
             handleModalToggle();
-            setTaskName("");
-            setTaskDate("");
-            setTaskType("");
-            setTaskTheme("");
+            setHomeworkName("");
+            setHomeworkDate("");
+            setHomeworkGradeType("");
+            setHomeworkType("");
+            setHomeworkTheme("");
+            setHomeworkGrade("");
         } else {
             alert("Por favor, completa los campos requeridos.");
         }
     };
 
+    const handleQuarterChange = (index: number) => {
+        setQuarterIndex(index);
+
+    };
+
     return (
         <div>
             <div>
-                <SliderView />
+                <SliderView onCuatrimestreChange={handleQuarterChange} />
             </div>
 
             <div className="flex gap-4 mt-4 flex-wrap">
-                {tasks.map((task, index) => (
+                {filteredHomeworks.map((homework, index) => (
                     <div key={index}>
                         <button
-
                             type="button"
                             className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                         >
-                            {task.name}
+                            {homework.nombre}
                         </button>
                         {studentList && studentList.length > 0 && (
                             <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">
-                                {studentList.map((student) => (
-                                    <Dropdown key={student.id} />
+                                {studentList.slice(0, 7).map((student) => (
+                                    <DropdownHomework key={student.id} onGradeChange={handleGradeChange} />
                                 ))}
                             </div>
                         )}
@@ -95,7 +136,7 @@ export default function Homework() {
                 </div>
             </div>
 
-            {tasks.length === 0 && (
+            {filteredHomeworks.length === 0 && (
                 <div>
                     <EmptyState singular={singular} plural={plural} />
                 </div>
@@ -117,22 +158,22 @@ export default function Homework() {
                             <input
                                 type="text"
                                 placeholder="Título de la tarea"
-                                value={taskName}
-                                onChange={(event) => setTaskName(event.target.value)}
+                                value={homeworkName}
+                                onChange={(event) => setHomeworkName(event.target.value)}
                                 className="p-2 mb-4 rounded border-2 border-black text-sm w-[170px]"
                             />
 
                             <input
                                 type="date"
                                 placeholder="Fecha de la clase"
-                                value={taskDate}
-                                onChange={(event) => setTaskDate(event.target.value)}
+                                value={homeworkDate}
+                                onChange={(event) => setHomeworkDate(event.target.value)}
                                 className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
                             />
 
                             <select
-                                value={taskType}
-                                onChange={(event) => setTaskType(event.target.value)}
+                                value={homeworkType}
+                                onChange={(event) => setHomeworkType(event.target.value)}
                                 className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
                             >
                                 <option value="">Tipo de tarea</option>
@@ -142,8 +183,8 @@ export default function Homework() {
                             </select>
 
                             <select
-                                value={taskTheme}
-                                onChange={(event) => setTaskTheme(event.target.value)}
+                                value={homeworkTheme}
+                                onChange={(event) => setHomeworkTheme(event.target.value)}
                                 disabled
                                 className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-[4px_4px_0px_#000000] cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
                             >
@@ -161,7 +202,7 @@ export default function Homework() {
                             </button>
                             <button
                                 type="button"
-                                onClick={handleSaveTask}
+                                onClick={handleSaveHomework}
                                 className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
                             >
                                 Guardar

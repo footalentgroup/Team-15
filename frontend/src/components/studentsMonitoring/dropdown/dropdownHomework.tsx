@@ -1,7 +1,11 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-export default function Dropdown() {
+interface DropdownProps {
+    onGradeChange: (grade: string | number) => void;
+}
+
+export default function DropdownHomework({ onGradeChange }: DropdownProps) {
     const [selectedOption, setSelectedOption] = useState("Sin asignar");
     const [options, setOptions] = useState<string[]>([]);
     const [isInputVisible, setIsInputVisible] = useState(false);
@@ -18,17 +22,7 @@ export default function Dropdown() {
         const parsedConfigData = JSON.parse(configData);
         const currentUrl = window.location.href;
 
-        if (currentUrl.includes("/attendance")) {
-            setOptions([
-                ...parsedConfigData?.attendance?.conceptualScale ?? [],
-                "Sin asignar",
-            ]);
-        } else if (currentUrl.includes("/attitudinal")) {
-            setOptions([
-                ...parsedConfigData?.attitudinal?.conceptualScale ?? [],
-                "Sin asignar",
-            ]);
-        } else if (currentUrl.includes("/homework")) {
+        if (currentUrl.includes("/homework")) {
             const gradeType = parsedConfigData?.homework?.gradeType;
 
             if (gradeType === "approved") {
@@ -44,29 +38,19 @@ export default function Dropdown() {
                     "Sin asignar",
                 ]);
             }
-        } else if (currentUrl.includes("/exam")) {
-            const gradeTypeExam = parsedConfigData?.exam?.gradeType;
-
-            if (gradeTypeExam === "approved") {
-                setOptions(["Sin asignar", "Aprobado", "Desaprobado"]);
-            } else if (gradeTypeExam === "numeric") {
-                setIsInputVisible(true);
-                setMinGrade(parsedConfigData?.exam?.minGrade ?? 0);
-                setMaxGrade(parsedConfigData?.exam?.maxGrade ?? 100);
-                setPassingGrade(parsedConfigData?.exam?.passingGrade ?? 50);
-            } else if (gradeTypeExam === "conceptual") {
-                setOptions([
-                    ...parsedConfigData?.exam?.conceptualScale ?? [],
-                    "Sin asignar",
-                ]);
-            }
         }
     }, []);
+
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedOption(event.target.value);
+        onGradeChange(event.target.value);
+    };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(event.target.value);
         if (value >= minGrade && value <= maxGrade) {
             setNumericValue(value);
+            onGradeChange(value);
         } else {
             setNumericValue("");
         }
@@ -88,12 +72,6 @@ export default function Dropdown() {
             return "bg-red-100";
         } else if (selectedOption === "Sin asignar") {
             return "bg-gray-100";
-        } else if (selectedOption === "Presente") {
-            return "bg-green-100";
-        } else if (selectedOption === "Ausente") {
-            return "bg-red-100";
-        } else if (selectedOption === "Llega tarde") {
-            return "bg-blue-100";
         } else if (selectedOption === "Excelente") {
             return "bg-green-100";
         } else if (selectedOption === "Muy Bien") {
