@@ -59,7 +59,7 @@ export default function OnboardingPage() {
 
     useEffect(() => {
         const user = localStorage.getItem("username");
-        setUsername(user);
+        setUsername(user ?? "Profe");
     }, []);
 
     return (
