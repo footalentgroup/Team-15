@@ -5,10 +5,8 @@ import { CourseCard } from "@/ui";
 import ButtonContinue from "@/ui/buttons/buttonContinue";
 import { startTransition, useActionState, useEffect } from "react"
 import { useState } from "react";
-import SmileImage from '/public/media/img/smile.svg';
-import DialogImage from '/public/media/img/dialog-box.svg';
-import Image from "next/image";
 import FlagStepIndicator from "./flagStepIndicator";
+import DialogInfo from "../dialog/DialogInfo";
 
 const INITIAL_STATE = {
   data: null
@@ -103,12 +101,10 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   }
 
   useEffect(() => {
-    if (selectedOption === 'semestral') {
-      setPeriodList(Array.from({ length: 2 }));
-    } else if (selectedOption === 'trimestral') {
+    if (selectedOption === 'trimestral') {
       setPeriodList(Array.from({ length: 3 }));
     } else {
-      setPeriodList(Array.from({ length: 3 }));
+      setPeriodList(Array.from({ length: 2 }));
     }
   }, [selectedOption]);
 
@@ -181,8 +177,8 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
       ) : (
         <>
           <form onSubmit={handleSubmit} className="w-full h-screen flex flex-col items-center p-9">
-            <div className="flex px-4 py-8 justify-start w-full">
-              <h2 className="font-bold text-4xl">Configura una clase</h2>
+            <div className="flex px-4 py-8 justify-start w-4/6 self-start">
+              <h2 className="font-bold text-4xl text-wrap">Comencemos creando un curso</h2>
             </div>
             <div className="flex flex-col items-center gap-9 w-[337px] my-14">
               {INPUTS_INFO.map((input) => (
@@ -230,13 +226,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
           )}
         </>
       )}
-      <div className="absolute bottom-16 left-9 flex gap-2">
-        <Image src={SmileImage} alt="Smile" className="mb-16" />
-        <div className="relative content-center">
-          <Image src={DialogImage} alt="Dialog" />
-          <p className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 min-w-max text-lg">Comienza configurando tu primer grupo.</p>
-        </div>
-      </div>
+      <DialogInfo small={true} text="Comienza configurando tu primer grupo." />
     </div>
   );
 }

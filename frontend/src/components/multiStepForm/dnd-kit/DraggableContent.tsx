@@ -1,16 +1,15 @@
 import { useDraggable } from '@dnd-kit/core';
-import { Content } from "@/interfaces/ICourses.interface";
+import { ISubtheme } from '@/interfaces/IPlanification.interfaces';
 
 interface DraggableContentProps {
-  content: Content;
+  content: ISubtheme;
   index: number;
-  parentIndex: number;
-  setCurrentContent: (content: Content) => void;
+  setCurrentContent: (content: ISubtheme) => void;
 }
 
-export const DraggableContent: React.FC<DraggableContentProps> = ({ content, index, parentIndex, setCurrentContent }) => {
+export const DraggableContent: React.FC<DraggableContentProps> = ({ content, index, setCurrentContent }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: `content-${index}-${parentIndex}`,
+    id: `content-${index}`,
   });
 
   const style = {
@@ -27,7 +26,7 @@ export const DraggableContent: React.FC<DraggableContentProps> = ({ content, ind
       className="w-3/4 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2 cursor-pointer touch-none"
       onClick={() => setCurrentContent(content)}
     >
-      <p className='flex w-[90%] whitespace-nowrap overflow-hidden overflow-ellipsis' title={content.tema}>{content.tema}<span className='text-red-800 ms-auto'>{content.quantity ? `(${content.quantity})` : ''}</span></p>
+      <p className='flex w-[90%] whitespace-nowrap overflow-hidden overflow-ellipsis' title={content.nombre}>{content.nombre}</p>
     </li>
   );
 };

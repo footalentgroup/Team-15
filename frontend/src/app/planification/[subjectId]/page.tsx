@@ -11,20 +11,27 @@ export default async function PlanificationPage({ params }: { params: Promise<{ 
   const cookieStore = cookies()
   const user = (await cookieStore).get("user");
   const userData: IUser = user ? JSON.parse(user.value).user : null;
+  const currentCourse = (await cookieStore).get("currentCourse");
+  const currentCourseData = currentCourse ? JSON.parse(currentCourse.value) : null
 
   if (!user) {
     redirect('/login')
   }
 
-  const planificationData: IPlanification[] = await getPlanification(Number(subjectId));
+  let planificationData: IPlanification[] | null = null;
 
-  if (!planificationData) {
-    redirect('/login')
+
+  try {
+    planificationData = await getPlanification(Number(subjectId));
+
+  } catch (error) {
+    console.log('Error al obtener la planificacion', error);
+    redirect('/home')
   }
 
   return (
     <div className="h-screen w-full flex flex-col gap-2 px-16 py-4">
-      <Planification data={planificationData} user={userData} />
+      <Planification data={planificationData ?? []} user={userData} currentCourse={currentCourseData} />
     </div>
   );
 }

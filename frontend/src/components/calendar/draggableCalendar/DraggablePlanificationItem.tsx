@@ -4,13 +4,14 @@ import { IconHand } from '@/icons';
 
 interface Props {
   title: string;
-  item: ISubtheme;
+  item: ISubtheme | null;
   setCurrentItem: (item: ISubtheme) => void;
+  monthIndex: number;
 }
 
-export const DraggablePlanificationItem: React.FC<Props> = ({ item, title, setCurrentItem }) => {
+export const DraggablePlanificationItem: React.FC<Props> = ({ item, title, setCurrentItem, monthIndex }) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: `${item.id_tema}-${item.id}`,
+    id: `${item!.id_tema}-${item!.id}-${monthIndex}`,
   });
 
   const style = {
@@ -24,13 +25,13 @@ export const DraggablePlanificationItem: React.FC<Props> = ({ item, title, setCu
       style={style}
       {...listeners}
       {...attributes}
-      onClick={() => setCurrentItem(item)}
+      onClick={() => setCurrentItem(item!)}
       className="relative w-full h-16 bg-yellow-100 flex items-center border border-black px-4 rounded-md gap-2 cursor-pointer touch-none"
     >
       <div className='flex flex-col w-full'>
         <span title={"Unidad " + title} className='w-5/6 whitespace-nowrap overflow-hidden overflow-ellipsis font-medium'>Unidad {title}</span>
-        <span className='w-full whitespace-nowrap overflow-hidden overflow-ellipsis font-normal' title={item.nombre}>
-          • {item.nombre}
+        <span className='w-full whitespace-nowrap overflow-hidden overflow-ellipsis font-normal' title={item!.nombre}>
+          • {item!.nombre}
         </span>
       </div>
       <div className='absolute top-3 right-2'>

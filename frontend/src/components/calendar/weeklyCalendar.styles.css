@@ -40,12 +40,21 @@
   justify-content: space-between;
   gap: 36px;
   filter: drop-shadow(4px 4px 0px #000000) !important;
+  overflow: hidden;
 }
 
 .weekly-calendar .rbc-header {
   display: flex !important;
   padding: 0 !important;
   border: none !important;
+}
+
+.weekly-calendar .rbc-time-column {
+  height: 100% !important;
+}
+
+.rbc-time-header.rbc-overflowing {
+  margin-right: 0 !important;
 }
 
 .weekly-calendar .rbc-time-content > * + * > *,

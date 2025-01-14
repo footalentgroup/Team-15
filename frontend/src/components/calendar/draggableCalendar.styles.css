@@ -16,7 +16,7 @@
 .planification-calendar .rbc-header {
   height: 64px;
   border-radius: 12px 12px 4px 4px;
-  border: 2px solid black;
+  border: 3px solid black;
   padding: 0;
   margin: 0;
   background-color: #feeebe;
@@ -64,7 +64,7 @@
 }
 
 .planification-calendar .rbc-now > .rbc-button-link {
-  background-color: #eb3883;
+  background-color: #01caf8;
   border-radius: 8px;
   padding: 0 8px;
   color: white;
