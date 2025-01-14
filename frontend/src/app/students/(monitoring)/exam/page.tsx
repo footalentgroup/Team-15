@@ -1,36 +1,58 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import SliderView from "@/components/studentsMonitoring/sliderOptionView";
-import Dropdown from "@/components/studentsMonitoring/dropdown";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { usePathname } from "next/navigation";
+import { IExam } from "@/interfaces/IExam.interfaces";
+import SliderView from "@/components/studentsMonitoring/sliderOptionView";
+import DropdownExam from "@/components/studentsMonitoring/dropdown/dropdownExam";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
 
 export default function Exam() {
     const [mounted, setMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [taskName, setTaskName] = useState("");
-    const [taskDate, setTaskDate] = useState("");
-    const [taskType, setTaskType] = useState("");
-    const [taskTheme, setTaskTheme] = useState("");
-    const [studentList, setStudentList] = useState<IStudents[] | null>(null);
+    const [examName, setExamName] = useState("");
+    const [examDate, setExamDate] = useState("");
+    const [examType, setExamType] = useState("");
+    const [examTheme, setExamTheme] = useState("");
+    const [studentList, setStudentList] = useState<IStudents[] | null>(null);;
+    const [examGrade, setExamGrade] = useState<string | number>("Sin asignar");
+    const [examGradeType, setExamGradeType] = useState("");
+    const [exams, setExams] = useState<IExam[]>([]);
 
-    const [tasks, setTasks] = useState<{ name: string; date: string; type: string; theme: string }[]>([]);
+    const [quarterIndex, setQuarterIndex] = useState(0);
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
 
     const pathname = usePathname();
 
     useEffect(() => {
         const studentData = localStorage.getItem("studentsData");
-        const studentList: IStudents[] = studentData ? JSON.parse(studentData) : null;
+        if (studentData) {
+            const parsedData = JSON.parse(studentData);
+            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            setStudentList(studentsArray);
+        } else {
+            setStudentList(null);
+        }
+
+        const savedExams = localStorage.getItem("exams");
+        if (savedExams) {
+            setExams(JSON.parse(savedExams));
+        }
+
+        const configData = localStorage.getItem("configData");
+        if (configData) {
+            const parsedConfig = JSON.parse(configData);
+            setExamGradeType(parsedConfig.exam?.gradeType || "");
+        }
 
         setMounted(true);
-        setStudentList(studentList);
     }, []);
 
     if (!mounted) {
         return null;
     }
+
+    const filteredExams = exams.filter(exam => exam.cuatrimestre === quarterIndex);
 
     const isExam = pathname.includes("exam");
     const singular = isExam ? "examen" : "tarea";
@@ -38,45 +60,62 @@ export default function Exam() {
 
     const handleModalToggle = () => setIsModalOpen(!isModalOpen);
 
-    const handleSaveTask = () => {
-        const isTaskNameValid = taskName.trim() !== "";
-        const isTaskDateValid = taskDate.trim() !== "";
-        const isTaskTypeValid = taskType.trim() !== "";
+    const handleGradeChange = (grade: string | number) => {
+        setExamGrade(grade);
+    };
 
-        const taskThemeSelect = document.querySelector<HTMLSelectElement>("select[disabled]");
-        const isTaskThemeValid = taskThemeSelect ? true : taskTheme.trim() !== "";
+    const handleSaveExam = () => {
+        if (examName.trim() && examDate.trim() && examType.trim()) {
+            const newExam: IExam = {
+                alumno_id: 1,
+                examen_asignado_id: exams.length + 1,
+                nombre: examName,
+                fecha: examDate,
+                tipo_calificacion: examGradeType as 'approved' | 'numeric' | 'conceptual',
+                tipo_examen: examType,
+                calificacion: examGrade,
+                cuatrimestre: quarterIndex,
+            };
 
-        if (isTaskNameValid && isTaskDateValid && isTaskTypeValid && isTaskThemeValid) {
-            setTasks([...tasks, { name: taskName, date: taskDate, type: taskType, theme: taskTheme }]);
+            const updatedExams = [...exams, newExam];
+            setExams(updatedExams);
+            localStorage.setItem("exams", JSON.stringify(updatedExams));
+
             handleModalToggle();
-            setTaskName("");
-            setTaskDate("");
-            setTaskType("");
-            setTaskTheme("");
+            setExamName("");
+            setExamDate("");
+            setExamGradeType("");
+            setExamType("");
+            setExamTheme("");
+            setExamGrade("");
         } else {
             alert("Por favor, completa los campos requeridos.");
         }
     };
 
+    const handleQuarterChange = (index: number) => {
+        setQuarterIndex(index);
+    };
+
     return (
         <div>
             <div>
-                <SliderView />
+                <SliderView onCuatrimestreChange={handleQuarterChange} />
             </div>
+
             <div className="flex gap-4 mt-4 flex-wrap">
-                {tasks.map((task, index) => (
+                {filteredExams.map((exam, index) => (
                     <div key={index}>
                         <button
-
                             type="button"
                             className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                         >
-                            {task.name}
+                            {exam.nombre}
                         </button>
                         {studentList && studentList.length > 0 && (
                             <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">
-                                {studentList.map((student) => (
-                                    <Dropdown key={student.id} />
+                                {studentList.slice(0, 7).map((student) => (
+                                    <DropdownExam key={student.id} onGradeChange={handleGradeChange} />
                                 ))}
                             </div>
                         )}
@@ -93,7 +132,8 @@ export default function Exam() {
                     </button>
                 </div>
             </div>
-            {tasks.length === 0 && (
+
+            {filteredExams.length === 0 && (
                 <div>
                     <EmptyState singular={singular} plural={plural} />
                 </div>
@@ -115,22 +155,22 @@ export default function Exam() {
                             <input
                                 type="text"
                                 placeholder="Título del examen"
-                                value={taskName}
-                                onChange={(event) => setTaskName(event.target.value)}
+                                value={examName}
+                                onChange={(event) => setExamName(event.target.value)}
                                 className="p-2 mb-4 rounded border-2 border-black text-sm w-[170px]"
                             />
 
                             <input
                                 type="date"
                                 placeholder="Fecha de la clase"
-                                value={taskDate}
-                                onChange={(event) => setTaskDate(event.target.value)}
+                                value={examDate}
+                                onChange={(event) => setExamDate(event.target.value)}
                                 className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
                             />
 
                             <select
-                                value={taskType}
-                                onChange={(event) => setTaskType(event.target.value)}
+                                value={examType}
+                                onChange={(event) => setExamType(event.target.value)}
                                 className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
                             >
                                 <option value="">Tipo de examen</option>
@@ -139,8 +179,8 @@ export default function Exam() {
                             </select>
 
                             <select
-                                value={taskTheme}
-                                onChange={(event) => setTaskTheme(event.target.value)}
+                                value={examTheme}
+                                onChange={(event) => setExamTheme(event.target.value)}
                                 disabled
                                 className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-[4px_4px_0px_#000000] cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
                             >
@@ -160,7 +200,7 @@ export default function Exam() {
                             </button>
                             <button
                                 type="button"
-                                onClick={handleSaveTask}
+                                onClick={handleSaveExam}
                                 className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
                             >
                                 Guardar

@@ -53,11 +53,11 @@ const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => voi
 
     return (
         <div>
-            <h3 className="text-[24px] font-bold mt-8">Cuatrimestre</h3>
-            <h5 className="text-[16px] font-semibold">
+            <h3 className="text-[32px] font-bold pt-8">Cuatrimestre</h3>
+            <h5 className="text-[22px] font-semibold">
                 Elegí el porcentaje de incidencia en la nota de cierre para cada aspecto a evaluar.
             </h5>
-            <p>La suma de los 3 debe dar el 100%.</p>
+            <p className="text-[20px]">La suma de los 3 debe dar el 100%.</p>
             <div className="flex gap-4 my-6">
                 <label className="flex flex-col items-center justify-center">
                     <p className="text-[14px]">Éxamenes</p>
@@ -67,7 +67,7 @@ const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => voi
                         max={100}
                         value={examPercentage === "" ? "" : examPercentage}
                         onChange={handleExamChange}
-                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-xl"
+                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-[28px]"
                     />
                 </label>
                 <label className="flex flex-col items-center justify-center">
@@ -78,7 +78,7 @@ const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => voi
                         max={100}
                         value={taskPercentage === "" ? "" : taskPercentage}
                         onChange={handleTaskChange}
-                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-xl"
+                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-[28px]"
                     />
                 </label>
                 <label className="flex flex-col items-center justify-center">
@@ -89,7 +89,7 @@ const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => voi
                         max={100}
                         value={attitudePercentage === "" ? "" : attitudePercentage}
                         onChange={handleAttitudeChange}
-                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-xl"
+                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-[28px]"
                     />
                 </label>
             </div>

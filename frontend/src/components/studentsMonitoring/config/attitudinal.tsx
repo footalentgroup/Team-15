@@ -9,7 +9,7 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
         setSelectedButton(value);
     };
 
-    const buttons = ["Diario", "Semanal", "Mensual", "Cuatrimestral", "Trimestral"];
+    const buttons = ["Diario", "Semanal", "Mensual", "Cuatrimestral", "Trimestral", "Semestral"];
     const [conceptualScale, setConceptualScale] = useState<string[]>([
         "Deficiente", "Bien", "Muy Bien", "Excelente"
     ]);
@@ -39,8 +39,8 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
 
     return (
         <div>
-            <h3 className="text-[24px] font-bold mt-12">Actitudinal</h3>
-            <h5 className="text-[16px] font-semibold">
+            <h3 className="text-[32px] font-bold mt-12">Actitudinal</h3>
+            <h5 className="text-[22px] font-semibold">
                 Seleccioná la frecuencia que prefieras para llevar el seguimiento actitudinal
             </h5>
 
@@ -59,7 +59,10 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
             </div>
 
             <div className="ml-6 mt-2">
-                <p className="font-normal text-sm">
+                <h5 className="font-semibold text-[22px]">
+                    Escala de Seguimiento
+                </h5>
+                <p className="font-normal text-[20px]">
                     Escribí la escala en orden de peor a mejor valoración.
                 </p>
                 <div className="flex gap-4 mt-2">
@@ -69,7 +72,7 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
                                 type="text"
                                 placeholder={value}
                                 onChange={(event) => handleConceptualChange(index, event.target.value)}
-                                className="border-2 border-black rounded-md p-2 text-black w-40 text-sm"
+                                className="border-2 border-black rounded-md p-2 text-black w-40 text-sm h-[48px]"
                             />
                             <button
                                 type="button"
@@ -84,7 +87,7 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
                     <button
                         type="button"
                         onClick={addConceptualValue}
-                        className="border-1 rounded-[15px] p-2 text-white w-10 text-sm bg-pink-500 drop-shadow-[4px_4px_0px_#000000]"
+                        className="border-1 rounded-[15px] p-2 text-white w-10 text-sm bg-pink-500 drop-shadow-[4px_4px_0px_#000000] w-[48px]"
                     >
                         <i className="fa-solid fa-plus"></i>
                     </button>

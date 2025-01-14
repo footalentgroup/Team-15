@@ -58,8 +58,8 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
 
     return (
         <div>
-            <h3 className="text-[24px] font-bold mt-12">Tareas</h3>
-            <h5 className="text-[16px] font-semibold">
+            <h3 className="text-[32px] font-bold mt-12">Tareas</h3>
+            <h5 className="text-[22px] font-semibold">
                 Configurá como vas a registrar las notas de las tareas de este curso.
             </h5>
 
@@ -73,9 +73,9 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
                             value="approved"
                             checked={gradeType === "approved"}
                             onChange={handleGradeTypeChange}
-                            className="cursor-pointer accent-pink-500 w-4 h-4"
+                            className="cursor-pointer accent-pink-500 w-[24px] h-[24px]"
                         />
-                        <label htmlFor="approved" className="cursor-pointer font-semibold">
+                        <label htmlFor="approved" className="cursor-pointer font-semibold text-[22px]">
                             Aprobado/Desaprobado
                         </label>
                     </div>
@@ -87,44 +87,44 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
                             value="numeric"
                             checked={gradeType === "numeric"}
                             onChange={handleGradeTypeChange}
-                            className="cursor-pointer accent-pink-500 w-4 h-4"
+                            className="cursor-pointer accent-pink-500 w-[24px] h-[24px]"
                         />
-                        <label htmlFor="numeric" className="cursor-pointer font-semibold">
+                        <label htmlFor="numeric" className="cursor-pointer font-semibold text-[22px]">
                             Nota Numérica
                         </label>
                     </div>
 
                     <div className="ml-6 mt-2">
                         <div className="flex gap-4 items-center">
-                            <p className="font-normal text-sm">Rango de notas:</p>
+                            <p className="font-normal text-[20px]">Rango de notas:</p>
                             <input
                                 type="number"
                                 min={0}
                                 value={minGrade === "" ? "" : minGrade}
                                 onChange={handleMinGradeChange}
                                 placeholder="Min"
-                                className="border-2 border-black rounded-md p-2 bg-white text-black text-bold text-center text-sm w-20"
+                                className="border-2 border-black rounded-md p-2 bg-white text-black text-bold text-center text-[20px] w-20"
                             />
                             <input
                                 type="number"
                                 value={maxGrade === "" ? "" : maxGrade}
                                 onChange={handleMaxGradeChange}
                                 placeholder="Max"
-                                className="border-2 border-black rounded-md p-2 bg-white text-black text-bold text-center text-sm w-20"
+                                className="border-2 border-black rounded-md p-2 bg-white text-black text-bold text-center text-[20px] w-20"
                             />
                         </div>
                         {minGrade && maxGrade && maxGrade < minGrade && (
-                            <p className="text-red-500 text-sm mt-2">La nota máxima debe ser mayor que la mínima.</p>
+                            <p className="text-red-500 text-[20px] mt-2">La nota máxima debe ser mayor que la mínima.</p>
                         )}
 
                         <div className="flex gap-4 items-center mt-2">
-                            <p className="font-normal text-sm">Nota mínima para aprobar</p>
+                            <p className="font-normal text-[20px]">Nota mínima para aprobar</p>
                             <input
                                 type="number"
                                 min={0}
                                 value={passingGrade === "" ? "" : passingGrade}
                                 onChange={handlePassingGradeChange}
-                                className="border-2 border-black rounded-md p-2 bg-white text-black text-bold text-center text-sm w-20"
+                                className="border-2 border-black rounded-md p-2 bg-white text-black text-bold text-center text-[20px] w-20"
                             />
                         </div>
                     </div>
@@ -137,15 +137,15 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
                             value="conceptual"
                             checked={gradeType === "conceptual"}
                             onChange={handleGradeTypeChange}
-                            className="cursor-pointer accent-pink-500 w-4 h-4"
+                            className="cursor-pointer accent-pink-500 w-[24px] h-[24px]"
                         />
-                        <label htmlFor="conceptual" className="cursor-pointer font-semibold">
+                        <label htmlFor="conceptual" className="cursor-pointer font-semibold text-[22px]">
                             Nota Conceptual
                         </label>
                     </div>
 
                     <div className="ml-6 mt-2">
-                        <p className="font-normal text-sm">
+                        <p className="font-normal text-[20px]">
                             Escribí la escala en orden de peor a mejor valoración.
                         </p>
                         <div className="flex gap-4 mt-2">
@@ -155,7 +155,7 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
                                         type="text"
                                         placeholder={value}
                                         onChange={(event) => handleConceptualChange(index, event.target.value)}
-                                        className="border-2 border-black rounded-md p-2 text-black w-40 text-sm"
+                                        className="border-2 border-black rounded-md p-2 text-black w-40 text-sm h-[48px]"
                                     />
                                     <button
                                         type="button"
@@ -170,7 +170,7 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
                             <button
                                 type="button"
                                 onClick={addConceptualValue}
-                                className="border-1 rounded-[15px] p-2 text-white w-10 text-sm bg-pink-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="border-1 rounded-[15px] p-2 text-white w-[48px] text-sm bg-pink-500 drop-shadow-[4px_4px_0px_#000000]"
                             >
                                 <i className="fa-solid fa-plus"></i>
                             </button>
