@@ -26,7 +26,6 @@ interface Props {
 function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanification }: Props) {
   console.log("date from calendar", date);
   console.log("events from calendar", events);
-  console.log(events[0].start);
   /* const newEvents = events.map((content) => {
     const title = content.subtema?.nombre
     return ({

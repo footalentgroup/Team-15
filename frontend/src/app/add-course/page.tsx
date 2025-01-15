@@ -20,7 +20,7 @@ export default async function AddCourse() {
 
   return (
     <div className="h-screen flex flex-col">
-      <MultiStepForm periodFromProps={period} subjectIdFromProps={subjectId} />
+      <MultiStepForm periodFromProps={period} subjectIdFromProps={subjectId} onlyPlanification={period && subjectId ? true : false} />
     </div>
   );
 }

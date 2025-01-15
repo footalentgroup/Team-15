@@ -428,7 +428,7 @@ function Planification({ data, user, currentCourse }: Props) {
                 <div className='flex flex-col h-full max-h-[60%] overflow-x-auto'>
                   {months.length > 0 ? (
                     <>
-                      <span className='flex text-xl my-4'>Calendario cuatrimestral</span>
+                      <span className='flex text-xl my-4'>Calendario {viewPeriodTitle}</span>
                       {isOver && (
                         <DroppableDelete />
                       )}

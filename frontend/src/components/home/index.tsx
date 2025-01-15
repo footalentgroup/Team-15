@@ -1,12 +1,12 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../sidebar/sidebar';
-import Link from 'next/link';
 import ButtonContinue from '@/ui/buttons/buttonContinue';
 import { Slider } from '../slider/slider';
 import HomeCalendar from '../calendar';
 import { ICourses } from '@/interfaces/ICourses.interface';
 import { setCurrentCourseCookieAction } from '@/actions/addCourse.action';
+import { redirect } from 'next/navigation';
 
 /* const DUMMY_COURSES: ICourses[] = [
   {
@@ -48,6 +48,7 @@ function Home({ data }: Props) {
   const [isVisible, setIsVisible] = useState(false)
   const [currentCourse, setCurrentCourse] = useState<ICourses | null>(data[0])
   console.log(data);
+  console.log('currentCourse', currentCourse);
 
   useEffect(() => {
     if (currentCourse) {
@@ -58,6 +59,13 @@ function Home({ data }: Props) {
     }
   }, [currentCourse])
 
+  const handleAddCourse = async () => {
+
+    localStorage.removeItem('currentCourse')
+    await setCurrentCourseCookieAction({} as ICourses)
+    redirect('/add-course')
+  }
+
   return (
     <>
       <Sidebar isHome isVisible={isVisible} setIsVisible={setIsVisible} data={data} currentCourse={currentCourse} />
@@ -66,9 +74,7 @@ function Home({ data }: Props) {
           <div className='flex py-8'>
             <h2 className='text-[32px] font-semibold mb-4'>Tus Cursos</h2>
             <div className='flex items-center ms-auto gap-4 '>
-              <Link href='/add-course'>
-                <ButtonContinue text='Añadir un curso' color='h-12 bg-yellow-500 text-dark' type='button' />
-              </Link>
+              <ButtonContinue text='Añadir un curso' color='h-12 bg-yellow-500 text-dark' type='button' onClick={handleAddCourse} />
               <ButtonContinue text='Ver todas los cursos' color='h-12 bg-white text-dark' type='button' />
             </div>
           </div>

@@ -449,6 +449,8 @@ export async function setCurrentCourseCookieAction(course: ICourses) {
   const cookieStore = cookies();
   console.log('setCurrentCourseCookieAction', course);
 
+  (await cookieStore).delete('currentCourse');
+
   (await cookieStore).set('currentCourse', JSON.stringify(course));
 
   return {

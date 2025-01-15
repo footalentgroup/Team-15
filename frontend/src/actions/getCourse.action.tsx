@@ -107,7 +107,9 @@ export async function getCourses() {
             periodName: course.duracion,
             periods: course.periodos,
             havePlanification: subject.planificacion ? true : false,
-            planification: subject.planificacion
+            planification: subject.planificacion,
+            haveStudents: course.alumnos && course.alumnos.length > 0 ? true : false,
+            students: course.alumnos
           });
         });
       });

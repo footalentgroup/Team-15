@@ -2,6 +2,7 @@ import {
   IMonthPlanification,
   IPlanification,
 } from './IPlanification.interfaces'
+import { IStudents } from './IStudents.interface'
 
 export interface ICourses {
   schoolName: string
@@ -14,6 +15,8 @@ export interface ICourses {
   periods?: PeriodTime[]
   havePlanification?: boolean
   planification?: IPlanification
+  haveStudents?: boolean
+  students?: IStudents[]
 }
 
 export interface Month {
@@ -44,6 +47,9 @@ export interface Course {
   duracion: string
   periodos: PeriodTime[]
   materias: Subject[]
+  sistema_notas?: string
+  alumnos?: IStudents[]
+  alumno_asistencia?: IStudents[]
 }
 
 export interface Subject {
