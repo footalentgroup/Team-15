@@ -52,6 +52,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   const [nextStep, setNextStep] = useState(false);
   const [selectedOption, setSelectedOption] = useState("semestral");
   const [periodList, setPeriodList] = useState(Array.from({ length: 2 }));
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -80,6 +81,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
 
   useEffect(() => {
     if (formState.success) {
+      setLoading(false);
       console.log("formState", formState);
       setCourseId(formState.data.course.id);
       setSubjectId(formState.data.subject.materia.id);
@@ -87,6 +89,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
     }
 
     if (formState.error) {
+      setLoading(false);
       console.log('error error', formState.data.error);
       console.log('error data', formState.data);
       console.log('error formstate', formState);
@@ -109,6 +112,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   }, [selectedOption]);
 
   const handleConfirmPeriod = async (event: React.FormEvent) => {
+    setLoading(true)
     //TODO logica para enviar el periodo seleccionado
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
@@ -171,7 +175,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
                 })}
               </div>
             </div>
-            <ButtonContinue text="Continuar" />
+            <ButtonContinue text="Continuar" loading={loading} />
           </form>
         </>
       ) : (

@@ -51,6 +51,7 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
   const [newContentList, setNewContentList] = useState<ITheme[]>(currentPlanification!.temas)
   const [currentContent, setCurrentContent] = useState<ISubtheme | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImported, setIsImported] = useState(false);
 
 
   const handleRemoveContent = (monthIndex: number, contentIndex: number) => {
@@ -100,7 +101,8 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
 
     createNewMonthPlanificationAction(monthPlanification).then((data) => {
       if (data?.success) {
-        router.push('/home')
+        /* router.push('/home') */
+        setIsImported(true)
       } else {
         console.error('Planification failed', data)
       }
@@ -241,6 +243,20 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
           handleCancel={() => setIsModalOpen(false)}
           handleConfirm={handleSkip}
         />
+      )}
+
+      {isImported && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-lg">¡Planificación creada con éxito!</h3>
+            </div>
+            <p>Tu planificación fue creada con éxito.</p>
+            <div className="flex justify-end space-x-4 mt-auto">
+              <ButtonContinue type="button" text="Confirmar" onClick={handleSkip} />
+            </div>
+          </div>
+        </div>
       )}
 
     </DndContext>
