@@ -2,8 +2,9 @@ from django.db import models
 from institucion.models import Institucion
 
 class Curso(models.Model):
-    institucion = models.ForeignKey(Institucion, on_delete=models.CASCADE)
+    institucion = models.ForeignKey(Institucion, on_delete=models.CASCADE, related_name='cursos')
     nombre = models.CharField(max_length=255)
+    duracion = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         constraints = [

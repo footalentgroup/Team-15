@@ -11,10 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from datetime import timedelta
-# from pathlib import Path
 from core_app.env import BASE_DIR, env
-# import environ
 import os
+import google.generativeai as genai
 
 
 # Initialize environment variables
@@ -33,12 +32,33 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     'autenticacion',
     'institucion',
     'curso',
     'materia',
     'alumno',
+    'planificacion',
+    'tema',
+    'subtema',
+    'subtema_anual',
+    'periodo',
+    'sistema_notas',
+    'tipo_nota_binario',
+    'tipo_nota_numerico',
+    'tipo_nota_conceptual',
+    'planificacion_mensual',
+    'asistencia',
+    'recurso',
+    'tarea_asignada',
+    'alumno_tarea',
+    'examen_asignado',
+    'alumno_examen',
+    'alumno_actitudinal',
+    'alumno_asistencia',
+    'planificacion_diaria',
 ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -78,8 +98,11 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
+
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Si tienes CORS habilitado
+    'django.middleware.security.SecurityMiddleware',  # Esta es la que debe estar antes de WhiteNoise
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Asegúrate de que esta línea esté aquí
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,6 +110,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'core_app.urls'
 
@@ -145,6 +170,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Esto es necesario para que Django sepa dónde guardar los archivos estáticos
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -157,3 +183,33 @@ GOOGLE_OAUTH_REDIRECT_URI = env('GOOGLE_OAUTH_REDIRECT_URI')
 
 
 AUTH_USER_MODEL = 'autenticacion.CustomUser'
+
+# Email settings
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+
+# Configurar la API de Google Generative AI
+genai.configure(api_key=env('API_KEY_GOOGLE_GENERATIVE_AI'))
+
+GENERATION_CONFIG = {
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": 40,
+    "max_output_tokens": 8192,
+    "response_mime_type": "text/plain",
+}
+
+MODEL = genai.GenerativeModel(
+    model_name="gemini-1.5-flash-8b",
+    generation_config=GENERATION_CONFIG,
+)
+
+
+# media
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
