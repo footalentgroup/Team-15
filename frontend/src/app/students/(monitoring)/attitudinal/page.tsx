@@ -6,23 +6,21 @@ import { IStudents } from "@/interfaces/IStudents.interface";
 
 export default function Attitudinal() {
     const [mounted, setMounted] = useState(false);
+    const [rangeType, setRangeType] = useState<"diario" | "semanal" | "mensual">("diario");
     const [monthIndex, setMonthIndex] = useState(0);
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [studentList, setStudentList] = useState<IStudents[] | null>(null);
     const [selectedButton, setSelectedButton] = useState<string>("");
 
+    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
-    const months = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
 
     useEffect(() => {
         const configData = JSON.parse(localStorage.getItem("configData") || "{}");
         const attendanceConfig = configData?.attendance?.selectedButtons || [];
         const studentData = localStorage.getItem("studentsData");
-        
+
         if (studentData) {
             const parsedData = JSON.parse(studentData);
             const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
@@ -56,22 +54,53 @@ export default function Attitudinal() {
         return days;
     };
 
-    const handleMonthChange = (index: number) => {
-        setMonthIndex(index);
-    };
+    const handleMonthChange = (trimesterIndex: number) => {
+        const trimesters = [
+            [0, 1, 2], 
+            [3, 4, 5], 
+            [6, 7, 8], 
+            [9, 10, 11], 
+        ];
+    
+        if (rangeType === "mensual") {
 
-    const getWeekRanges = () => {
+            const monthsInTrimester = trimesters[trimesterIndex];
+            setMonthIndex(monthsInTrimester[0]);
+
+        } else if (rangeType === "diario" || rangeType === "semanal") {
+
+            setMonthIndex(trimesterIndex); 
+        }
+    };
+    
+    const getMonthsInTrimester = (trimesterIndex: number): string[] => {
+        const trimesterMonths = [
+            ["Enero", "Febrero", "Marzo"],
+            ["Abril", "Mayo", "Junio"],
+            ["Julio", "Agosto", "Septiembre"],
+            ["Octubre", "Noviembre", "Diciembre"]
+        ];
+        return trimesterMonths[trimesterIndex] || [];
+    };
+    
+    const getWeekRanges = (monthIndex: number) => {
         const weeks = [];
-        const daysInMonth = new Date(new Date().getFullYear(), monthIndex + 1, 0).getDate();
+        const year = new Date().getFullYear();
+        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
         let weekStart = 1;
+
         for (let i = 1; i <= daysInMonth; i++) {
-            if (new Date(new Date().getFullYear(), monthIndex, i).getDay() === 6 || i === daysInMonth) {
+            const currentDay = new Date(year, monthIndex, i).getDay();
+
+            if (currentDay === 6 || i === daysInMonth) {
                 weeks.push(`${weekStart} - ${i}`);
                 weekStart = i + 1;
             }
         }
+
         return weeks;
     };
+
 
     const getTrimesters = () => {
         return ["1er trimestre", "2do trimestre", "3er trimestre"];
@@ -86,7 +115,7 @@ export default function Attitudinal() {
     };
 
     const days = getDaysInMonth(monthIndex);
-    const weeks = getWeekRanges();
+    const weeks = getWeekRanges(monthIndex);
     const trimesters = getTrimesters();
     const cuatrimesters = getCuatrimesters();
     const semesters = getSemesters();
@@ -102,7 +131,7 @@ export default function Attitudinal() {
                                 type="button"
                                 className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                             >
-                                {day} {/* Muestra el nombre del día y la fecha */}
+                                {day}
                             </button>
                             {studentList && studentList.length > 0 && (
                                 <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">
@@ -132,13 +161,13 @@ export default function Attitudinal() {
                         </div>
                     ))}
 
-                    {selectedButton === "Mensual" && (
-                        <div className="inline-block">
+                    {selectedButton === "Mensual" && getMonthsInTrimester(Math.floor(monthIndex)).map((month, index) => (
+                        <div key={index} className="inline-block">
                             <button
                                 type="button"
-                                className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[monthIndex % colors.length]}`}
+                                className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                             >
-                                {months[monthIndex]}
+                                {month}
                             </button>
                             {studentList && studentList.length > 0 && (
                                 <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">
@@ -148,7 +177,7 @@ export default function Attitudinal() {
                                 </div>
                             )}
                         </div>
-                    )}
+                    ))}
 
                     {selectedButton === "Cuatrimestral" && cuatrimesters.map((cuatrimestre, index) => (
                         <div key={index} className="inline-block">
@@ -156,7 +185,7 @@ export default function Attitudinal() {
                                 type="button"
                                 className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                             >
-                                {cuatrimestre} 
+                                {cuatrimestre}
                             </button>
                             {studentList && studentList.length > 0 && (
                                 <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">

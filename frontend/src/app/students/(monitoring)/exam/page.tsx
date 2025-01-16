@@ -52,7 +52,9 @@ export default function Exam() {
         return null;
     }
 
-    const filteredExams = exams.filter(exam => exam.cuatrimestre === quarterIndex);
+    const filteredExams = exams.filter(
+        (exam) => exam.cuatrimestre === quarterIndex && exam.examen_asignado_id
+    );
 
     const isExam = pathname.includes("exam");
     const singular = isExam ? "examen" : "tarea";
@@ -67,7 +69,6 @@ export default function Exam() {
     const handleSaveExam = () => {
         if (examName.trim() && examDate.trim() && examType.trim()) {
             const newExam: IExam = {
-                alumno_id: 1,
                 examen_asignado_id: exams.length + 1,
                 nombre: examName,
                 fecha: examDate,
@@ -105,17 +106,23 @@ export default function Exam() {
 
             <div className="flex gap-4 mt-4 flex-wrap">
                 {filteredExams.map((exam, index) => (
-                    <div key={index}>
+                    <div key={exam.examen_asignado_id}>
                         <button
                             type="button"
                             className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                         >
                             {exam.nombre}
                         </button>
+
                         {studentList && studentList.length > 0 && (
                             <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">
                                 {studentList.slice(0, 7).map((student) => (
-                                    <DropdownExam key={student.id} onGradeChange={handleGradeChange} />
+                                    <DropdownExam
+                                        key={`${student.id}-${exam.examen_asignado_id}`}
+                                        studentId={student.id}
+                                        examId={exam.examen_asignado_id}
+                                        onGradeChange={handleGradeChange}
+                                    />
                                 ))}
                             </div>
                         )}

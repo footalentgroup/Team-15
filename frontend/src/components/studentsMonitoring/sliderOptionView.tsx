@@ -13,10 +13,13 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
     const [cuatrimestreIndex, setCuatrimestreIndex] = useState(0);
     const [title, setTitle] = useState("");
     const [isHidden, setIsHidden] = useState(false);
+    const [isMensual, setIsMensual] = useState(false);
 
     const months = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
+
+    const trimestres = ["1er Trimestre", "2do Trimestre", "3er Trimestre", "4to Trimestre"];
 
     const getCuatrimestre = () => {
         switch (cuatrimestreIndex) {
@@ -44,13 +47,16 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
             if (pathname.includes("/attendance")) {
                 setTitle(`Asistencia de ${months[monthIndex]}`);
             } else if (pathname.includes("/attitudinal")) {
-                if (selectedButton === "Diario" || selectedButton === "Semanal" || selectedButton === "Mensual") {
-                    setTitle(`Seguimiento actitudinal de ${months[monthIndex]}`);
+                if (selectedButton === "Mensual") {
+                    setTitle(trimestres[monthIndex]);
+                    setIsMensual(true);
                 } else if (selectedButton === "Cuatrimestral" || selectedButton === "Trimestral" || selectedButton === "Semestral") {
                     setTitle("");
                     setIsHidden(true);
+                    setIsMensual(false);
                 } else {
-                    setTitle("Seguimiento actitudinal");
+                    setTitle(`Seguimiento actitudinal de ${months[monthIndex]}`);
+                    setIsMensual(false);
                 }
             } else if (pathname.includes("/homework") || pathname.includes("/exam")) {
                 setTitle(getCuatrimestre());
@@ -59,13 +65,15 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
     }, [pathname, monthIndex, cuatrimestreIndex]);
 
     const handlePrevMonth = () => {
-        const newIndex = monthIndex === 0 ? months.length - 1 : monthIndex - 1;
+        const length = isMensual ? trimestres.length : months.length;
+        const newIndex = monthIndex === 0 ? length - 1 : monthIndex - 1;
         setMonthIndex(newIndex);
         onMonthChange(newIndex);
     };
 
     const handleNextMonth = () => {
-        const newIndex = monthIndex === months.length - 1 ? 0 : monthIndex + 1;
+        const length = isMensual ? trimestres.length : months.length;
+        const newIndex = monthIndex === length - 1 ? 0 : monthIndex + 1;
         setMonthIndex(newIndex);
         onMonthChange(newIndex);
     };
@@ -105,8 +113,7 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
                         onClick={handlePrevMonth}
                     ></i>
                     <p
-                        className={`transition-transform duration-500 ease-in-out text-center ${pathname.includes("/attitudinal") ? "w-[380px]" : "w-[250px]"
-                            }`}
+                        className={`transition-transform duration-500 ease-in-out text-center ${pathname.includes("/attitudinal") && !isMensual ? "w-[380px]" : "w-[250px]"}`}
                     >
                         {title}
                     </p>

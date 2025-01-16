@@ -82,15 +82,19 @@ export default function AddNewStudent() {
         if (studentName.trim()) {
             const [lastName, ...firstNameParts] = studentName.split(" ");
             const firstName = firstNameParts.join(" ");
-
-            const newStudent = { id: data.length + 1, curso_id: 1, nombre: firstName, apellido: lastName };
-
+    
+            const newId = data && data.length > 0 
+                ? Math.max(...data.map(student => student.id)) + 1 
+                : 1; 
+    
+            const newStudent = { id: newId, curso_id: 1, nombre: firstName, apellido: lastName };
+    
             const updatedData = [...data, newStudent];
             setData(updatedData);
-
+    
             const updatedList = { alumnos: updatedData };
             localStorage.setItem("studentsData", JSON.stringify(updatedList));
-
+    
             setStudentName("");
             setIsInputVisible(false);
         }
@@ -102,8 +106,7 @@ export default function AddNewStudent() {
     };
 
     useEffect(() => {
-        const alumnos = localStorage.getItem("studentsData");
-        console.log("Cargando alumnos desde localStorage:", alumnos); 
+        const alumnos = localStorage.getItem("studentsData"); 
         try {
             const parsedData = alumnos ? JSON.parse(alumnos) : { alumnos: [] };
             const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];

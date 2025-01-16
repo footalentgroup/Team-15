@@ -16,16 +16,6 @@ export default function Config() {
     const [attendanceData, setAttendanceData] = useState({});
     const [isFormValid, setIsFormValid] = useState(false);
 
-    const validateForm = () => {
-        const isValid =
-            Object.keys(cuatrimestreData).length > 0 &&
-            Object.keys(homeworkData).length > 0 &&
-            Object.keys(examData).length > 0 &&
-            Object.keys(attitudinalData).length > 0 &&
-            Object.keys(attendanceData).length > 0;
-        setIsFormValid(isValid);
-    };
-
     const handleSave = () => {
         if (!isFormValid) {
             alert("Por favor, complete todos los campos.");
@@ -48,6 +38,17 @@ export default function Config() {
         validateForm();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cuatrimestreData, homeworkData, examData, attitudinalData, attendanceData]);
+
+    const validateForm = () => {
+        const isValid =
+            Object.keys(cuatrimestreData).length > 2 &&
+            Object.keys(homeworkData).length > 4 &&
+            Object.keys(examData).length > 4 &&
+            Object.keys(attitudinalData).length > 1 &&
+            Object.keys(attendanceData).length > 2;
+
+        setIsFormValid(isValid);
+    };
 
     return (
         <div className="px-24 bg-[#FFFAEB]">
