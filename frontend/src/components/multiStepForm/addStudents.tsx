@@ -7,6 +7,7 @@ import LoadingFile from "./loadingFile";
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { IconInfo } from "@/icons";
 import FlagStepIndicator from "./flagStepIndicator";
+import { useRouter } from "next/navigation";
 
 const INITIAL_STATE = {
   data: null
@@ -15,9 +16,10 @@ const INITIAL_STATE = {
 interface Props {
   setActiveTab: (index: number) => void;
   courseId: number | null;
+  onlyStudents?: boolean
 }
 
-export default function AddStudentForm({ setActiveTab, courseId }: Props) {
+export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }: Props) {
   const [formState, formAction] = useActionState(
     AddStudentAction,
     INITIAL_STATE
@@ -33,6 +35,7 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
   const [isImported, setIsImported] = useState(false);
+  const router = useRouter()
 
   const handleAddStudent = () => {
     if (studentName.trim()) {
@@ -70,7 +73,11 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
   };
 
   const handleNextStep = () => {
-    setActiveTab(2);
+    if (onlyStudents) {
+      router.push('/home');
+    } else {
+      setActiveTab(2);
+    }
   }
 
   const handleImport = () => {

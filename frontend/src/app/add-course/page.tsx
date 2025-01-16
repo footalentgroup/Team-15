@@ -6,7 +6,18 @@ import { cookies } from "next/headers";
   subjectIdFromProps?: number;
   periodFromProps?: PeriodFromAction; */
 
-export default async function AddCourse() {
+export default async function AddCourse(props: {
+  searchParams?: Promise<{
+    page?: string;
+    courseId?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const currentPage = Number(searchParams?.page);
+  const courseIdFromParams = Number(searchParams?.courseId);
+
+  console.log('page', currentPage);
+
   const cookieStore = cookies()
   const currentCourse = (await cookieStore).get("currentCourse");
 
@@ -20,7 +31,7 @@ export default async function AddCourse() {
 
   return (
     <div className="h-screen flex flex-col">
-      <MultiStepForm periodFromProps={period} subjectIdFromProps={subjectId} onlyPlanification={period && subjectId ? true : false} />
+      <MultiStepForm periodFromProps={period} subjectIdFromProps={subjectId} onlyPlanification={period && subjectId ? true : false} onlyStudents={currentPage} courseIdFromParams={courseIdFromParams} />
     </div>
   );
 }
