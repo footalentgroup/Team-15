@@ -73,9 +73,9 @@ export default function Dropdown() {
     };
 
     const getInputBackgroundColor = () => {
-        if (numericValue !== "" && numericValue < passingGrade) {
+        if (numericValue !== "" && Number(numericValue) < passingGrade) {
             return "bg-red-200";
-        } else if (numericValue !== "" && numericValue >= passingGrade) {
+        } else if (numericValue !== "" && Number(numericValue) >= passingGrade) {
             return "bg-green-200";
         }
         return "bg-gray-100";

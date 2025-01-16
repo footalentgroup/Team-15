@@ -41,10 +41,10 @@ export default function DropdownHomework({ onGradeChange }: DropdownProps) {
         }
     }, []);
 
-    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    /* const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
         onGradeChange(event.target.value);
-    };
+    }; */
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(event.target.value);
@@ -57,9 +57,9 @@ export default function DropdownHomework({ onGradeChange }: DropdownProps) {
     };
 
     const getInputBackgroundColor = () => {
-        if (numericValue !== "" && numericValue < passingGrade) {
+        if (numericValue !== "" && Number(numericValue) < passingGrade) {
             return "bg-red-200";
-        } else if (numericValue !== "" && numericValue >= passingGrade) {
+        } else if (numericValue !== "" && Number(numericValue) >= passingGrade) {
             return "bg-green-200";
         }
         return "bg-gray-100";

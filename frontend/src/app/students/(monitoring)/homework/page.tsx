@@ -103,7 +103,7 @@ export default function Homework() {
     return (
         <div>
             <div>
-                <SliderView onCuatrimestreChange={handleQuarterChange} />
+                <SliderView onCuatrimestreChange={handleQuarterChange} onMonthChange={() => { }} />
             </div>
 
             <div className="flex gap-4 mt-4 flex-wrap">
