@@ -81,12 +81,13 @@ input[type='date']::-moz-focus-outer {
     -webkit-appearance: none;
     margin: 0;
   }
+}
 
   input[type="number"] {
     -moz-appearance: textfield;
     appearance: none;
+  }
 
-=======
 .trapezoid {
   --p: 17px;
   width: 50px;
