@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { setTempUser, setUserCookie } from "@/actions/authActions";
+import ButtonContinue from "@/ui/buttons/buttonContinue";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -16,9 +17,16 @@ const AuthForm = ({ type }: AuthFormProps) => {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
+    const isValidPassword = password.length >= 6 && password.length <= 20 && password.match(/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/);
+    if (!isValidPassword) {
+      setError('La contraseña debe tener entre 6 y 20 caracteres, al menos una letra mayúscula, una letra minúscula y un número.');
+      return;
+    }
     setError("");
     try {
       if (type === "login") {
@@ -37,7 +45,11 @@ const AuthForm = ({ type }: AuthFormProps) => {
         console.log(data);
 
         if (data.error) {
-          setError(data.error);
+          if (data.error === "invalid credentials") {
+            setError("Credenciales inválidas");
+          } else {
+            setError(data.error);
+          }
           return;
         }
 
@@ -49,8 +61,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
         }
 
         localStorage.setItem("token", token);
-        localStorage.setItem("username", JSON.stringify(data.user.username));
+        localStorage.setItem("username", JSON.stringify(data.user.name));
         await setUserCookie(data);
+        setLoading(false);
         router.push("/home");
 
       } else {
@@ -84,6 +97,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         });
         localStorage.setItem("username", JSON.stringify(username));
         setTempUser({ email, password });
+        setLoading(false);
         router.push(`/register/confirm/${email}`);
       }
     } catch (error) {
@@ -93,10 +107,10 @@ const AuthForm = ({ type }: AuthFormProps) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="authform flex items-center justify-center min-h-screen bg-yellow-light-100">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm p-6 bg-white rounded-md shadow-md"
+        className="w-full max-w-sm p-6 bg-white border-2 border-black rounded-md filter drop-shadow-[4px_4px_0px_#000000] "
       >
         <h2 className="mb-6 text-2xl font-semibold text-center text-gray-700">
           {type === "login" ? "Iniciar Sesión" : "Registro"}
@@ -105,14 +119,14 @@ const AuthForm = ({ type }: AuthFormProps) => {
           {type === "login" ? (
             <>
               ¿Aún no tienes una cuenta?{" "}
-              <Link href="/register" className="text-blue-500 hover:underline">
+              <Link href="/register" className="text-blue-light-500 hover:underline">
                 Regístrate
               </Link>
             </>
           ) : (
             <>
               ¿Ya tienes una cuenta?{" "}
-              <Link href="/login" className="text-blue-500 hover:underline">
+              <Link href="/login" className="text-blue-light-500 hover:underline">
                 Inicia sesión
               </Link>
             </>
@@ -202,12 +216,9 @@ const AuthForm = ({ type }: AuthFormProps) => {
             className="w-full px-4 py-2 text-sm border rounded-md focus:ring focus:ring-blue-300 focus:outline-none focus:ring-opacity-50"
           />
         </div>
-        <button
-          type="submit"
-          className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
-        >
-          {type === "login" ? "Iniciar Sesión" : "Registrarme"}
-        </button>
+        <div className="flex justify-center">
+          <ButtonContinue loading={loading} text={type === "login" ? "Iniciar Sesión" : "Registrarme"} />
+        </div>
         {error && (
           <p className="mt-4 text-sm text-center text-red-600">{error}</p>
         )}

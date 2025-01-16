@@ -36,7 +36,6 @@ body {
   border-radius: 2px;
 }
 
-
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #01caf8;
@@ -45,11 +44,6 @@ body {
   border-radius: 2px;
   border: 1px solid black;
   background-clip: content-box;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 
 [type='date']::-webkit-inner-spin-button {
@@ -91,5 +85,26 @@ input[type='date']::-moz-focus-outer {
   input[type="number"] {
     -moz-appearance: textfield;
     appearance: none;
-  }
+
+=======
+.trapezoid {
+  --p: 17px;
+  width: 50px;
+  aspect-ratio: 2 / 3;
+  clip-path: polygon(80% var(--p), 80% calc(100% - var(--p)), 0 100%, 0 0);
+  background: #fde69e;
+}
+
+.horizontal-line {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) calc(50% - 1px),
+    rgba(0, 0, 0, 1) calc(50%),
+    rgba(0, 0, 0, 0) calc(50% + 1px)
+  );
+}
+
+input:focus {
+  border-color: #01caf8;
+  box-shadow: 0 0 0 2px #01caf8;
 }

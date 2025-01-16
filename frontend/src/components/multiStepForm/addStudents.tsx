@@ -7,6 +7,7 @@ import LoadingFile from "./loadingFile";
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { IconInfo } from "@/icons";
 import FlagStepIndicator from "./flagStepIndicator";
+import { useRouter } from "next/navigation";
 
 const INITIAL_STATE = {
   data: null
@@ -15,9 +16,10 @@ const INITIAL_STATE = {
 interface Props {
   setActiveTab: (index: number) => void;
   courseId: number | null;
+  onlyStudents?: boolean
 }
 
-export default function AddStudentForm({ setActiveTab, courseId }: Props) {
+export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }: Props) {
   const [formState, formAction] = useActionState(
     AddStudentAction,
     INITIAL_STATE
@@ -32,6 +34,8 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
   const [excelFile, setExcelFile] = useState<File | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
+  const [isImported, setIsImported] = useState(false);
+  const router = useRouter()
 
   const handleAddStudent = () => {
     if (studentName.trim()) {
@@ -61,14 +65,20 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
     startTransition(() => {
       formAction(studentList);
     });
-    setTimeout(() => {
-      setActiveTab(2);
-    }, 3000);
+    setIsImported(true);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const handleNextStep = () => {
+    if (onlyStudents) {
+      router.push('/home');
+    } else {
+      setActiveTab(2);
+    }
+  }
 
   const handleImport = () => {
     setIsImportModalOpen(true);
@@ -108,13 +118,6 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
     setExcelFile(null);
   }
 
-  /* useEffect(() => {
-    if (formState.success) {
-      setActiveTab(2);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formState.success]); */
-
   return (
     <div className="relative">
       <FlagStepIndicator step={2} title="Alumnos" />
@@ -127,7 +130,7 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
           <label htmlFor="studentName" className="mr-2 font-bold text-2xl">Apellido y nombre del alumno:</label>
           <div className="flex content-center items-center gap-4">
             <input
-              className="h-12 border-2 border-black py-2 px-4 text-xl rounded-md focus-visible:outline-none mr-2"
+              className="bg-transparent h-12 border-2 border-black py-2 px-4 text-xl rounded-md focus-visible:outline-none mr-2"
               type="text"
               id="studentName"
               name="studentName"
@@ -139,14 +142,14 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
             <ButtonNormal text="Añadir a la lista" color="bg-[#fbc82d]" onClick={handleAddStudent} />
             <span className="text-lg font-bold mx-4">O</span>
 
-            <ButtonNormal text="Importar de excel" onClick={handleImport} />
+            <ButtonNormal text="Importar de excel" color="bg-transparent" onClick={handleImport} />
 
           </div>
           <div className="text-gray-500 mt-2 flex gap-2"><IconInfo /> <span>Tu lista quedará ordenará automáticamente por orden alfabético</span></div>
           <ul className="flex flex-wrap text-wrap gap-2 mt-4 px-32 max-h-[360px] overflow-y-scroll">
             {studentList.alumnos.sort().map((student, index) => (
               <li key={index} className="w-48 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2">
-                <p>{`${student.apellido} ${student.nombre}`}</p>
+                <p><span className="capitalize">{student.apellido}</span> <span className="capitalize">{student.nombre}</span></p>
                 <button type="button" onClick={() => setStudentList({ alumnos: studentList.alumnos.filter((_, i) => i !== index) })}>
                   ✖
                 </button>
@@ -157,7 +160,7 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
         <div className="flex mt-auto justify-center">
           <div className="flex mx-auto gap-8">
             <ButtonContinue type="button" color="bg-white" text="Omitir por ahora" onClick={handleSkip} />
-            <ButtonContinue text="Continuar" onClick={handleConfirm} />
+            <ButtonContinue text="Guardar y Continuar" onClick={handleConfirm} />
           </div>
         </div>
       </form>
@@ -169,10 +172,10 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
               <h3 className="font-bold text-lg">Omitir Paso</h3>
               <button type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
             </div>
-            <p>Puedes añadir esta información más tarde desde el menú de seguimiento.</p>
+            <p>Puedes añadir esta información más tarde desde la sección de seguimiento.</p>
             <div className="flex justify-end space-x-4 mt-auto">
               <ButtonContinue type="button" text="Cancelar" color="bg-white" onClick={handleCancel} />
-              <ButtonContinue text="Omitir este paso" onClick={handleConfirm} />
+              <ButtonContinue text="Omitir este paso" onClick={handleNextStep} />
             </div>
           </div>
         </div>
@@ -184,7 +187,8 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-bold text-3xl mb-2">Importar desde Excel</h3>
-                <p className="text-gray-600">Sube tu archivo Excel con la lista de alumnos. Asegúrate de que incluya una única columna para &apos;Apellido&apos; y &apos;Nombre&apos;.</p>
+                <p className="text-gray-600">Subí tu archivo Excel con la lista de alumnos. Asegúrate de que incluya una única columna para &apos;Apellido&apos; y &apos;Nombre&apos;.</p>
+                <p className="text-gray-600">¡Si lo deseas puedes descargar nuestra plantilla y rellenarla! <a className="text-blue-light-500" href="media/files/alumnos.xlsx" download="alumnos">Clica aquí para descargar la plantilla.</a></p>
               </div>
               <button type="button" onClick={() => setIsImportModalOpen(!isImportModalOpen)}>✖</button>
             </div>
@@ -220,6 +224,24 @@ export default function AddStudentForm({ setActiveTab, courseId }: Props) {
           </div>
         </div>
       )}
+
+      {isImported && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-lg">¡Lista creada con éxito!</h3>
+            </div>
+            <div>
+              <p>Tu lista de alumnos fue creada con éxito</p>
+              <p>Esta disponible en Seguimiento</p>
+            </div>
+            <div className="flex justify-end space-x-4 mt-auto">
+              <ButtonContinue type="button" text="Confirmar" onClick={handleNextStep} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {loading && <LoadingFile setLoading={setLoading} />}
     </div>
   );

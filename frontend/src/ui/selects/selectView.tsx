@@ -6,7 +6,7 @@ interface Props {
   options: string[];
   value: string;
   onChange: (value: boolean) => void;
-  isDaily: boolean;
+  isDaily?: boolean;
 }
 
 function SelectView({ options, value, onChange, isDaily }: Props) {
@@ -35,7 +35,7 @@ function SelectView({ options, value, onChange, isDaily }: Props) {
   };
 
   return (
-    <div className="relative me-16">
+    <div className="relative">
       <div onClick={handleInputClick} className="flex items-center bg-white min-w-[136px] min-h-12 border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
         <div className="">{getDisplay()}</div>
         <div className="transform rotate-90 text-black">

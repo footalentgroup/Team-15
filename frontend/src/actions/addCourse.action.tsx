@@ -1,6 +1,6 @@
 'use server'
 
-import { Content, ICourses, Month, Period, PeriodFromAction } from "@/interfaces/ICourses.interface";
+import { Content, ICourses, Period, PeriodFromAction } from "@/interfaces/ICourses.interface";
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { cookies } from "next/headers";
 import { refreshToken } from "./authActions";
@@ -62,7 +62,7 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
       ]
     };
 
-    if (newPeriod.duracion === 'trimestral' || newPeriod.duracion === 'cuatrimestral') {
+    if (newPeriod.duracion === 'trimestral') {
       newPeriod.periodos.push({
         fecha_inicio: period['2 input start'],
         fecha_cierre: period['2 input end']
@@ -141,7 +141,7 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
 export async function AddStudentAction(prevState: any, body: IStudentRequest) {
   console.log('addStudentAction', body);
 
-  const studentsUrl = `${API_URL}/alumno/register/`;
+  const studentsUrl = `${API_URL}/alumno/list-register/`;
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -240,16 +240,6 @@ export async function AddContentAction(prevState: any, list: Content[]) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function AddToCalendarAction(list: Month[]) {
-  console.log('Add to Calendar Action', list);
-
-  return {
-    data: list,
-    success: true
-  }
-}
-
 export async function setPeriodAction(period: Period) {
   const cookieStore = cookies();
   console.log('setPeriodAction', period);
@@ -294,6 +284,7 @@ export async function getPeriodAction() {
   }
 }
 
+//importa planificacino en formato word
 export async function ImportPlanificationAction(formData: FormData) {
   console.log('import planification', formData);
 
@@ -310,6 +301,60 @@ export async function ImportPlanificationAction(formData: FormData) {
   }
 
   const planificationUrl = `${API_URL}/planificacion/process_word/`;
+
+  try {
+    const response = await fetch(planificationUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${TOKEN}`
+      },
+      body: formData
+    });
+
+    const responseData = await response.json();
+    console.log('responseData', responseData);
+
+    if (!response.ok) {
+      throw new Error('Ocurrio un error al importar la planificación', responseData);
+    }
+
+    responseData.temas = responseData.temas.map((tema: Content, index: number) => {
+      return {
+        ...tema,
+        unidad: index + 1
+      }
+    });
+
+    return {
+      data: responseData.temas,
+      success: true
+    }
+  } catch (error) {
+    console.log('error', error);
+    return {
+      data: error,
+      success: false
+    }
+  }
+}
+
+//importa planificacion en formato pdf
+export async function ImportPlanificationPdfAction(formData: FormData) {
+  console.log('import planification', formData);
+
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  if (!TOKEN) {
+    refreshToken();
+  }
+
+  const planificationUrl = `${API_URL}/planificacion/extract-pdf-text/`;
 
   try {
     const response = await fetch(planificationUrl, {
@@ -397,5 +442,19 @@ export async function AddPlanificationAction(prevState: any, data: { subjectId: 
       data: error,
       success: false
     }
+  }
+}
+
+export async function setCurrentCourseCookieAction(course: ICourses) {
+  const cookieStore = cookies();
+  console.log('setCurrentCourseCookieAction', course);
+
+  (await cookieStore).delete('currentCourse');
+
+  (await cookieStore).set('currentCourse', JSON.stringify(course));
+
+  return {
+    data: course,
+    success: true
   }
 }

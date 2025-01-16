@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -12,6 +13,7 @@ const Students: React.FC = () => {
     const [studentsLocalData, setStudentsLocalData] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const router = useRouter();
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
 
     const getData = async (currentCourse: ICourses) => {
         if (currentCourse) {
@@ -28,6 +30,7 @@ const Students: React.FC = () => {
         const currentCourse = window.localStorage.getItem("currentCourse");
         if (currentCourse) {
             const course = JSON.parse(currentCourse);
+            setCurrentCourse(course);
             getData(course);
         }
         if (configData) {
@@ -51,7 +54,7 @@ const Students: React.FC = () => {
                 router.push("/students/homework");
             }, 2000);
         }
-    }, [data, studentsLocalData]);
+    }, [studentsLocalData]);
 
     console.log('data', data);
 
@@ -82,7 +85,7 @@ const Students: React.FC = () => {
                             <i className="fa-regular fa-copy pl-4"></i>
                         </button>
                     </Link>
-                    <Link href="/students/add-new">
+                    <Link href={`/add-course?page=2&courseId=${currentCourse?.courseId}`}>
                         <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${studentsLocalData ? ' bg-white line-through' : 'bg-yellow-500'}`}>
                             <i className={`pr-4 ${studentsLocalData ? "fa-solid fa-square-check text-green-500" : "fa-regular fa-square"}`}></i>
                             Cargá la lista de alumnos

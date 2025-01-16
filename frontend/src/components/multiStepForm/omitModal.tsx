@@ -18,7 +18,7 @@ function OmitModal({ isModalOpen, setIsModalOpen, handleCancel, handleConfirm }:
         </div>
         <p>Abandonarás el proceso de carga de contenidos. No te preocupes podrás volver a empezar en cualquier momento.</p>
         <div className="flex justify-end space-x-4 mt-auto">
-          <ButtonContinue text="Aceptar" onClick={handleConfirm} />
+          <ButtonContinue type='button' text="Aceptar" onClick={handleConfirm} />
           <ButtonContinue type="button" text="Cancelar" color="bg-white" onClick={handleCancel} />
         </div>
       </div>

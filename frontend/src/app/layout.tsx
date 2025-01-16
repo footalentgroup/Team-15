@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Inter } from "next/font/google";
 
 export const metadata: Metadata = {
-  title: "Pal Profe",
-  description: "Tu ayuda en la planificación de clases",
+  title: "PalProfe",
+  description: "Apoyando a los que educan",
   manifest: "/manifest.js",
 };
+
+const inter = Inter({ subsets: ['latin'] })
+
 
 export default function RootLayout({
   children,
@@ -14,8 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-      >
+      <body className={`bg-yellow-light-100 ${inter.className}`}>
         {children}
       </body>
     </html>

@@ -60,6 +60,7 @@ export async function getCourses() {
     });
 
     const courseData = await courseResponse.json();
+    console.log("courseData", courseData);
 
     if (!courseData) {
       throw new Error('No se pudo crear el curso');
@@ -80,6 +81,7 @@ export async function getCourses() {
     });
 
     const subjectData = await subjectResponse.json();
+    console.log("subjectData", subjectData);
 
     if (!subjectData) {
       throw new Error('No se pudo crear la materia');
@@ -100,6 +102,14 @@ export async function getCourses() {
             schoolName: school.nombre,
             courseName: course.nombre,
             subjectName: subject.nombre,
+            courseId: course.id,
+            subjectId: subject.id,
+            periodName: course.duracion,
+            periods: course.periodos,
+            havePlanification: subject.planificacion ? true : false,
+            planification: subject.planificacion,
+            haveStudents: course.alumnos && course.alumnos.length > 0 ? true : false,
+            students: course.alumnos
           });
         });
       });

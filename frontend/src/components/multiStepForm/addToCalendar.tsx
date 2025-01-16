@@ -1,6 +1,5 @@
 'use client'
-import { AddToCalendarAction, } from "@/actions/addCourse.action"
-import { Content, Month, PeriodFromAction, PeriodTime } from "@/interfaces/ICourses.interface"
+import { Content, PeriodFromAction, PeriodTime, PLanificationMonth } from "@/interfaces/ICourses.interface"
 import ButtonContinue from "@/ui/buttons/buttonContinue"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -11,104 +10,48 @@ import ButtonArrowPink from "@/ui/buttons/buttonArrowPink"
 import StepIndicator from "./stepIndicator"
 import FlagStepIndicator from "./flagStepIndicator"
 import OmitModal from "./omitModal"
+import { INITIAL_MONTHS } from "@/utils/initialMonths"
+import { IMonthPlanification, IPlanification, ISubtheme, ITheme } from "@/interfaces/IPlanification.interfaces"
+import { createNewMonthPlanificationAction } from "@/actions/planificationActions"
 
 interface Props {
   contentList: Content[]
   planificationStep: number
   period: PeriodFromAction | null
+  currentPlanification: IPlanification | null
 }
 
-const MONTHS: Month[] = [
-  {
-    "id": 0,
-    "month": "Enero",
-    "color": "bg-green-100",
-
-    "content": []
-  },
-  {
-    "id": 1,
-    "month": "Febrero",
-    "color": "bg-pink-100",
-    "content": []
-  },
-  {
-    "id": 2,
-    "month": "Marzo",
-    "color": "bg-yellow-100",
-    "content": []
-  },
-  {
-    "id": 3,
-    "month": "Abril",
-    "color": "bg-blue-light-100",
-    "content": []
-  },
-  {
-    "id": 4,
-    "month": "Mayo",
-    "color": "bg-green-100",
-    "content": []
-  },
-  {
-    "id": 5,
-    "month": "Junio",
-    "color": "bg-pink-100",
-    "content": []
-  },
-  {
-    "id": 6,
-    "month": "Julio",
-    "color": "bg-yellow-100",
-    "content": []
-  },
-  {
-    "id": 7,
-    "month": "Agosto",
-    "color": "bg-blue-light-100",
-    "content": []
-  },
-  {
-    "id": 8,
-    "month": "Septiembre",
-    "color": "bg-green-100",
-    "content": []
-  },
-  {
-    "id": 9,
-    "month": "Octubre",
-    "color": "bg-pink-100",
-    "content": []
-  },
-  {
-    "id": 10,
-    "month": "Noviembre",
-    "color": "bg-yellow-100",
-    "content": []
-  },
-  {
-    "id": 11,
-    "month": "Diciembre",
-    "color": "bg-blue-light-100",
-    "content": []
-  },
-]
-
-export default function AddToCalendar({ contentList, planificationStep, period }: Props) {
+export default function AddToCalendar({ contentList, planificationStep, period, currentPlanification }: Props) {
+  console.log("currentPlanification", currentPlanification);
   console.log(contentList);
+  console.log(period);
   const monthsLength = period?.duracion === 'semestral' ? 6 : period?.duracion === 'trimestral' ? 3 : 4
   const periodTitle = period?.duracion === 'semestral' ? 'semestre' : period?.duracion === 'trimestral' ? 'trimestre' : 'cuatrimestre'
+  const startMonthFromPeriod = Number(period?.periodos[0].fecha_inicio.split('-')[1])
+  const periodLength = period !== null ? period.periodos.length : 0
+  //const endMonthFromPeriod = Number(period?.periodos[0].fecha_cierre.split('-')[1])
+  //const nextStartMonthFromPeriod = Number(period?.periodos[1].fecha_inicio.split('-')[1])
+  //const nextEndMonthFromPeriod = Number(period?.periodos[1].fecha_cierre.split('-')[1])
+
+  //const monthLengthFromFirstPeriod = endMonthFromPeriod - startMonthFromPeriod + 1
+  //const monthLengthFromNextPeriod = nextEndMonthFromPeriod - nextStartMonthFromPeriod + 1
+
+  const allSubthemes = currentPlanification!.temas.flatMap((theme) => theme.subtemas.map((subtema) => subtema));
+
+
   const [currentPeriodIndex, setCurrentPeriodIndex] = useState(0)
   const [currentPeriod, setCurrentPeriod] = useState<PeriodTime | undefined>(period?.periodos[currentPeriodIndex])
   const [currentPeriodTitle, setCurrentPeriodTitle] = useState<string | undefined>(`${currentPeriodIndex + 1}° ${periodTitle}`)
-  const [monthContent, setMonthContent] = useState(MONTHS)
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(0)
-  const [currentMonthsView, setCurrentMonthsView] = useState(monthContent.slice(currentMonthIndex, monthsLength))
+  const [monthContent, setMonthContent] = useState<PLanificationMonth[]>(INITIAL_MONTHS as PLanificationMonth[])
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(startMonthFromPeriod - 1)
+  const [currentMonthsView, setCurrentMonthsView] = useState(monthContent.slice(startMonthFromPeriod - 1, startMonthFromPeriod - 1 + monthsLength))
   const [activeId, setActiveId] = useState<string | null>(null);
   const router = useRouter()
-  const [newContentList, setNewContentList] = useState<Content[]>(contentList)
-  const [currentContent, setCurrentContent] = useState<Content | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [newContentList, setNewContentList] = useState<ITheme[]>(currentPlanification!.temas)
+  const [currentContent, setCurrentContent] = useState<ISubtheme | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImported, setIsImported] = useState(false);
 
 
   const handleRemoveContent = (monthIndex: number, contentIndex: number) => {
@@ -121,33 +64,45 @@ export default function AddToCalendar({ contentList, planificationStep, period }
     const newIndex = Math.max(currentMonthIndex - monthsLength, 0)
     const newPeriodIndex = currentPeriodIndex - 1
     console.log("newPeriodIndex", newPeriodIndex);
-    console.log("currentMonthIndex", newIndex);
+    console.log("currentPeriodIndex", currentPeriodIndex);
+
     setCurrentPeriodIndex(newPeriodIndex)
     setCurrentPeriod(period?.periodos[newPeriodIndex])
     setCurrentPeriodTitle(`${newPeriodIndex + 1}° ${periodTitle}`)
     setCurrentMonthIndex(newIndex)
-    setCurrentMonthsView(MONTHS.slice(newIndex, newIndex + monthsLength))
+    setCurrentMonthsView((INITIAL_MONTHS as PLanificationMonth[]).slice(newIndex, newIndex + monthsLength))
   }
 
   const handleNextMonths = () => {
-    const newIndex = Math.min(currentMonthIndex + monthsLength, MONTHS.length - 4)
+    const newIndex = Math.min(currentMonthIndex + monthsLength, INITIAL_MONTHS.length - 4)
     const newPeriodIndex = currentPeriodIndex + 1
     console.log("newPeriodIndex", newPeriodIndex);
+    console.log("currentPeriodIndex", currentPeriodIndex);
+
     if (newPeriodIndex >= period!.periodos.length) {
       return
     }
     setCurrentPeriodIndex(newPeriodIndex)
     setCurrentPeriodTitle(`${newPeriodIndex + 1}° ${periodTitle}`)
-    console.log("currentMonthIndex", newIndex);
+
     setCurrentMonthIndex(newIndex)
-    setCurrentMonthsView(MONTHS.slice(newIndex, newIndex + monthsLength))
+    setCurrentMonthsView((INITIAL_MONTHS as PLanificationMonth[]).slice(newIndex, newIndex + monthsLength))
     setCurrentPeriod(period?.periodos[newPeriodIndex])
   }
 
   const handleAddPlanification = () => {
-    AddToCalendarAction(monthContent).then((data) => {
-      if (data.success) {
-        router.push('/home')
+    const monthPlanification: IMonthPlanification[] = []
+    monthContent.forEach((month) => {
+      month.content.forEach((content) => {
+        monthPlanification.push(content);
+      });
+    });
+    console.log("monthPlanification", monthPlanification);
+
+    createNewMonthPlanificationAction(monthPlanification).then((data) => {
+      if (data?.success) {
+        /* router.push('/home') */
+        setIsImported(true)
       } else {
         console.error('Planification failed', data)
       }
@@ -161,41 +116,30 @@ export default function AddToCalendar({ contentList, planificationStep, period }
     setActiveId(null);
 
     if (over) {
-      const [contentSubIndex, contentParentIndex] = (active.id as string).replace('content-', '').split('-').map(Number);
+      const [contentSubIndex] = (active.id as string).replace('content-', '').split('-').map(Number);
       const monthIndex = parseInt((over.id as string).replace('month-', ''), 10);
+      console.log("monthIndex", monthIndex);
+      console.log("contentSubIndex", contentSubIndex);
 
-      if (!isNaN(contentParentIndex) && !isNaN(contentSubIndex) && !isNaN(monthIndex)) {
-        console.log('contentParentIndex', contentParentIndex);
-        console.log('contentSubIndex', contentSubIndex);
-        console.log('monthIndex', monthIndex);
-        console.log("newContentList", newContentList);
 
-        const content = newContentList[contentParentIndex];
-        const subContent = content.subtemas[contentSubIndex];
-        console.log('content', content);
-        console.log('subContent', subContent);
-        const updatedMonthContent = [...monthContent];
-        console.log('updatedMonthContent', updatedMonthContent);
+      const currentMonth = monthContent[monthIndex]
+      const currentContent = allSubthemes.find((subtheme) => subtheme.id === contentSubIndex)
 
-        const existingContentIndex = updatedMonthContent[monthIndex].content.findIndex(
-          (item) => item.tema === subContent
-        );
-
-        if (existingContentIndex !== -1) {
-          const existingContent = updatedMonthContent[monthIndex].content[existingContentIndex];
-          const newContent = { ...existingContent, quantity: (existingContent.quantity || 1) + 1 };
-
-          updatedMonthContent[monthIndex].content[existingContentIndex] = newContent;
-
-          setNewContentList(newContentList.map((item) => item.tema === subContent ? newContent : item));
-        } else {
-          updatedMonthContent[monthIndex].content.push({ tema: subContent, subtemas: [], quantity: 1 });
+      if (currentContent) {
+        const updatedMonthContent = [...monthContent]
+        const newContent: IMonthPlanification = {
+          planificacion_id: currentPlanification!.id,
+          subtema_id: currentContent.id,
+          tipo_actividad: "",
+          fecha: updatedMonthContent[monthIndex].date,
+          subtema: currentContent
         }
-
-        setMonthContent(updatedMonthContent);
-      } else {
-        console.error('Invalid indices:', { contentParentIndex, contentSubIndex, monthIndex });
+        updatedMonthContent[monthIndex].content.push(newContent)
+        setMonthContent(updatedMonthContent)
+        console.log("updatedMonthContent", updatedMonthContent);
       }
+      console.log("currentMonth", currentMonth);
+      console.log("currentContent", currentContent);
     }
   }
 
@@ -215,8 +159,8 @@ export default function AddToCalendar({ contentList, planificationStep, period }
   }
 
   const formatDate = (date: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_year, month, day] = date.split('-')
-    console.log("date", _year, month, day);
     const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
     return `${day} de ${months[parseInt(month) - 1]}`
   }
@@ -228,7 +172,7 @@ export default function AddToCalendar({ contentList, planificationStep, period }
         <div className="flex justify-center py-4">
           <StepIndicator step={planificationStep} />
         </div>
-        <div className='flex flex-col gap-2 p-16 pt-0 h-[90%]'>
+        <div className='flex flex-col gap-2 p-16 pt-0 h-[89%]'>
           <h3 className="font-bold text-4xl">¿Quieres crear tu planificación anual?</h3>
           <div className="text-gray-600 text-xl my-2">
             <p>Ya que tenés los contenidos, arrastralos al mes que elijas para su dictado. Luego podrás cambiar su organización. </p>
@@ -237,13 +181,13 @@ export default function AddToCalendar({ contentList, planificationStep, period }
             <ul className="columns-1 sm:columns-2 lg:columns-3 gap-4 mt-4 px-6 overflow-y-auto">
               <>
                 {newContentList.map((content, index) => (
-                  <div key={content.tema + index} className="flex flex-col gap-2 break-inside-avoid mb-4" >
+                  <div key={content.nombre + index} className="flex flex-col gap-2 break-inside-avoid mb-4" >
                     <li className="w-full min-h-10 flex justify-between items-center border border-black bg-yellow-100 px-2 py-3 rounded-md gap-2 font-semibold">
-                      Unidad {content.unidad}: {content.tema}
+                      Unidad {content.unidad}: {content.nombre}
                     </li>
                     <div className="flex flex-col gap-2 items-center w-full">
-                      {content.subtemas.map((subtema, i) => (
-                        <DraggableContent key={subtema} content={{ subtemas: [subtema], tema: subtema, quantity: 1 }} index={i} parentIndex={index} setCurrentContent={setCurrentContent} />
+                      {content.subtemas.map((subtema) => (
+                        <DraggableContent key={subtema.id} content={subtema} index={subtema.id} setCurrentContent={setCurrentContent} />
                       ))
                       }
                     </div>
@@ -256,14 +200,14 @@ export default function AddToCalendar({ contentList, planificationStep, period }
             <div className="w-full flex justify-between">
               {period && (
                 <div className="flex w-full gap-2 items-center py-4">
-                  {currentMonthIndex > 0 && (
+                  {currentMonthIndex > monthsLength && (
                     <div className="text-end flex gap-2 items-center">
                       <ButtonArrowPink rotate onClick={handlePreviousMonths} text="" />
                     </div>
                   )}
                   <span className="font-semibold text-[22px]">{currentPeriodTitle}</span>
                   <span className="text-gray">({formatDate(currentPeriod!.fecha_inicio)} - {formatDate(currentPeriod!.fecha_cierre)})</span>
-                  {currentMonthIndex < MONTHS.length - monthsLength && currentMonthIndex <= 3 && (
+                  {period && currentMonthIndex < periodLength && (
                     <div className="text-end flex gap-2 items-center">
                       <ButtonArrowPink onClick={handleNextMonths} text="" />
                     </div>
@@ -288,7 +232,7 @@ export default function AddToCalendar({ contentList, planificationStep, period }
       <DragOverlay>
         {activeId ? (
           <div className="z-50 flex items-center justify-center w-[310px] h-10 border border-black px-2 rounded-md gap-2 cursor-pointer touch-none">
-            <p>{currentContent?.tema}</p>
+            <p>{currentContent?.nombre}</p>
           </div>
         ) : null}
       </DragOverlay>
@@ -299,6 +243,20 @@ export default function AddToCalendar({ contentList, planificationStep, period }
           handleCancel={() => setIsModalOpen(false)}
           handleConfirm={handleSkip}
         />
+      )}
+
+      {isImported && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+            <div className="flex justify-between items-center">
+              <h3 className="font-bold text-lg">¡Planificación creada con éxito!</h3>
+            </div>
+            <p>Tu planificación fue creada con éxito.</p>
+            <div className="flex justify-end space-x-4 mt-auto">
+              <ButtonContinue type="button" text="Confirmar" onClick={handleSkip} />
+            </div>
+          </div>
+        </div>
       )}
 
     </DndContext>
