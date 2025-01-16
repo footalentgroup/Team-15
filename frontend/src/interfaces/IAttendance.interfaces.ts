@@ -4,4 +4,5 @@ export interface IAttendance {
     nombre_valoracion: string
     fecha: string
     falta_justificada: boolean
+    mes: number
 }

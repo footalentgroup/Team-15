@@ -19,7 +19,7 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
-    const trimestres = ["1er Trimestre", "2do Trimestre", "3er Trimestre"];
+    const trimestres = ["1er Trimestre", "2do Trimestre", "3er Trimestre", "4to Trimestre"];
 
     const getCuatrimestre = () => {
         switch (cuatrimestreIndex) {

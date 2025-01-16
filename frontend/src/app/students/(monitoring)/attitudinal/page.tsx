@@ -6,17 +6,15 @@ import { IStudents } from "@/interfaces/IStudents.interface";
 
 export default function Attitudinal() {
     const [mounted, setMounted] = useState(false);
+    const [rangeType, setRangeType] = useState<"diario" | "semanal" | "mensual">("diario");
     const [monthIndex, setMonthIndex] = useState(0);
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [studentList, setStudentList] = useState<IStudents[] | null>(null);
     const [selectedButton, setSelectedButton] = useState<string>("");
 
+    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
-    const months = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
 
     useEffect(() => {
         const configData = JSON.parse(localStorage.getItem("configData") || "{}");
@@ -58,36 +56,51 @@ export default function Attitudinal() {
 
     const handleMonthChange = (trimesterIndex: number) => {
         const trimesters = [
-            [0, 1, 2, 3],
-            [4, 5, 6, 7],
-            [8, 9, 10, 11],
+            [0, 1, 2], 
+            [3, 4, 5], 
+            [6, 7, 8], 
+            [9, 10, 11], 
         ];
+    
+        if (rangeType === "mensual") {
 
-        const monthsInTrimester = trimesters[trimesterIndex];
-        setMonthIndex(monthsInTrimester[0]);
+            const monthsInTrimester = trimesters[trimesterIndex];
+            setMonthIndex(monthsInTrimester[0]);
+
+        } else if (rangeType === "diario" || rangeType === "semanal") {
+
+            setMonthIndex(trimesterIndex); 
+        }
     };
-
+    
     const getMonthsInTrimester = (trimesterIndex: number): string[] => {
-        const months = [
-            ["Enero", "Febrero", "Marzo", "Abril" ],
-            ["Mayo", "Junio", "Julio", "Agosto"],
-            ["Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        const trimesterMonths = [
+            ["Enero", "Febrero", "Marzo"],
+            ["Abril", "Mayo", "Junio"],
+            ["Julio", "Agosto", "Septiembre"],
+            ["Octubre", "Noviembre", "Diciembre"]
         ];
-        return months[trimesterIndex] || [];
+        return trimesterMonths[trimesterIndex] || [];
     };
-
-    const getWeekRanges = () => {
+    
+    const getWeekRanges = (monthIndex: number) => {
         const weeks = [];
-        const daysInMonth = new Date(new Date().getFullYear(), monthIndex + 1, 0).getDate();
+        const year = new Date().getFullYear();
+        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
         let weekStart = 1;
+
         for (let i = 1; i <= daysInMonth; i++) {
-            if (new Date(new Date().getFullYear(), monthIndex, i).getDay() === 6 || i === daysInMonth) {
+            const currentDay = new Date(year, monthIndex, i).getDay();
+
+            if (currentDay === 6 || i === daysInMonth) {
                 weeks.push(`${weekStart} - ${i}`);
                 weekStart = i + 1;
             }
         }
+
         return weeks;
     };
+
 
     const getTrimesters = () => {
         return ["1er trimestre", "2do trimestre", "3er trimestre"];
@@ -102,7 +115,7 @@ export default function Attitudinal() {
     };
 
     const days = getDaysInMonth(monthIndex);
-    const weeks = getWeekRanges();
+    const weeks = getWeekRanges(monthIndex);
     const trimesters = getTrimesters();
     const cuatrimesters = getCuatrimesters();
     const semesters = getSemesters();
@@ -148,7 +161,7 @@ export default function Attitudinal() {
                         </div>
                     ))}
 
-                    {selectedButton === "Mensual" && getMonthsInTrimester(Math.floor(monthIndex / 4)).map((month, index) => (
+                    {selectedButton === "Mensual" && getMonthsInTrimester(Math.floor(monthIndex)).map((month, index) => (
                         <div key={index} className="inline-block">
                             <button
                                 type="button"
