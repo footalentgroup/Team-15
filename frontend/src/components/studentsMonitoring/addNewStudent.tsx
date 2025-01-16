@@ -9,6 +9,7 @@ export default function AddNewStudent() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [studentName, setStudentName] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
     const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
     const [editingStudentId, setEditingStudentId] = useState<number | null>(null);
@@ -56,7 +57,7 @@ export default function AddNewStudent() {
 
     const handleEditModeToggle = () => {
         setIsEditMode((prevMode) => !prevMode);
-    
+
         if (isEditMode) {
             window.location.reload();
         }
@@ -103,7 +104,7 @@ export default function AddNewStudent() {
 
     useEffect(() => {
         const alumnos = localStorage.getItem("studentsData");
-        console.log("Cargando alumnos desde localStorage:", alumnos); 
+        console.log("Cargando alumnos desde localStorage:", alumnos);
         try {
             const parsedData = alumnos ? JSON.parse(alumnos) : { alumnos: [] };
             const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
@@ -111,7 +112,7 @@ export default function AddNewStudent() {
             setData(studentsArray);
         } catch (error) {
             console.error("Error parsing students data:", error);
-            setData([]); 
+            setData([]);
         }
     }, [])
 
