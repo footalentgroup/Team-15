@@ -36,7 +36,6 @@ body {
   border-radius: 2px;
 }
 
-
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #01caf8;
@@ -91,4 +90,9 @@ input[type='date']::-moz-focus-outer {
     rgba(0, 0, 0, 1) calc(50%),
     rgba(0, 0, 0, 0) calc(50% + 1px)
   );
+}
+
+input:focus {
+  border-color: #01caf8;
+  box-shadow: 0 0 0 2px #01caf8;
 }

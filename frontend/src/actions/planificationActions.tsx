@@ -130,7 +130,7 @@ export async function updateMonthPlanificationAction(monthPlanification: IMonthP
     refreshToken();
   }
 
-  const monthPlanificationUrl = `${API_URL}/planificacion_mensual/update/${monthPlanification.id}/`;
+  const monthPlanificationUrl = `${API_URL}/planificacion_diaria/update/${monthPlanification.id}/`;
 
   try {
     const response = await fetch(monthPlanificationUrl, {
@@ -141,6 +141,8 @@ export async function updateMonthPlanificationAction(monthPlanification: IMonthP
       },
       body: JSON.stringify(monthPlanification)
     });
+
+    console.log(response);
 
     const responseData = await response.json();
     console.log('responseData', responseData);
