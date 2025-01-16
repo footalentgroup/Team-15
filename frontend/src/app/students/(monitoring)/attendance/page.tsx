@@ -1,9 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
-import Dropdown from "@/components/studentsMonitoring/dropdown";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { IAttendance } from "@/interfaces/IAttendance.interfaces";
+import DropdownAttendance from "@/components/studentsMonitoring/dropdown/dropdownAttendance";
 
 export default function Attendance() {
     const [mounted, setMounted] = useState(false);
@@ -14,11 +14,61 @@ export default function Attendance() {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
 
+    const getDaysInMonth = (monthIndex: number) => {
+        const year = new Date().getFullYear();
+        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+        const days: IAttendance[] = [];
+
+        const storedAttendance = JSON.parse(localStorage.getItem("attendanceData") || "[]");
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, monthIndex, day);
+            const dayName = daysOfWeek[date.getDay()];
+
+            if (dayName !== "Domingo" && selectedDays.includes(dayName)) {
+                const formattedDate = date.toISOString().split("T")[0];
+
+                const newId = storedAttendance.length + days.length + 1;
+
+                const attendanceEntry: IAttendance = {
+                    id: newId,
+                    curso_id: 1,
+                    nombre_valoracion: "Asistencia",
+                    fecha: formattedDate,
+                    falta_justificada: false,
+                };
+
+                days.push(attendanceEntry);
+            }
+        }
+
+        return days;
+    };
+
+    const saveAttendance = (days: IAttendance[]) => {
+        const storedAttendance = JSON.parse(localStorage.getItem("attendanceData") || "[]");
+
+        const updatedAttendance = [...storedAttendance];
+
+        days.forEach((day) => {
+            const exists = storedAttendance.some((item: IAttendance) => item.fecha === day.fecha);
+            if (!exists) {
+                updatedAttendance.push(day);
+            }
+        });
+
+        const uniqueAttendance = updatedAttendance.filter(
+            (item, index, self) => index === self.findIndex((t) => t.fecha === item.fecha)
+        );
+
+        localStorage.setItem("attendanceData", JSON.stringify(uniqueAttendance));
+    };
+
     useEffect(() => {
         const configData = JSON.parse(localStorage.getItem("configData") || "{}");
         const attendanceConfig = configData?.attendance?.selectedButtons || [];
+
         const studentData = localStorage.getItem("studentsData");
-        
         if (studentData) {
             const parsedData = JSON.parse(studentData);
             const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
@@ -26,61 +76,54 @@ export default function Attendance() {
         } else {
             setStudentList(null);
         }
-    
+
         setSelectedDays(attendanceConfig);
+        console.log("Selected days from localStorage:", attendanceConfig);
         setMounted(true);
-    }, []);
+
+        const days = getDaysInMonth(monthIndex);
+        if (days.length > 0) {
+            saveAttendance(days);
+        }
+
+    }, [monthIndex]);
 
     if (!mounted) {
         return null;
     }
 
-    const getDaysInMonth = (monthIndex: number) => {
-        const year = new Date().getFullYear();
-        const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-        const days = [];
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(year, monthIndex, day);
-            const dayName = daysOfWeek[date.getDay()];
-            if (dayName !== "Domingo" && selectedDays.includes(dayName)) {
-                const formattedDate = date.toISOString().split("T")[0];
-                days.push({ dayName, formattedDate, day });
-            }
-        }
-
-        return days;
-    };
-
-    const handleMonthChange = (index: number) => {
-        setMonthIndex(index);
-    };
-
     const days = getDaysInMonth(monthIndex);
 
     return (
         <div>
-            <SliderView onMonthChange={handleMonthChange} />
+            <SliderView onMonthChange={setMonthIndex} />
             <div className="relative mt-4">
                 <div className="flex gap-4 pb-2">
-                    {days.map(({ dayName, formattedDate, day }, index) => (
-                        <div key={index} className="inline-block">
+                    {days.map((attendance, index) => (
+                        <div key={attendance.id} className="inline-block">
                             <button
                                 type="button"
                                 className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
-                                data-date={formattedDate} 
+                                data-date={attendance.fecha}
                             >
-                                {`${dayName} ${day.toString().padStart(2, "0")}/${(monthIndex + 1).toString().padStart(2, "0")}`}
+                                {`${attendance.nombre_valoracion} ${attendance.fecha.split("-")[2]}/${(monthIndex + 1).toString().padStart(2, "0")}`}
                             </button>
+                            
                             {studentList && studentList.length > 0 && (
                                 <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">
                                     {studentList.slice(0, 7).map((student) => (
-                                        <Dropdown key={student.id} />
+                                        <DropdownAttendance
+                                            key={`${student.id}-${attendance.id}`}
+                                            studentId={student.id}
+                                            attendanceId={attendance.id} 
+                                        />
                                     ))}
                                 </div>
                             )}
+
                         </div>
                     ))}
+
                 </div>
             </div>
         </div>

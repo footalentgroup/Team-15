@@ -6,6 +6,7 @@ const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => voi
     const [examPercentage, setExamPercentage] = useState<number | "">(0);
     const [taskPercentage, setTaskPercentage] = useState<number | "">(0);
     const [attitudePercentage, setAttitudePercentage] = useState<number | "">(0);
+    const [alertMessage, setAlertMessage] = useState<string>("");
 
     const handleExamChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value) || "";
@@ -39,11 +40,17 @@ const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => voi
 
     const handleSaveData = () => {
         if (examPercentage && taskPercentage && attitudePercentage) {
-            onDataChange({
-                examPercentage: examPercentage,
-                taskPercentage: taskPercentage,
-                attitudePercentage: attitudePercentage,
-            });
+            const totalPercentage = (examPercentage || 0) + (taskPercentage || 0) + (attitudePercentage || 0);
+            if (totalPercentage === 100) {
+                onDataChange({
+                    examPercentage: examPercentage,
+                    taskPercentage: taskPercentage,
+                    attitudePercentage: attitudePercentage,
+                });
+                setAlertMessage("");
+            } else {
+                setAlertMessage("La suma de los porcentajes debe ser igual al 100%");
+            }
         }
     };
 
@@ -58,41 +65,53 @@ const CuatrimestreConfig = ({ onDataChange }: { onDataChange: (data: any) => voi
                 Elegí el porcentaje de incidencia en la nota de cierre para cada aspecto a evaluar.
             </h5>
             <p className="text-[20px]">La suma de los 3 debe dar el 100%.</p>
-            <div className="flex gap-4 my-6">
+            <div className="flex gap-4 mt-6">
                 <label className="flex flex-col items-center justify-center">
                     <p className="text-[14px]">Éxamenes</p>
-                    <input
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={examPercentage === "" ? "" : examPercentage}
-                        onChange={handleExamChange}
-                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-[28px]"
-                    />
+                    <div className="relative">
+                        <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={examPercentage === "" ? "" : examPercentage}
+                            onChange={handleExamChange}
+                            className="border-2 border-black rounded-md p-2 bg-lime-100 text-black font-bold text-center text-[28px] pr-8 w-[100px] h-[50px] appearance-none"
+                        />
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-[28px]">%</span>
+                    </div>
                 </label>
                 <label className="flex flex-col items-center justify-center">
                     <p className="text-[14px]">Tareas</p>
-                    <input
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={taskPercentage === "" ? "" : taskPercentage}
-                        onChange={handleTaskChange}
-                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-[28px]"
-                    />
+                    <div className="relative">
+                        <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={taskPercentage === "" ? "" : taskPercentage}
+                            onChange={handleTaskChange}
+                            className="border-2 border-black rounded-md p-2 bg-lime-100 text-black font-bold text-center text-[28px] pr-8 w-[100px] h-[50px] appearance-none"
+                        />
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-bold text-[28px]">%</span>
+                    </div>
                 </label>
                 <label className="flex flex-col items-center justify-center">
                     <p className="text-[14px]">Actitudinal</p>
-                    <input
-                        type="number"
-                        min={0}
-                        max={100}
-                        value={attitudePercentage === "" ? "" : attitudePercentage}
-                        onChange={handleAttitudeChange}
-                        className="border-2 border-black rounded-md p-2 bg-lime-100 text-black text-bold text-center text-[28px]"
-                    />
+                    <div className="relative">
+                        <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={attitudePercentage === "" ? "" : attitudePercentage}
+                            onChange={handleAttitudeChange}
+                            className="border-2 border-black rounded-md p-2 bg-lime-100 text-black font-semibold text-center text-[28px] pr-8 w-[100px] h-[50px] appearance-none"
+                        />
+                        <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black font-semibold text-[28px]">%</span>
+                    </div>
                 </label>
             </div>
+            {alertMessage && <div className="text-red-500 text-[20px]">
+                {alertMessage}
+            </div>}
         </div>
     );
 }

@@ -1,5 +1,4 @@
 export interface IExam {
-    alumno_id: number
     examen_asignado_id: number
     fecha: string
     nombre: string
