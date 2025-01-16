@@ -1,4 +1,6 @@
 import { IconArrow } from "@/icons";
+import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 interface OnboardingCardProps {
@@ -25,15 +27,8 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
     onClickBack,
 }) => {
     return (
-        <div className="w-full bg-[#FFFAEB]">
-            <div className="h-[108px] w-[68px] flex flex-col items-center mx-[68px] pt-[36px]">
-                <div className="h-[48px] w-[48px] rounded-full bg-transparent">
-                    <img src="/media/img/user-photo.png" alt="User photo" className="h-full w-full" />
-                </div>
-                <p className="font-extrabold text-[14px]">
-                    Palprofe
-                </p>
-            </div>
+        <div className="w-full bg-[#FFFAEB] relative">
+            <Image src="/PalProfeLogo.svg" alt="User photo" className="absolute top-14 left-14" width={150} height={96} />
             <div className="flex items-center justify-center min-h-screen text-center">
                 <div className="w-[60%]">
                     <h2 className="text-[22px] font-semibold mb-16">
@@ -65,9 +60,11 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                                 ></div>
                             ))}
                         </div>
-                        <button onClick={onClickNext} type="button" className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
-                            {buttonText}
-                        </button>
+                        <Link href="/add-course">
+                            <button type="button" className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
+                                {buttonText}
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>
