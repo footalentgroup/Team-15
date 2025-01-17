@@ -21,7 +21,7 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
   const SIDEBAR_LINK = [
     {
       name: 'Inicio',
-      url: '/home',
+      url: '/home ',
       icon: <IconHome color={`${pathname === '/home' ? 'white' : ''}`} />
     },
     {

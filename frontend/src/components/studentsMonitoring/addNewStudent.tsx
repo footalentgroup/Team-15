@@ -90,8 +90,7 @@ export default function AddNewStudent() {
             const updatedData = [...data, newStudent];
             setData(updatedData);
 
-            const updatedList = { alumnos: updatedData };
-            localStorage.setItem("studentsData", JSON.stringify(updatedList));
+            localStorage.setItem("studentsData", JSON.stringify(updatedData));
 
             setStudentName("");
             setIsInputVisible(false);
