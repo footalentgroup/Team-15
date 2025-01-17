@@ -38,8 +38,8 @@ export function Slider({ list, setIsVisible, setCurrentCourse }: Props) {
         style={{ padding: '8px 64px', minWidth: '100%' }}
       >
         {
-          list.map((item, i) => (
-            <SwiperSlide key={i} onClick={() => setCurrentCourseCookie(item)}>
+          list.map((item) => (
+            <SwiperSlide key={item.courseId} onClick={() => setCurrentCourseCookie(item)}>
               <CourseCard setIsVisible={setIsVisible} courses={item} color={item.color!} />
             </SwiperSlide>
           ))
