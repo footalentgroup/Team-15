@@ -38,7 +38,7 @@ export default function AddNewStudent() {
             const updatedData = data.filter(student => student.id !== studentToDelete);
             console.log("Datos después de eliminar:", updatedData);
             setData(updatedData);
-            localStorage.setItem("studentsData", JSON.stringify({ alumnos: updatedData }));
+            localStorage.setItem("studentsData", JSON.stringify(updatedData));
         }
         setShowModal(false);
     };

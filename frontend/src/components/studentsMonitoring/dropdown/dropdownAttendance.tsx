@@ -51,13 +51,25 @@ export default function DropdownAttendance({ studentId, attendanceId }: Dropdown
         if (selectedOption === "Sin asignar") {
             return "bg-gray-100";
         } else if (selectedOption === "Presente") {
-            return "bg-green-100";
+            return "bg-[#E6FAF2]";
         } else if (selectedOption === "Ausente") {
-            return "bg-red-100";
+            return "bg-[#FEE6F3]";
         } else if (selectedOption === "Llega tarde") {
-            return "bg-blue-100";
+            return "bg-[#E6FAFE]";
         }
-        return "bg-gray-100";
+
+        const colorChange = options;
+        const index = Math.min(colorChange.indexOf(selectedOption), 2);
+        switch (index) {
+            case 0:
+                return "bg-[#FEE6F3]";
+            case 1:
+                return "bg-[#E6FAFE]";
+            case 2:
+                return "bg-[#E6FAF2]";
+            default:
+                return "bg-gray-100";
+        }
     };
 
     return (

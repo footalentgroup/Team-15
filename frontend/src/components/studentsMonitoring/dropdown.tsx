@@ -103,7 +103,21 @@ export default function Dropdown() {
         } else if (selectedOption === "Deficiente") {
             return "bg-red-100";
         }
-        return "bg-gray-100";
+        
+        const colorChange = options;
+        const index = Math.min(colorChange.indexOf(selectedOption), 3);
+        switch (index) {
+            case 0:
+                return "bg-[#FEE6F3]";
+            case 1:
+                return "bg-[#FFFAEA]";
+            case 2:
+                return "bg-[#E6FAFE]";
+            case 3:
+                return "bg-[#E6FAF2]";
+            default:
+                return "bg-gray-100";
+        }
     };
 
     return (
