@@ -81,7 +81,7 @@ const Students: React.FC = () => {
                     {isSaved ? (
                         <button
                             type="button"
-                            className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through`}
+                            className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through cursor-not-allowed`}
                         >
                             <i className="pr-4 fa-solid fa-square-check text-green-500"></i>
                             Configurá el sistema de notas
@@ -100,7 +100,7 @@ const Students: React.FC = () => {
                         </Link>
                     )}
                     {(data && data.length > 0) ? (
-                        <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through`}>
+                        <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through cursor-not-allowed`}>
                             <i className={`pr-4 fa-solid fa-square-check text-green-500`}></i>
                             Cargá la lista de alumnos
                             <i className="fa-solid fa-arrow-up pl-4"></i>
