@@ -88,7 +88,7 @@ const Students: React.FC = () => {
                         </button>
                     </Link>
                     {(data && data.length > 0) ? (
-                        <Link href={`/students/add-students`} >
+                        <Link href={`/add-course?page=2&courseId=${currentCourse?.courseId}`} >
                             <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through`}>
                                 <i className={`pr-4 fa-solid fa-square-check text-green-500`}></i>
                                 Cargá la lista de alumnos
@@ -96,7 +96,7 @@ const Students: React.FC = () => {
                             </button>
                         </Link>
                     ) : (
-                        <Link href={`/students/add-students`} >
+                        <Link href={`/add-course?page=2&courseId=${currentCourse?.courseId}`} >
                             <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-yellow-500`}>
                                 <i className={`pr-4 fa-regular fa-square`}></i>
                                 Cargá la lista de alumnos

@@ -180,7 +180,7 @@ export default function AddNewStudent() {
                                     type="button"
                                     className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] flex justify-between items-center"
                                 >
-                                    <span className={`${isEditMode ? "" : "mx-auto"}`}>{student.nombre} {student.apellido}</span>
+                                    <span className={`${isEditMode ? "" : "mx-auto"}`}>{student.apellido} {student.nombre} </span>
 
                                     {isEditMode && (
                                         <div className="flex gap-2">
