@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 interface SliderViewProps {
-    onMonthChange: (index: number) => void;
-    onCuatrimestreChange: (index: number) => void;
+    onMonthChange?: (index: number) => void;
+    onCuatrimestreChange?: (index: number) => void;
 }
 
 export default function SliderView({ onMonthChange, onCuatrimestreChange }: SliderViewProps) {
@@ -29,8 +29,6 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
                 return "Segundo cuatrimestre";
             case 2:
                 return "Tercer cuatrimestre";
-            case 3:
-                return "Cuarto cuatrimestre";
             default:
                 return "Primer cuatrimestre";
         }
@@ -68,26 +66,26 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
         const length = isMensual ? trimestres.length : months.length;
         const newIndex = monthIndex === 0 ? length - 1 : monthIndex - 1;
         setMonthIndex(newIndex);
-        onMonthChange(newIndex);
+        if (onMonthChange) onMonthChange(newIndex);  
     };
 
     const handleNextMonth = () => {
         const length = isMensual ? trimestres.length : months.length;
         const newIndex = monthIndex === length - 1 ? 0 : monthIndex + 1;
         setMonthIndex(newIndex);
-        onMonthChange(newIndex);
+        if (onMonthChange) onMonthChange(newIndex);  
     };
 
     const handlePrevCuatrimestre = () => {
-        const newIndex = cuatrimestreIndex === 0 ? 3 : cuatrimestreIndex - 1;
+        const newIndex = cuatrimestreIndex === 0 ? 2 : cuatrimestreIndex - 1;
         setCuatrimestreIndex(newIndex);
-        onCuatrimestreChange(newIndex);
+        if (onCuatrimestreChange) onCuatrimestreChange(newIndex); 
     };
 
     const handleNextCuatrimestre = () => {
-        const newIndex = cuatrimestreIndex === 3 ? 0 : cuatrimestreIndex + 1;
+        const newIndex = cuatrimestreIndex === 2 ? 0 : cuatrimestreIndex + 1;
         setCuatrimestreIndex(newIndex);
-        onCuatrimestreChange(newIndex);
+        if (onCuatrimestreChange) onCuatrimestreChange(newIndex); 
     };
 
     return (
