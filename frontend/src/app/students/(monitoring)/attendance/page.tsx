@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { IAttendance } from "@/interfaces/IAttendance.interfaces";
+import { ICourses } from "@/interfaces/ICourses.interface";
 import DropdownAttendance from "@/components/studentsMonitoring/dropdown/dropdownAttendance";
 
 export default function Attendance() {
@@ -10,7 +11,18 @@ export default function Attendance() {
     const [monthIndex, setMonthIndex] = useState(0);
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [studentList, setStudentList] = useState<IStudents[] | null>(null);
-    const [attendanceData, setAttendanceData] = useState<IAttendance[]>([]); // Estado para las asistencias filtradas
+    const [attendanceData, setAttendanceData] = useState<IAttendance[]>([]);
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
@@ -34,7 +46,7 @@ export default function Attendance() {
 
                 const attendanceEntry: IAttendance = {
                     id: newId,
-                    curso_id: 1,
+                    curso_id: courseId,
                     nombre_valoracion: dayName,
                     fecha: formattedDate,
                     falta_justificada: false,

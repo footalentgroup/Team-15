@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { usePathname } from "next/navigation";
 import { IExam } from "@/interfaces/IExam.interfaces";
+import { ICourses } from "@/interfaces/ICourses.interface";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownExam from "@/components/studentsMonitoring/dropdown/dropdownExam";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
@@ -18,6 +19,17 @@ export default function Exam() {
     const [examGrade, setExamGrade] = useState<string | number>("Sin asignar");
     const [examGradeType, setExamGradeType] = useState("");
     const [exams, setExams] = useState<IExam[]>([]);
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const [quarterIndex, setQuarterIndex] = useState(0);
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
@@ -53,7 +65,7 @@ export default function Exam() {
     }
 
     const filteredExams = exams.filter(
-        (exam) => exam.cuatrimestre === quarterIndex && exam.examen_asignado_id
+        (exam) => exam.curso_id === courseId && exam.cuatrimestre === quarterIndex && exam.examen_asignado_id
     );
 
     const isExam = pathname.includes("exam");
@@ -69,6 +81,7 @@ export default function Exam() {
     const handleSaveExam = () => {
         if (examName.trim() && examDate.trim() && examType.trim()) {
             const newExam: IExam = {
+                curso_id: courseId,
                 examen_asignado_id: exams.length + 1,
                 nombre: examName,
                 fecha: examDate,

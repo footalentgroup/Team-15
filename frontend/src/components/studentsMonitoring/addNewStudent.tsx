@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { IStudents } from "@/interfaces/IStudents.interface";
+import { ICourses } from "@/interfaces/ICourses.interface";
+import { AddStudentAction } from "@/actions/addCourse.action";
+import { deleteStudentAction, updateStudentAction } from "@/actions/studentsActions";
 
 export default function AddNewStudent() {
     const [data, setData] = useState<IStudents[]>([]);
@@ -11,6 +14,17 @@ export default function AddNewStudent() {
     const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
     const [editingStudentId, setEditingStudentId] = useState<number | null>(null);
     const [isInputVisible, setIsInputVisible] = useState(false);;
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const showNext = () => {
         setStartIndex((prevIndex) => (prevIndex + 1) % data.length);
@@ -20,28 +34,37 @@ export default function AddNewStudent() {
         setStartIndex((prevIndex) => (prevIndex - 1 + data.length) % data.length);
     };
 
-    const studentsToShow = Array.isArray(data) && data.length <= 7
+    const studentsToShow = Array.isArray(data)
         ? data
-        : Array.isArray(data)
-            ? isEditMode
-                ? data.slice(startIndex, startIndex + 6)
-                : data.slice(startIndex, startIndex + 7)
-            : [];
+            .filter(student => student.curso_id === courseId)
+            .slice(startIndex, startIndex + (isEditMode ? 6 : 7))
+        : [];
+        
 
     const handleDelete = (id: number) => {
         setStudentToDelete(id);
         setShowModal(true);
     };
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         if (studentToDelete !== null) {
-            const updatedData = data.filter(student => student.id !== studentToDelete);
-            console.log("Datos después de eliminar:", updatedData);
-            setData(updatedData);
-            localStorage.setItem("studentsData", JSON.stringify(updatedData));
+            try {
+                if (!courseId) {
+                    throw new Error("No se encontró un ID de curso válido.");
+                }
+    
+                await deleteStudentAction(studentToDelete, courseId);
+    
+                const updatedData = data.filter(student => student.id !== studentToDelete);
+                setData(updatedData);
+                localStorage.setItem("studentsData", JSON.stringify(updatedData));
+            } catch (error) {
+                console.error("Error al eliminar el alumno:", error);
+            }
         }
         setShowModal(false);
     };
+    
 
 
     const cancelDelete = () => {
@@ -85,7 +108,7 @@ export default function AddNewStudent() {
                 ? Math.max(...data.map(student => student.id)) + 1
                 : 1;
 
-            const newStudent = { id: newId, curso_id: 1, nombre: firstName, apellido: lastName };
+            const newStudent = { id: newId, curso_id: courseId, nombre: firstName, apellido: lastName };
 
             const updatedData = [...data, newStudent];
             setData(updatedData);

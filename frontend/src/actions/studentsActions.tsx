@@ -34,3 +34,56 @@ export async function getStudentsAction(courseId: number) {
 
   return filteredData;
 }
+
+export async function deleteStudentAction(id: number, courseId: number) {
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = '';
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+  refreshToken();
+
+  const response = await fetch(`${API_URL}/alumno/delete/${id}/`, {
+    method: "DELETE",
+    headers: {
+      'Authorization': `Bearer ${TOKEN}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al eliminar el alumno");
+  }
+
+  const updatedStudents = await getStudentsAction(courseId);
+
+  return updatedStudents;
+}
+
+export async function updateStudentAction(id: number, courseId: number) {
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+  refreshToken();
+
+  const response = await fetch(`${API_URL}/alumno/update/${id}/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${TOKEN}`
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al actualizar el alumno");
+  }
+
+  const updatedStudents = await getStudentsAction(courseId);
+
+  return updatedStudents;
+}

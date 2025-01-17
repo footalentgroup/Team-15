@@ -6,7 +6,7 @@ import HomeworkConfig from "@/components/studentsMonitoring/config/homework";
 import ExamConfig from "@/components/studentsMonitoring/config/exam";
 import AttitudinalConfig from "@/components/studentsMonitoring/config/attitudinal";
 import AttendanceConfig from "@/components/studentsMonitoring/config/attendance";
-
+import { ICourses } from '@/interfaces/ICourses.interface';
 
 export default function Config() {
     const [cuatrimestreData, setCuatrimestreData] = useState({});
@@ -15,6 +15,17 @@ export default function Config() {
     const [attitudinalData, setAttitudinalData] = useState({});
     const [attendanceData, setAttendanceData] = useState({});
     const [isFormValid, setIsFormValid] = useState(false);
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const handleSave = () => {
         if (!isFormValid) {
@@ -28,6 +39,7 @@ export default function Config() {
             exam: examData,
             attitudinal: attitudinalData,
             attendance: attendanceData,
+            courseId
         };
 
         localStorage.setItem("configData", JSON.stringify(finalData));

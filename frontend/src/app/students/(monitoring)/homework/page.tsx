@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { IHomework } from "@/interfaces/IHomework.interfaces";
+import { ICourses } from "@/interfaces/ICourses.interface";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownHomework from "@/components/studentsMonitoring/dropdown/dropdownHomework";
@@ -18,6 +19,17 @@ export default function Homework() {
     const [homeworkGrade, setHomeworkGrade] = useState<string | number>("Sin asignar");
     const [homeworkGradeType, setHomeworkGradeType] = useState("");
     const [homeworks, setHomeworks] = useState<IHomework[]>([]);
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const [quarterIndex, setQuarterIndex] = useState(0);
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
@@ -56,8 +68,9 @@ export default function Homework() {
     }
 
     const filteredHomeworks = homeworks.filter(
-        (homework) => homework.cuatrimestre === quarterIndex && homework.tarea_asignada_id
+        (homework) => homework.curso_id === courseId && homework.cuatrimestre === quarterIndex && homework.tarea_asignada_id
     );
+    
 
     const isExam = pathname.includes("exam");
     const singular = isExam ? "examen" : "tarea";
@@ -72,6 +85,7 @@ export default function Homework() {
     const handleSaveHomework = () => {
         if (homeworkName.trim() && homeworkDate.trim() && homeworkType.trim()) {
             const newHomework: IHomework = {
+                curso_id: courseId,
                 tarea_asignada_id: homeworks.length + 1,
                 nombre: homeworkName,
                 fecha: homeworkDate,
@@ -122,8 +136,8 @@ export default function Homework() {
                                 {studentList.slice(0, 7).map((student) => (
                                     <DropdownHomework
                                         key={`${student.id}-${homework.tarea_asignada_id}`}
-                                        studentId={student.id} 
-                                        homeworkId={homework.tarea_asignada_id} 
+                                        studentId={student.id}
+                                        homeworkId={homework.tarea_asignada_id}
                                         onGradeChange={handleGradeChange}
                                     />
                                 ))}
