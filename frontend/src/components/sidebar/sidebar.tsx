@@ -21,8 +21,8 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
   const SIDEBAR_LINK = [
     {
       name: 'Inicio',
-      url: '/home ',
-      icon: <IconHome color={`${pathname === '/home' ? 'white' : ''}`} />
+      url: '/home',
+      icon: <IconHome color={`${pathname.includes('home') && !pathname.includes('homework') ? 'white' : ''}`} />
     },
     {
       name: 'Seguimiento',
@@ -34,16 +34,6 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
       url: currentCourse?.havePlanification ? '/planification/' + currentCourse?.subjectId : '/planification',
       icon: <IconCalendar color={`${pathname.includes('planification') ? 'white' : ''}`} />
     },
-    /*     {
-          name: 'Mis Recursos',
-          url: '#',
-          icon: <IconResources color={`${pathname === '/resources' ? 'white' : ''}`} />
-        },
-        {
-          name: 'Notas Rápidas',
-          url: '#',
-          icon: <IconNotes color={`${pathname === '/notes' ? 'white' : ''}`} />
-        } */
   ]
 
   if (isExpanded || isVisible) {
