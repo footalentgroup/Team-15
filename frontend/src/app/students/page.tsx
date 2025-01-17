@@ -22,43 +22,43 @@ const Students: React.FC = () => {
                 setData(response);
             });
         }
-    }
-
+    };
+    
     useEffect(() => {
-        const configData = window.localStorage.getItem("configData");
         const studentsData = window.localStorage.getItem("studentsData");
         const currentCourse = window.localStorage.getItem("currentCourse");
-
-        if (currentCourse && !data) {
+    
+        if (currentCourse) {
             const course = JSON.parse(currentCourse);
             setCurrentCourse(course);
             getData(course);
         }
-        if (configData) {
-            setIsSaved(true);
+    
+        if (currentCourse) {
+            const course = JSON.parse(currentCourse);
+            const configDataKey = `configData${course.courseId}`;  
+            const configData = window.localStorage.getItem(configDataKey);  
+    
+            if (configData) {
+                setIsSaved(true);
+            }
         }
+    
         if (studentsData) {
             setStudentsLocalData(true);
         }
+    
+        if (isSaved && data && data?.length > 0) {
 
-        //if (configData && data && data?.length > 0) {
-        //logica para guardar los alumnos en la aplicacion general y redirigir
-        //localStorage.setItem("studentsData", JSON.stringify(data));
-        //router.push("/students/homework");
-        //}
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-
-        if (configData && data && data?.length > 0) {
-            //setIsModalVisible(true);
-            setTimeout(() => {
-                //setIsModalVisible(false);
-                router.push("/students/homework");
-            }, 2000);
+            localStorage.setItem("studentsData", JSON.stringify(data));
+            router.push("/students/homework");
         }
+    
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, studentsLocalData, isSaved]);
-
-
+    
     console.log('data', data);
+    
 
     return (
         <div>

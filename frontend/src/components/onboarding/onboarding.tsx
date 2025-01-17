@@ -61,24 +61,11 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                             ))}
                         </div>
                         <div>
-                            {currentStep === totalSteps ? (
-                                <Link href="/add-course">
-                                    <button
-                                        type="button"
-                                        className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
-                                    >
-                                        {buttonText}
-                                    </button>
-                                </Link>
-                            ) : (
-                                <button
-                                    onClick={onClickNext}
-                                    type="button"
-                                    className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
-                                >
+                            <Link href="/add-course">
+                                <button type="button" className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
                                     {buttonText}
                                 </button>
-                            )}
+                            </Link>
                         </div>
                     </div>
                 </div>

@@ -32,7 +32,7 @@ export default function Config() {
             alert("Por favor, complete todos los campos.");
             return;
         }
-
+    
         const finalData = {
             cuatrimestre: cuatrimestreData,
             homework: homeworkData,
@@ -41,10 +41,13 @@ export default function Config() {
             attendance: attendanceData,
             courseId
         };
-
-        localStorage.setItem("configData", JSON.stringify(finalData));
-        console.log("Datos guardados:", finalData);
+    
+        const configKey = `configData${courseId}`;
+    
+        localStorage.setItem(configKey, JSON.stringify(finalData));
+        console.log(`Datos guardados en ${configKey}:`, finalData);
     };
+    
 
     useEffect(() => {
         validateForm();
