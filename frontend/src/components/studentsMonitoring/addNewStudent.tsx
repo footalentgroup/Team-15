@@ -9,7 +9,6 @@ export default function AddNewStudent() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [studentName, setStudentName] = useState("");
-    const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
     const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
     const [editingStudentId, setEditingStudentId] = useState<number | null>(null);
     const [isInputVisible, setIsInputVisible] = useState(false);;

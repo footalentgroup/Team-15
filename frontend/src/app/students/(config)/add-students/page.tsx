@@ -1,32 +1,17 @@
-"use client"
-import { AddStudentAction, ImportStudentsAction } from "@/actions/addCourse.action";
-import ButtonContinue from "@/ui/buttons/buttonContinue";
-import ButtonNormal from "@/ui/buttons/buttonNormal";
-import { startTransition, useActionState, useState, useEffect } from "react"
-import LoadingFile from "@/components/multiStepForm/loadingFile";
-import { IStudentRequest } from "@/interfaces/IRequests.interface";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+import { useState, useEffect } from "react";
 import { IconInfo } from "@/icons";
+import { IStudents } from "@/interfaces/IStudents.interface";
+import ButtonContinue from "@/ui/buttons/buttonContinue";
+import LoadingFile from "@/components/multiStepForm/loadingFile";
+import { ImportStudentsAction } from "@/actions/addCourse.action";
 import Link from "next/link";
 
-const INITIAL_STATE = {
-    data: null
-};
-
-interface Props {
-    setActiveTab: (index: number) => void;
-    courseId: number | null;
-}
-
-export default function AddNewStudensts({ setActiveTab, courseId }: Props) {
-    const [formState, formAction] = useActionState(
-        AddStudentAction,
-        INITIAL_STATE
-    );
-    console.log(formState);
-    console.log('courseId', courseId);
+export default function AddStudentsMonitoring() {
+    const [data, setData] = useState<IStudents[]>([]);
     const [studentName, setStudentName] = useState("");
-    const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [excelFile, setExcelFile] = useState<File | null>(null);
@@ -35,67 +20,70 @@ export default function AddNewStudensts({ setActiveTab, courseId }: Props) {
 
     const handleAddStudent = () => {
         if (studentName.trim()) {
-            const [lastName, ...firstNameParts] = studentName.split(' ');
-            const firstName = firstNameParts.join(' ');
-            const updatedList = {
-                alumnos: [...studentList.alumnos, { curso_id: courseId!, nombre: firstName, apellido: lastName }]
-            };
+            const [lastName, ...firstNameParts] = studentName.split(" ");
+            const firstName = firstNameParts.join(" ");
 
-            setStudentList(updatedList);
-            localStorage.setItem('studentsData', JSON.stringify(updatedList));
+            const newId = data.length > 0 ? Math.max(...data.map(student => student.id)) + 1 : 1;
+
+            const newStudent: IStudents = { id: newId, curso_id: 1, nombre: firstName, apellido: lastName };
+
+            const updatedData = [...data, newStudent];
+            setData(updatedData);
+
+            const updatedList = { alumnos: updatedData };
+            localStorage.setItem("studentsData", JSON.stringify(updatedList));
 
             setStudentName("");
         }
     };
 
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        if (studentList.alumnos.length === 0) return;
-        startTransition(() => {
-            formAction(studentList);
-        });
-
-    };
-
-    const handleSkip = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleConfirm = () => {
-        setIsModalOpen(false);
-        setImportSuccess('Estudiantes importados correctamente, será redirigido en breve...');
-        startTransition(() => {
-            formAction(studentList);
-        });
-        setTimeout(() => {
-            setActiveTab(2);
-        }, 3000);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
+    useEffect(() => {
+        const storedStudents = localStorage.getItem("studentsData");
+        if (storedStudents) {
+            try {
+                const parsedStudents = JSON.parse(storedStudents);
+                if (Array.isArray(parsedStudents)) {
+                    setData(parsedStudents);
+                } else {
+                    console.error("Los datos en localStorage no son un array válido.");
+                    setData([]);
+                }
+            } catch (error) {
+                console.error("Error al parsear los datos de localStorage:", error);
+                setData([]);
+            }
+        }
+    }, []);
 
     const handleImport = () => {
         setIsImportModalOpen(true);
     }
 
-    //cambiar nombre de la funcion y la logica cuando se pueda conectar
     const handleImportData = async () => {
         setLoading(true);
         setImportError(null);
 
-        if (studentList.alumnos.length === 0 && excelFile) {
+        if (data.length === 0 && excelFile) {
             const formData = new FormData();
-            formData.append('file', excelFile);
-            formData.append('curso_id', courseId!.toString());
+            formData.append("file", excelFile);
+            formData.append("curso_id", "1");
 
             try {
                 const result = await ImportStudentsAction(formData);
-                console.log(result);
+
                 if (result.success) {
-                    setStudentList({ alumnos: result.data.alumnos });
+                    const importedStudents: IStudents[] = result.data.alumnos.map((student: any) => ({
+                        id: student.id,
+                        curso_id: student.curso_id,
+                        nombre: student.nombre,
+                        apellido: student.apellido,
+                    }));
+
+                    const updatedData = [...data, ...importedStudents];
+
+                    setData(updatedData);
+                    localStorage.setItem("studentsData", JSON.stringify(updatedData));
+
                     setIsImportModalOpen(false);
                     setExcelFile(null);
                 } else {
@@ -115,26 +103,12 @@ export default function AddNewStudensts({ setActiveTab, courseId }: Props) {
         setExcelFile(null);
     }
 
-    /* useEffect(() => {
-        if (formState.success) {
-            setActiveTab(2);
-        }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [formState.success]); */
-
-    useEffect(() => {
-        const storedStudents = localStorage.getItem('studentsData');
-        if (storedStudents) {
-            setStudentList(JSON.parse(storedStudents));
-        }
-    }, []);
-
     return (
         <div className="relative">
-            <form onSubmit={handleSubmit} className="w-full h-screen p-16 flex flex-col">
+            <form className="w-full h-screen p-16 flex flex-col">
                 <div className="flex flex-col items-baseline gap-2">
                     <h2 className="font-semibold text-4xl">¿Quieres añadir tu lista de alumnos?</h2>
-                    <span className="text-gray-500 text-xl">No te preocupes si ahora no tienes la lista competa, podrás agregar o editar alumnos más tarde</span>
+                    <span className="text-gray-500 text-xl">No te preocupes si ahora no tienes la lista completa, podrás agregar o editar alumnos más tarde</span>
                 </div>
                 <div className="flex flex-col gap-4 pt-11">
                     <label htmlFor="studentName" className="mr-2 font-bold text-2xl">Apellido y nombre del alumno:</label>
@@ -149,22 +123,47 @@ export default function AddNewStudensts({ setActiveTab, courseId }: Props) {
                             onChange={(e) => setStudentName(e.target.value)}
                         />
 
-                        <ButtonNormal text="Añadir a la lista" color="bg-[#fbc82d]" onClick={handleAddStudent} />
+                        <button
+                            type="button"
+                            className="min-w-[136px] min-h-12 bg-[#fbc82d] border-2 border-black text-black font-semibold py-2 px-4 rounded-md"
+                            onClick={handleAddStudent}
+                        >
+                            Añadir a la lista
+                        </button>
                         <span className="text-lg font-bold mx-4">O</span>
-
-                        <ButtonNormal text="Importar de excel" onClick={handleImport} />
-
+                        <button
+                            type="button"
+                            className="min-w-[136px] min-h-12 bg-white border-2 border-black text-black font-semibold py-2 px-4 rounded-md"
+                            onClick={handleImport}
+                        >
+                            Importar de excel
+                        </button>
                     </div>
-                    <div className="text-gray-500 mt-2 flex gap-2"><IconInfo /> <span>Tu lista quedará ordenará automáticamente por orden alfabético</span></div>
+                    <div className="text-gray-500 mt-2 flex gap-2">
+                        <IconInfo />
+                        <span>Tu lista quedará ordenará automáticamente por orden alfabético</span>
+                    </div>
                     <ul className="flex flex-wrap text-wrap gap-2 mt-4 px-32 max-h-[360px] overflow-y-scroll">
-                        {studentList.alumnos.sort().map((student, index) => (
-                            <li key={index} className="w-48 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2">
-                                <p>{`${student.apellido} ${student.nombre}`}</p>
-                                <button type="button" onClick={() => setStudentList({ alumnos: studentList.alumnos.filter((_, i) => i !== index) })}>
-                                    ✖
-                                </button>
-                            </li>
-                        ))}
+                        {data
+                            .sort((a, b) => a.apellido.localeCompare(b.apellido))
+                            .map((student) => (
+                                <li
+                                    key={student.id}
+                                    className="w-48 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2"
+                                >
+                                    <p>{`${student.nombre} ${student.apellido}`}</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            const updatedData = data.filter((s) => s.id !== student.id);
+                                            setData(updatedData);
+                                            localStorage.setItem("studentsData", JSON.stringify(updatedData));
+                                        }}
+                                    >
+                                        ✖
+                                    </button>
+                                </li>
+                            ))}
                     </ul>
                 </div>
                 <div className="flex mt-auto justify-center">
@@ -179,7 +178,7 @@ export default function AddNewStudensts({ setActiveTab, courseId }: Props) {
                             <button
                                 type="submit"
                                 className="min-w-[130px] min-h-[48px] bg-pink-500 text-white border-2 border-black font-semibold text-[16px] px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] disabled:opacity-75 disabled:cursor-not-allowed"
-                                disabled={studentList.alumnos.length === 0}
+                                disabled={data.length === 0}
                             >
                                 Guardar
                             </button>
@@ -187,25 +186,8 @@ export default function AddNewStudensts({ setActiveTab, courseId }: Props) {
                     </div>
                 </div>
             </form>
-
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-                    <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
-                        <div className="flex justify-between items-center">
-                            <h3 className="font-bold text-lg">Omitir Paso</h3>
-                            <button type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
-                        </div>
-                        <p>Puedes añadir esta información más tarde desde el menú de seguimiento.</p>
-                        <div className="flex justify-end space-x-4 mt-auto">
-                            <ButtonContinue type="button" text="Cancelar" color="bg-white" onClick={handleCancel} />
-                            <ButtonContinue text="Omitir este paso" onClick={handleConfirm} />
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {isImportModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 ms-20">
                     <div className="flex flex-col gap-2 bg-yellow-100 text-black-300 p-10 rounded-lg px-6 filter drop-shadow-[18px_14px_0px_#000000] w-5/6">
                         <div className="flex justify-between items-start">
                             <div>

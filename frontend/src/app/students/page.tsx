@@ -85,7 +85,7 @@ const Students: React.FC = () => {
                             <i className="fa-regular fa-copy pl-4"></i>
                         </button>
                     </Link>
-                    <Link href={`/add-course?page=2&courseId=${currentCourse?.courseId}`}>
+                    <Link href="/students/add-students">
                         <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${studentsLocalData ? ' bg-white line-through' : 'bg-yellow-500'}`}>
                             <i className={`pr-4 ${studentsLocalData ? "fa-solid fa-square-check text-green-500" : "fa-regular fa-square"}`}></i>
                             Cargá la lista de alumnos
