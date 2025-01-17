@@ -6,7 +6,8 @@
 
 ## Pasos para ejecutar el servidor backend en local:
 ### 1. Instalar python
-### 2. Crear un entorno virtual y activarlo
+### 2. Clonar el repositorio `git clone https://github.com/footalentgroup/Team-15.git`
+### 3. Crear un entorno virtual y activarlo
 ```
 python -m venv venv
 
@@ -16,7 +17,7 @@ source venv/bin/activate
 .\venv\Scripts\activate
 ```
 
-### 3. Ingresar a la ruta backend/core_app/ y ejecutar estos comandos
+### 4. Ingresar a la ruta backend/core_app/ y ejecutar estos comandos
 ```
 pip install -r requirements.txt
 python manage.py makemigrations
