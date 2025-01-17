@@ -1,0 +1,88 @@
+import { Month, PLanificationMonth } from '@/interfaces/ICourses.interface'
+
+export const INITIAL_MONTHS: Month[] | PLanificationMonth[] = [
+  {
+    id: 0,
+    month: 'Enero',
+    color: 'bg-green-100',
+    content: [],
+    date: '2025-01-01',
+  },
+  {
+    id: 1,
+    month: 'Febrero',
+    color: 'bg-pink-100',
+    content: [],
+    date: '2025-02-01',
+  },
+  {
+    id: 2,
+    month: 'Marzo',
+    color: 'bg-yellow-100',
+    content: [],
+    date: '2025-03-01',
+  },
+  {
+    id: 3,
+    month: 'Abril',
+    color: 'bg-blue-light-100',
+    content: [],
+    date: '2025-04-01',
+  },
+  {
+    id: 4,
+    month: 'Mayo',
+    color: 'bg-green-100',
+    content: [],
+    date: '2025-05-01',
+  },
+  {
+    id: 5,
+    month: 'Junio',
+    color: 'bg-pink-100',
+    content: [],
+    date: '2025-06-01',
+  },
+  {
+    id: 6,
+    month: 'Julio',
+    color: 'bg-yellow-100',
+    content: [],
+    date: '2025-07-01',
+  },
+  {
+    id: 7,
+    month: 'Agosto',
+    color: 'bg-blue-light-100',
+    content: [],
+    date: '2025-08-01',
+  },
+  {
+    id: 8,
+    month: 'Septiembre',
+    color: 'bg-green-100',
+    content: [],
+    date: '2025-09-01',
+  },
+  {
+    id: 9,
+    month: 'Octubre',
+    color: 'bg-pink-100',
+    content: [],
+    date: '2025-10-01',
+  },
+  {
+    id: 10,
+    month: 'Noviembre',
+    color: 'bg-yellow-100',
+    content: [],
+    date: '2025-11-01',
+  },
+  {
+    id: 11,
+    month: 'Diciembre',
+    color: 'bg-blue-light-100',
+    content: [],
+    date: '2025-12-01',
+  },
+]

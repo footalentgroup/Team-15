@@ -1,8 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import '@fortawesome/fontawesome-free/css/all.min.css';
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -12,10 +13,99 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  /*   color: var(--foreground);
+  background: var(--background); */
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #dddddd;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-left: 3px solid white;
+  border-right: 3px solid white;
+  border-radius: 2px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #01caf8;
+  width: 19px;
+  height: 62px;
+  border-radius: 2px;
+  border: 1px solid black;
+  background-clip: content-box;
+}
+
+[type='date']::-webkit-inner-spin-button {
+  display: none;
+}
+
+[type='date']::-webkit-calendar-picker-indicator {
+  background: url('/icons/calendar.svg') 90% 0% no-repeat;
+  background-size: 20px;
+  margin: 0 4px;
+}
+
+[type='date']::-webkit-datetime-edit {
+  padding: 2px 4px;
+}
+
+/* Estilizar el popup del date input en navegadores WebKit */
+[type='date']::-webkit-calendar-picker-indicator:focus {
+  background-color: #f0f0f0; /* Cambia el color de fondo del popup */
+  color: #000; /* Cambia el color del texto */
+}
+
+/* Estilizar el popup del date input en navegadores Firefox */
+input[type='date']::-moz-focus-inner {
+  border: 0;
+}
+
+input[type='date']::-moz-focus-outer {
+  border: 0;
+}
+
+@layer base {
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: none;
+  }
+
+.trapezoid {
+  --p: 17px;
+  width: 50px;
+  aspect-ratio: 2 / 3;
+  clip-path: polygon(80% var(--p), 80% calc(100% - var(--p)), 0 100%, 0 0);
+  background: #fde69e;
+}
+
+.horizontal-line {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) calc(50% - 1px),
+    rgba(0, 0, 0, 1) calc(50%),
+    rgba(0, 0, 0, 0) calc(50% + 1px)
+  );
+}
+
+input:focus {
+  border-color: #01caf8;
+  box-shadow: 0 0 0 2px #01caf8;
 }

@@ -1,0 +1,92 @@
+.weekly-calendar .rbc-button-link {
+  font-size: 24px !important;
+  text-align: center !important;
+  width: 100% !important;
+  text-transform: capitalize;
+  border: 2px solid black !important;
+  border-bottom: none !important;
+  border-radius: 12px 12px 0 0 !important;
+  background-color: #f6ffdc !important;
+}
+
+.weekly-calendar .rbc-event-label,
+.weekly-calendar .rbc-label.rbc-time-header-gutter,
+.weekly-calendar .rbc-allday-cell {
+  display: none !important;
+}
+
+.weekly-calendar .rbc-event {
+  background-color: #e9e9e9 !important;
+  border-radius: 8px;
+  border: none !important;
+  min-height: 68px !important;
+  margin: 8px 0 !important;
+  padding: 0 16px !important;
+  background: none !important;
+}
+
+.weekly-calendar .rbc-time-header-cell {
+  height: 48px !important;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 36px;
+  filter: drop-shadow(5px 4px 0px #000000) !important;
+}
+
+.weekly-calendar .rbc-time-content {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 36px;
+  filter: drop-shadow(4px 4px 0px #000000) !important;
+  overflow: hidden;
+}
+
+.weekly-calendar .rbc-header {
+  display: flex !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+.weekly-calendar .rbc-time-column {
+  height: 100% !important;
+}
+
+.rbc-time-header.rbc-overflowing {
+  margin-right: 0 !important;
+}
+
+.weekly-calendar .rbc-time-content > * + * > *,
+.weekly-calendar .rbc-time-view,
+.weekly-calendar .rbc-time-header-content,
+.weekly-calendar .rbc-time-content {
+  border: none !important;
+}
+
+.weekly-calendar .rbc-current-time-indicator {
+  display: none !important;
+}
+
+.weekly-calendar .rbc-events-container {
+  border: 2px solid black !important;
+  border-radius: 0 0 12px 12px !important;
+  background-color: white !important;
+  margin: 0 !important;
+}
+
+.weekly-calendar .rbc-event-content {
+  max-width: 195px;
+}
+
+.weekly-calendar .rbc-time-header-cell > .rbc-today {
+  border-radius: 0 12px 0 0 !important;
+}
+
+.weekly-calendar .rbc-time-header-cell > .rbc-today {
+  border-radius: 0 12px 0 0 !important;
+}
+
+.weekly-calendar .rbc-time-content > .rbc-today {
+  border-radius: 0 0 12px 12px !important;
+}

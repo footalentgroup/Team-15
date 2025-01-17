@@ -1,0 +1,106 @@
+.planification-calendar .rbc-month-view {
+  border: none;
+  gap: 4px;
+}
+
+.planification-calendar .rbc-month-header {
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px 4px 0 0;
+  border: none;
+  gap: 4px;
+}
+
+.planification-calendar .rbc-header {
+  height: 64px;
+  border-radius: 12px 12px 4px 4px;
+  border: 3px solid black;
+  padding: 0;
+  margin: 0;
+  background-color: #feeebe;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  font-size: 18px;
+  line-height: 20px;
+  text-transform: capitalize;
+}
+
+.planification-calendar .rbc-header + .rbc-header {
+  border-left: 2px solid black !important;
+}
+
+.planification-calendar .rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid black !important;
+}
+
+.planification-calendar .rbc-month-row,
+.planification-calendar .rbc-row-bg {
+  height: 90px !important;
+  gap: 4px !important;
+  flex: none !important;
+}
+
+.planification-calendar .rbc-row-bg {
+  font-weight: bold;
+}
+
+.planification-calendar .rbc-off-range-bg {
+  border: 1px solid #8e98a8 !important;
+  color: #8e98a8 !important;
+}
+
+.planification-calendar .rbc-month-row + .rbc-month-row {
+  border-top: 0 !important;
+}
+
+.planification-calendar .rbc-date-cell {
+  text-align: left;
+  padding: 4px 8px;
+  width: 135px !important;
+  font-weight: 600;
+}
+
+.planification-calendar .rbc-now > .rbc-button-link {
+  background-color: #01caf8;
+  border-radius: 8px;
+  padding: 0 8px;
+  color: white;
+}
+
+.planification-calendar .rbc-day-bg {
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 4px;
+  width: 135px !important;
+}
+
+.planification-calendar .rbc-row-segment {
+  justify-items: center;
+}
+
+.planification-calendar .rbc-event {
+  width: 90%;
+  background-color: #fdb0d9;
+  color: black;
+}
+
+.planification-calendar
+  .rbc-addons-dnd-row-body
+  > .rbc-row:nth-child(2)
+  .rbc-event {
+  background-color: #b0effd;
+  margin-top: 2px;
+}
+
+.planification-calendar .rbc-event-content {
+  height: 20px;
+  font-size: 12px;
+}
+
+.planification-calendar .rbc-event-continues-after {
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+}
