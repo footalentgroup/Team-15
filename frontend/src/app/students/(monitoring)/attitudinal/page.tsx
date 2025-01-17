@@ -14,7 +14,7 @@ export default function Attitudinal() {
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
     const months = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
     ];
 
@@ -22,10 +22,10 @@ export default function Attitudinal() {
         const configData = JSON.parse(localStorage.getItem("configData") || "{}");
         const attendanceConfig = configData?.attendance?.selectedButtons || [];
         const studentData = localStorage.getItem("studentsData");
-        
+
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
             setStudentList(null);
@@ -156,7 +156,7 @@ export default function Attitudinal() {
                                 type="button"
                                 className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                             >
-                                {cuatrimestre} 
+                                {cuatrimestre}
                             </button>
                             {studentList && studentList.length > 0 && (
                                 <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">

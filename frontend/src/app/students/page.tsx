@@ -28,7 +28,7 @@ const Students: React.FC = () => {
         const configData = window.localStorage.getItem("configData");
         const studentsData = window.localStorage.getItem("studentsData");
         const currentCourse = window.localStorage.getItem("currentCourse");
-        if (currentCourse) {
+        if (currentCourse && !data) {
             const course = JSON.parse(currentCourse);
             setCurrentCourse(course);
             getData(course);
@@ -47,14 +47,14 @@ const Students: React.FC = () => {
         //}
         // eslint-disable-next-line react-hooks/exhaustive-deps
 
-        if (configData && studentsLocalData) {
+        if (configData && data && data?.length > 0) {
             //setIsModalVisible(true);
             setTimeout(() => {
                 //setIsModalVisible(false);
                 router.push("/students/homework");
             }, 2000);
         }
-    }, [studentsLocalData]);
+    }, [data, studentsLocalData, isSaved]);
 
     console.log('data', data);
 
@@ -85,13 +85,21 @@ const Students: React.FC = () => {
                             <i className="fa-regular fa-copy pl-4"></i>
                         </button>
                     </Link>
-                    <Link href={`/add-course?page=2&courseId=${currentCourse?.courseId}`}>
-                        <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${studentsLocalData ? ' bg-white line-through' : 'bg-yellow-500'}`}>
-                            <i className={`pr-4 ${studentsLocalData ? "fa-solid fa-square-check text-green-500" : "fa-regular fa-square"}`}></i>
+                    {(data && data.length > 0) ? (
+                        <Link href={`/add-course?page=2&courseId=${currentCourse?.courseId}`} >
+                            <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through`}>
+                                <i className={`pr-4 fa-solid fa-square-check text-green-500`}></i>
+                                Cargá la lista de alumnos
+                                <i className="fa-solid fa-arrow-up pl-4"></i>
+                            </button>
+                        </Link>
+                    ) : (
+                        <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-yellow-500'`} disabled>
+                            <i className={`pr-4 "fa-regular fa-square`}></i>
                             Cargá la lista de alumnos
                             <i className="fa-solid fa-arrow-up pl-4"></i>
                         </button>
-                    </Link>
+                    )}
                 </div>
             </div>
 

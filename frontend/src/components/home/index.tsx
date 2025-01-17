@@ -55,6 +55,7 @@ function Home({ data }: Props) {
       console.log('currentCourse', currentCourse)
       //manejar logica para guardar el curso seleccionado y poder usarlo en otras paginas
       localStorage.setItem('currentCourse', JSON.stringify(currentCourse))
+      localStorage.setItem('studentsData', JSON.stringify(currentCourse.students))
       setCurrentCourseCookieAction(currentCourse)
     }
   }, [currentCourse])

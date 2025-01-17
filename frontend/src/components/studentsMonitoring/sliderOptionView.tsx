@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
 interface SliderViewProps {
-    onMonthChange: (index: number) => void;
-    onCuatrimestreChange: (index: number) => void;
+    onMonthChange?: (index: number) => void;
+    onCuatrimestreChange?: (index: number) => void;
 }
 
 export default function SliderView({ onMonthChange, onCuatrimestreChange }: SliderViewProps) {
@@ -61,25 +61,25 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
     const handlePrevMonth = () => {
         const newIndex = monthIndex === 0 ? months.length - 1 : monthIndex - 1;
         setMonthIndex(newIndex);
-        onMonthChange(newIndex);
+        onMonthChange!(newIndex);
     };
 
     const handleNextMonth = () => {
         const newIndex = monthIndex === months.length - 1 ? 0 : monthIndex + 1;
         setMonthIndex(newIndex);
-        onMonthChange(newIndex);
+        onMonthChange!(newIndex);
     };
 
     const handlePrevCuatrimestre = () => {
         const newIndex = cuatrimestreIndex === 0 ? 3 : cuatrimestreIndex - 1;
         setCuatrimestreIndex(newIndex);
-        onCuatrimestreChange(newIndex);
+        onCuatrimestreChange!(newIndex);
     };
 
     const handleNextCuatrimestre = () => {
         const newIndex = cuatrimestreIndex === 3 ? 0 : cuatrimestreIndex + 1;
         setCuatrimestreIndex(newIndex);
-        onCuatrimestreChange(newIndex);
+        onCuatrimestreChange!(newIndex);
     };
 
     return (

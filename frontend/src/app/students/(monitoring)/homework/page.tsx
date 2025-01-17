@@ -26,9 +26,11 @@ export default function Homework() {
 
     useEffect(() => {
         const studentData = localStorage.getItem("studentsData");
+        console.log("studentsData", studentData);
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            console.log("parsedData", parsedData);
+            const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
             setStudentList(null);
