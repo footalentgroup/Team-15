@@ -49,14 +49,15 @@ export default function Homework() {
         console.log("Cuatrimestre cambiado a:", quarterIndex);
 
         setMounted(true);
-    }, [quarterIndex]);
+    }, []);
 
     if (!mounted) {
         return null;
     }
 
-    console.log(studentList)
-    const filteredHomeworks = homeworks.filter(homework => homework.cuatrimestre === quarterIndex);
+    const filteredHomeworks = homeworks.filter(
+        (homework) => homework.cuatrimestre === quarterIndex && homework.tarea_asignada_id
+    );
 
     const isExam = pathname.includes("exam");
     const singular = isExam ? "examen" : "tarea";
@@ -71,7 +72,6 @@ export default function Homework() {
     const handleSaveHomework = () => {
         if (homeworkName.trim() && homeworkDate.trim() && homeworkType.trim()) {
             const newHomework: IHomework = {
-                alumno_id: 1,
                 tarea_asignada_id: homeworks.length + 1,
                 nombre: homeworkName,
                 fecha: homeworkDate,
@@ -99,7 +99,6 @@ export default function Homework() {
 
     const handleQuarterChange = (index: number) => {
         setQuarterIndex(index);
-
     };
 
     return (
@@ -110,17 +109,23 @@ export default function Homework() {
 
             <div className="flex gap-4 mt-4 flex-wrap">
                 {filteredHomeworks.map((homework, index) => (
-                    <div key={index}>
+                    <div key={homework.tarea_asignada_id}>
                         <button
                             type="button"
                             className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
                         >
                             {homework.nombre}
                         </button>
+
                         {studentList && studentList.length > 0 && (
                             <div className="w-[170px] my-2 mt-10 flex flex-col gap-3">
                                 {studentList.slice(0, 7).map((student) => (
-                                    <DropdownHomework key={student.id} onGradeChange={handleGradeChange} />
+                                    <DropdownHomework
+                                        key={`${student.id}-${homework.tarea_asignada_id}`}
+                                        studentId={student.id} 
+                                        homeworkId={homework.tarea_asignada_id} 
+                                        onGradeChange={handleGradeChange}
+                                    />
                                 ))}
                             </div>
                         )}

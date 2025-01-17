@@ -60,11 +60,37 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                                 ></div>
                             ))}
                         </div>
-                        <Link href="/add-course">
-                            <button type="button" className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
-                                {buttonText}
-                            </button>
-                        </Link>
+                        <div>
+                            <div className="flex space-x-0.5 justify-center items-center my-2">
+                                {Array.from({ length: totalSteps }).map((_, index) => (
+                                    <div
+                                        key={index}
+                                        className={`${index === currentStep - 1
+                                            ? "w-4 h-4 bg-[#0287A6] rounded-full"
+                                            : "w-2 h-4 bg-[#55DBFA] rounded-[50%]"
+                                            }`}
+                                    ></div>
+                                ))}
+                            </div>
+                            {currentStep === totalSteps ? (
+                                <Link href="/add-course">
+                                    <button
+                                        type="button"
+                                        className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                                    >
+                                        {buttonText}
+                                    </button>
+                                </Link>
+                            ) : (
+                                <button
+                                    onClick={onClickNext}
+                                    type="button"
+                                    className="my-6 min-w-[136px] min-h-12 bg-pink-500 text-white border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                                >
+                                    {buttonText}
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

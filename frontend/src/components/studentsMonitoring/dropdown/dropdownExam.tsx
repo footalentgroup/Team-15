@@ -3,9 +3,14 @@ import React, { useState, useEffect } from "react";
 
 interface DropdownProps {
     onGradeChange: (grade: string | number) => void;
+    studentId: number;
+    examId: number;
 }
 
-export default function DropdownExam({ onGradeChange }: DropdownProps) {
+export default function DropdownExam({ onGradeChange,
+    studentId,
+    examId,
+}: DropdownProps) {
     const [selectedOption, setSelectedOption] = useState("Sin asignar");
     const [options, setOptions] = useState<string[]>([]);
     const [isInputVisible, setIsInputVisible] = useState(false);
@@ -41,22 +46,54 @@ export default function DropdownExam({ onGradeChange }: DropdownProps) {
         }
     }, []);
 
+    useEffect(() => {
+        if (typeof studentId === "undefined" || typeof examId === "undefined") {
+            console.error("Error: studentId or examId is undefined");
+            return;
+        }
+
+        const savedGrade = localStorage.getItem(`examGrade-${studentId}-${examId}`);
+        if (savedGrade) {
+            const parsedGrade = JSON.parse(savedGrade);
+            if (typeof parsedGrade === "number") {
+                setNumericValue(parsedGrade);
+            } else {
+                setSelectedOption(parsedGrade);
+            }
+        }
+    }, [studentId, examId]);
+
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selected = event.target.value;
+        setSelectedOption(selected);
+        onGradeChange(selected);
+
+        localStorage.setItem(`examGrade-${studentId}-${examId}`, JSON.stringify(selected));
+    };
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(event.target.value);
         if (value >= minGrade && value <= maxGrade) {
             setNumericValue(value);
             onGradeChange(value);
+
+            localStorage.setItem(`examGrade-${studentId}-${examId}`, JSON.stringify(value));
         } else {
             setNumericValue("");
         }
     };
-
     const getInputBackgroundColor = () => {
-        if (numericValue !== "" && Number(numericValue) < passingGrade) {
+        if (!numericValue) {
+            return "bg-gray-100";
+        }
+
+        const numeric = Number(numericValue);
+        if (!isNaN(numeric) && numeric < passingGrade) {
             return "bg-red-200";
-        } else if (numericValue !== "" && Number(numericValue) >= passingGrade) {
+        } else if (!isNaN(numeric) && numeric >= passingGrade) {
             return "bg-green-200";
         }
+
         return "bg-gray-100";
     };
 
@@ -95,7 +132,7 @@ export default function DropdownExam({ onGradeChange }: DropdownProps) {
                 <select
                     id="status"
                     value={selectedOption}
-                    onChange={(event) => setSelectedOption(event.target.value)}
+                    onChange={handleSelectChange}
                     className={`border-1 rounded-md p-2 focus:outline-none w-full text-center ${getOptionBackgroundColor()}`}
                 >
                     {options.map((option) => (

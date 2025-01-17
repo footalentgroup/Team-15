@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IHomework {
-  alumno_id: number
   tarea_asignada_id: number
   fecha: string
   nombre: string

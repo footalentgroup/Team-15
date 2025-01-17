@@ -1,16 +1,20 @@
-"use client";
 import React, { useState, useEffect } from "react";
 
 interface DropdownProps {
     onGradeChange: (grade: string | number) => void;
+    studentId: number;
+    homeworkId: number;
 }
 
-export default function DropdownHomework({ onGradeChange }: DropdownProps) {
+export default function DropdownHomework({
+    onGradeChange,
+    studentId,
+    homeworkId,
+}: DropdownProps) {
     const [selectedOption, setSelectedOption] = useState("Sin asignar");
     const [options, setOptions] = useState<string[]>([]);
     const [isInputVisible, setIsInputVisible] = useState(false);
     const [numericValue, setNumericValue] = useState<number | string>("");
-
     const [minGrade, setMinGrade] = useState(0);
     const [maxGrade, setMaxGrade] = useState(100);
     const [passingGrade, setPassingGrade] = useState(50);
@@ -33,18 +37,34 @@ export default function DropdownHomework({ onGradeChange }: DropdownProps) {
                 setMaxGrade(parsedConfigData?.homework?.maxGrade ?? 100);
                 setPassingGrade(parsedConfigData?.homework?.passingGrade ?? 50);
             } else if (gradeType === "conceptual") {
-                setOptions([
-                    ...parsedConfigData?.homework?.conceptualScale ?? [],
-                    "Sin asignar",
-                ]);
+                setOptions([...(parsedConfigData?.homework?.conceptualScale ?? []), "Sin asignar"]);
             }
         }
     }, []);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    useEffect(() => {
+        if (typeof studentId === "undefined" || typeof homeworkId === "undefined") {
+            console.error("Error: studentId or homeworkId is undefined");
+            return;
+        }
+
+        const savedGrade = localStorage.getItem(`homeworkGrade-${studentId}-${homeworkId}`);
+        if (savedGrade) {
+            const parsedGrade = JSON.parse(savedGrade);
+            if (typeof parsedGrade === "number") {
+                setNumericValue(parsedGrade);
+            } else {
+                setSelectedOption(parsedGrade);
+            }
+        }
+    }, [studentId, homeworkId]);
+
     const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedOption(event.target.value);
-        onGradeChange(event.target.value);
+        const selected = event.target.value;
+        setSelectedOption(selected);
+        onGradeChange(selected);
+
+        localStorage.setItem(`homeworkGrade-${studentId}-${homeworkId}`, JSON.stringify(selected));
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,19 +72,28 @@ export default function DropdownHomework({ onGradeChange }: DropdownProps) {
         if (value >= minGrade && value <= maxGrade) {
             setNumericValue(value);
             onGradeChange(value);
+
+            localStorage.setItem(`homeworkGrade-${studentId}-${homeworkId}`, JSON.stringify(value));
         } else {
             setNumericValue("");
         }
     };
 
     const getInputBackgroundColor = () => {
-        if (numericValue !== "" && Number(numericValue) < passingGrade) {
+        if (!numericValue) {
+            return "bg-gray-100";
+        }
+
+        const numeric = Number(numericValue);
+        if (!isNaN(numeric) && numeric < passingGrade) {
             return "bg-red-200";
-        } else if (numericValue !== "" && Number(numericValue) >= passingGrade) {
+        } else if (!isNaN(numeric) && numeric >= passingGrade) {
             return "bg-green-200";
         }
+
         return "bg-gray-100";
     };
+
 
     const getOptionBackgroundColor = () => {
         if (selectedOption === "Aprobado") {
@@ -101,7 +130,7 @@ export default function DropdownHomework({ onGradeChange }: DropdownProps) {
                 <select
                     id="status"
                     value={selectedOption}
-                    onChange={(event) => setSelectedOption(event.target.value)}
+                    onChange={handleSelectChange}
                     className={`border-1 rounded-md p-2 focus:outline-none w-full text-center ${getOptionBackgroundColor()}`}
                 >
                     {options.map((option) => (

@@ -19,16 +19,39 @@ const ExamConfig = ({ onDataChange }: { onDataChange: (data: any) => void }) => 
     };
 
     const handleMinGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMinGrade(Number(event.target.value) || "");
+        const newMinGrade = event.target.value === "" ? "" : Number(event.target.value);
+        setMinGrade(newMinGrade);
+    
+        if (typeof passingGrade === "number" && typeof newMinGrade === "number" && passingGrade < newMinGrade) {
+            setPassingGrade(newMinGrade);
+        }
     };
-
+    
     const handleMaxGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMaxGrade(Number(event.target.value) || "");
+        const newMaxGrade = event.target.value === "" ? "" : Number(event.target.value);
+        setMaxGrade(newMaxGrade);
+    
+        if (typeof passingGrade === "number" && typeof newMaxGrade === "number" && passingGrade > newMaxGrade) {
+            setPassingGrade(newMaxGrade);
+        }
+    };
+    
+    const handlePassingGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newPassingGrade = event.target.value === "" ? "" : Number(event.target.value);
+    
+        if (newPassingGrade === "") {
+            setPassingGrade("");
+        } else if (typeof newPassingGrade === "number") {
+            if (typeof minGrade === "number" && newPassingGrade < minGrade) {
+                setPassingGrade(minGrade);
+            } else if (typeof maxGrade === "number" && newPassingGrade > maxGrade) {
+                setPassingGrade(maxGrade);
+            } else {
+                setPassingGrade(newPassingGrade);
+            }
+        }
     };
 
-    const handlePassingGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPassingGrade(Number(event.target.value) || "");
-    };
 
     const addConceptualValue = () => {
         setConceptualScale([...conceptualScale, ""]);
