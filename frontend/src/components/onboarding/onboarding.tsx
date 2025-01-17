@@ -61,17 +61,6 @@ const OnboardingCard: React.FC<OnboardingCardProps> = ({
                             ))}
                         </div>
                         <div>
-                            <div className="flex space-x-0.5 justify-center items-center my-2">
-                                {Array.from({ length: totalSteps }).map((_, index) => (
-                                    <div
-                                        key={index}
-                                        className={`${index === currentStep - 1
-                                            ? "w-4 h-4 bg-[#0287A6] rounded-full"
-                                            : "w-2 h-4 bg-[#55DBFA] rounded-[50%]"
-                                            }`}
-                                    ></div>
-                                ))}
-                            </div>
                             {currentStep === totalSteps ? (
                                 <Link href="/add-course">
                                     <button

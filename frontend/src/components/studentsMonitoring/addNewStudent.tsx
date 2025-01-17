@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { IStudents } from "@/interfaces/IStudents.interface";
-import { IStudentRequest } from "@/interfaces/IRequests.interface";
 
 export default function AddNewStudent() {
     const [data, setData] = useState<IStudents[]>([]);
@@ -9,8 +8,6 @@ export default function AddNewStudent() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [studentName, setStudentName] = useState("");
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
     const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
     const [editingStudentId, setEditingStudentId] = useState<number | null>(null);
     const [isInputVisible, setIsInputVisible] = useState(false);;

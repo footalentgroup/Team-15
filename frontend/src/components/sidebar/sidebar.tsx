@@ -27,7 +27,7 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
     {
       name: 'Seguimiento',
       url: '/students',
-      icon: <IconFollowUp color={`${pathname === '/follow-up' ? 'white' : ''}`} />
+      icon: <IconFollowUp color={`${pathname.includes('students') ? 'white' : ''}`} />
     },
     {
       name: 'Planificación',
