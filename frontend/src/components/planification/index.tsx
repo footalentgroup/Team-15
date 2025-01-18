@@ -458,7 +458,7 @@ function Planification({ data, user, currentCourse }: Props) {
           )
           }
           {view === "Mensual" && (
-            <DraggableCalendarWithExternalEvents currentMonthIndex={currentMonthIndex} months={months} startIndex={startMonthIndex} lastIndex={lastEndMonthIndex} setMonths={setMonths} />
+            <DraggableCalendarWithExternalEvents currentMonthIndex={currentMonthIndex} months={months} startIndex={startMonthIndex} lastIndex={lastEndMonthIndex} />
           )}
           {view === "Diaria" && (
             <DailyPlanification data={initialData} date={new Date().toString()} startDate={startDate} endDate={endDate} />

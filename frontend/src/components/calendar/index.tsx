@@ -49,6 +49,11 @@ function HomeCalendar({ events }: Props) {
     )
   }).flat();
 
+  const dailyPlanification = events.flatMap(event => event.planification?.planificacion_diaria);
+
+  const newEvents2 = [...newEvents, dailyPlanification];
+  console.log("newEvents2", newEvents2);
+
   const newEventsWithNames = newEvents.map(newEvent => {
     const correspondingEvent = events.find(event => event.planification?.id === newEvent.resource.planificacion_id);
     return {

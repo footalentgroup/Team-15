@@ -5,6 +5,7 @@ export interface IPlanification {
   fecha_fin: string
   temas: ITheme[]
   planificacion_mensual: IMonthPlanification[]
+  planificacion_diaria: IDailyPlanification[]
 }
 
 export interface ITheme {
@@ -56,4 +57,12 @@ export interface CalendarEvent {
   resource?: IMonthPlanification | undefined
   schoolName?: string
   subjectName?: string
+}
+
+export interface IDailyPlanification {
+  id?: number
+  planificacion_id: number
+  tipo_clase: string
+  fecha: string
+  detalle: string
 }

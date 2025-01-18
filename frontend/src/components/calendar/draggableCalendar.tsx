@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer, Views, ToolbarProps, DateLocalizer, stringOrDate } from 'react-big-calendar';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -8,10 +8,10 @@ import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/ad
 import './draggableCalendar.styles.css'
 import CustomToolbar from './draggableCalendar/Toolbar';
 import { usePathname } from 'next/navigation';
-import { CalendarEvent, IMonthPlanification } from '@/interfaces/IPlanification.interfaces';
+import { CalendarEvent, IDailyPlanification } from '@/interfaces/IPlanification.interfaces';
 import { PLanificationMonth } from '@/interfaces/ICourses.interface';
 import { normalizeDate } from '@/utils/utils';
-import { updateMonthPlanificationAction } from '@/actions/planificationActions';
+import { createDailyPlanification, getAllDailyPlanification } from '@/actions/planificationActions';
 
 const localizer = momentLocalizer(moment);
 moment.locale('es');
@@ -35,77 +35,96 @@ interface Props {
   months: PLanificationMonth[]
   startIndex: number
   lastIndex: number
-  setMonths?: (months: PLanificationMonth[]) => void;
   currentMonthIndex?: number;
 }
-function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, setMonths, currentMonthIndex }: Props) {
-  const newEvents = months.map((content) => (
-    content.content.map((event) => {
-      const isDefaultDate = event.fecha?.endsWith('01');
-      return (
-        {
-          title: event.theme ? event.theme.subtemas[0].nombre : '',
-          start: !isDefaultDate ? normalizeDate(new Date(event.fecha)) : undefined,
-          end: !isDefaultDate ? normalizeDate(new Date(event.fecha)) : undefined,
-          resource: event,
-          id: event.id
-        }
-      )
-    }
-    )
-  )).flat();
-  /*   const eventsForCalendar = events.map((event) => ({
-      title: event.nombre,
-      start: event.fecha_inicio ? formatDate(new Date(event.fecha_inicio)) : null,
-      end: event.fecha_fin ? formatDate(new Date(event.fecha_fin)) : null,
-      resource: event
-    })); */
+
+function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, currentMonthIndex }: Props) {
   const currentDateFromStartIndex = new Date(new Date().setMonth(currentMonthIndex ? currentMonthIndex : startIndex));
   const [draggedEvent, setDraggedEvent] = useState<string | null>(null);
-  const [allEvents, setAllEvents] = useState<CalendarEvent[]>(newEvents);
+  const [allEvents, setAllEvents] = useState<CalendarEvent[]>([]);
   const [monthIndex, setMonthIndex] = useState(currentMonthIndex ? currentMonthIndex : startIndex);
   const [maxIndex] = useState(lastIndex);
   const pathname = usePathname()
   const [currentDate, setCurrentDate] = useState(currentDateFromStartIndex);
   const [error, setError] = useState('');
+  const [planificationId] = useState<number | null>(months[0].content[0].planificacion_id);
+
+  const getNewEvents = async () => {
+    const dailyPlanifications = await getAllDailyPlanification();
+    console.log('dailyPlanifications', dailyPlanifications);
+
+    const newEvents = dailyPlanifications.map((event: IDailyPlanification) => {
+      return (
+        {
+          title: event.detalle,
+          start: normalizeDate(new Date(event.fecha)),
+          end: normalizeDate(new Date(event.fecha)),
+          resource: event,
+          id: event.planificacion_id
+        }
+      )
+    });
+    setAllEvents(newEvents);
+  }
+
+  //para actualizar la fecha nueva del evento
+  const updateDailyPlanification = async (dailyPlanification: IDailyPlanification) => {
+    const newDailyPlanification = {
+      planificacion_id: dailyPlanification.planificacion_id,
+      tipo_clase: dailyPlanification.tipo_clase,
+      fecha: dailyPlanification.fecha,
+      detalle: dailyPlanification.detalle,
+    }
+    try {
+      const response = await createDailyPlanification(newDailyPlanification);
+      console.log('response', response);
+
+      const data = response!.data;
+
+      console.log('respuesta de actualizar la fecha', data);
+
+      if (response && !response.success) {
+        setError("Ocurrio un error al guardar la planificación mensual");
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
 
   const formatDate = (date: stringOrDate) => {
     return moment(date).format('YYYY-MM-DD');
   }
 
-  const onEventResize: withDragAndDropProps['onEventResize'] = (data) => {
-    const { start, end } = data;
-    setAllEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.resource!.id === data.event.resource.id ? { ...event, start: new Date(start), end: new Date(end) } : event
-      )
-    );
-  };
-
   const onEventDrop: withDragAndDropProps['onEventDrop'] = (data) => {
     const newEvent: CalendarEvent = data.event
 
-    setAllEvents((prevEvents) =>
-      prevEvents.map((item) =>
-        item.id === newEvent!.id ? { ...item, start: new Date(data.start!), end: new Date(data.end!) } : item
-      )
+    const newEvents = allEvents.map((item) =>
+      item.id === newEvent.id ? { ...item, start: new Date(data.start!), end: new Date(data.end!) } : item
     );
+    const itemUpdated = newEvents.find((item) => item.id === newEvent.id);
+
+    const newDailyPlanification: IDailyPlanification = {
+      id: itemUpdated!.id as number,
+      planificacion_id: itemUpdated!.id as number,
+      tipo_clase: 'teorico',
+      fecha: formatDate(itemUpdated!.start!),
+      detalle: itemUpdated!.title as string,
+    }
+
+    updateDailyPlanification(newDailyPlanification);
+    setAllEvents(newEvents);
+    getNewEvents();
   };
 
-  const onUpdateMonthPlanification = async (monthPlanification: IMonthPlanification) => {
-    const newMonths = months.map((month) => {
-      const newContent = month.content.map((content) => {
-        if (content.id === monthPlanification.id) {
-          return { ...content, fecha: monthPlanification.fecha }
-        }
-        return content;
-      });
-      return { ...month, content: newContent };
-    });
-    console.log('newMonths', newMonths);
-    setMonths!(newMonths);
+  const oncreateNewDailyPlanification = async (dailyPlanification: IDailyPlanification) => {
+    const newDailyPlanification = {
+      planificacion_id: dailyPlanification.planificacion_id,
+      tipo_clase: dailyPlanification.tipo_clase,
+      fecha: dailyPlanification.fecha,
+      detalle: dailyPlanification.detalle,
+    }
     try {
-      const response = await updateMonthPlanificationAction(monthPlanification);
+      const response = await createDailyPlanification(newDailyPlanification);
       console.log('response', response);
 
       const data = response!.data;
@@ -122,30 +141,28 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
 
   const onDropFromOutside: withDragAndDropProps['onDropFromOutside'] = ({ start, end, allDay, resource }) => {
     if (draggedEvent) {
-      setAllEvents((prevEvents) => [
-        ...prevEvents,
-        {
-          id: window.crypto.randomUUID(),
-          start: normalizeDate(new Date(start)),
-          end: new Date(end),
-          title: draggedEvent,
-          allDay,
-        },
-      ]);
+      const newEvents = [...allEvents, {
+        id: allEvents.length + 1,
+        start: normalizeDate(new Date(start)),
+        end: new Date(end),
+        title: draggedEvent,
+        allDay,
+      }];
+      console.log("newEvents", newEvents);
+      setAllEvents(newEvents);
       console.log(draggedEvent);
       console.log(resource);
-      const currentMonthPlanification = allEvents.find((event) => event.title === draggedEvent);
+      const currentMonthPlanification = newEvents.find((event) => event.title === draggedEvent);
       console.log(currentMonthPlanification);
-      const newEvent: IMonthPlanification = {
-        planificacion_id: currentMonthPlanification!.resource!.id as number,
-        id: currentMonthPlanification!.id as number,
-        subtema_id: currentMonthPlanification!.resource!.id as number,
+      const newEvent: IDailyPlanification = {
+        planificacion_id: planificationId as number,
         fecha: formatDate(start),
-        tipo_actividad: 'teorico',
+        tipo_clase: 'teorico',
+        detalle: draggedEvent,
       }
 
-      onUpdateMonthPlanification(newEvent);
-
+      oncreateNewDailyPlanification(newEvent);
+      getNewEvents();
     }
   };
 
@@ -155,6 +172,11 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
     weekdayFormat: (date: Date, culture?: string, localizer?: DateLocalizer) =>
       localizer!.format(date, 'dddd', culture),
   };
+
+  useEffect(() => {
+    getNewEvents();
+  }, []);
+
   return (
     <div className='flex w-full'>
       <div className='w-4/5 h-full planification-calendar'>
@@ -172,7 +194,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
           endAccessor={(event: CalendarEvent) => (event.end ? new Date(event.end) : new Date('0000-00-00'))}
           onEventDrop={onEventDrop}
           resizable
-          onEventResize={onEventResize}
           onDropFromOutside={onDropFromOutside}
           draggableAccessor={() => true}
           views={[Views.MONTH]}
