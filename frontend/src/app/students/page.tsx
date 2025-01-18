@@ -41,6 +41,7 @@ const Students: React.FC = () => {
     
             if (configData) {
                 setIsSaved(true);
+                window.localStorage.setItem("configData", configData);
             }
         }
     
