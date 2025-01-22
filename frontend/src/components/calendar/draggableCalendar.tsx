@@ -141,7 +141,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         id: currentMonthPlanification!.id as number,
         subtema_id: currentMonthPlanification!.resource!.id as number,
         fecha: formatDate(start),
-        tipo_actividad: 'teorico',
       }
 
       onUpdateMonthPlanification(newEvent);

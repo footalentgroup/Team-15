@@ -39,7 +39,7 @@ export interface IMonthPlanification {
   id?: number
   planificacion_id: number
   subtema_id: number
-  tipo_actividad: string
+  tipo_actividad?: string
   fecha: string
   subtema?: ISubtheme
   theme?: ITheme

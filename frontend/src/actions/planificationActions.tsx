@@ -130,7 +130,7 @@ export async function updateMonthPlanificationAction(monthPlanification: IMonthP
     refreshToken();
   }
 
-  const monthPlanificationUrl = `${API_URL}/planificacion_diaria/update/${monthPlanification.id}/`;
+  const monthPlanificationUrl = `${API_URL}/planificacion_mensual/update/${monthPlanification.id}/`;
 
   try {
     const response = await fetch(monthPlanificationUrl, {

@@ -60,7 +60,6 @@ function Planification({ data, user, currentCourse }: Props) {
   const [endMonthIndex, setEndMonthIndex] = useState(endMonthFromPeriod)
   const [initialPeriodStep, setInitialPeriodStep] = useState(1)
   const [showHelp, setShowHelp] = useState(false)
-  const [planificationsForDelete, setPlanificationsForDelete] = useState<number[]>([])
   //el mes que va a ir cuando clickee en ver el mes
   const [currentMonthIndex, setCurrentMonthIndex] = useState<number>(0)
 
@@ -124,21 +123,26 @@ function Planification({ data, user, currentCourse }: Props) {
 
               const updatedMonths = months.map((month) => {
                 if (month.id === itemMonthIndex) {
+                  const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id !== subthemeIndex)
                   const newContent = month.content.filter((content) => content.subtema_id !== subthemeIndex);
-                  const planificationForDelete = month.content.find((content) => content.subtema_id === subthemeIndex)
+                  console.log('newContent for delete', newContent);
                   if (planificationForDelete) {
-                    setPlanificationsForDelete([...planificationsForDelete, planificationForDelete.id!])
+                    deleteMonthPlanification(planificationForDelete.id!)
                   }
                   return { ...month, content: newContent };
                 }
                 return month;
               });
 
-              const newMonth = { ...overMonth, content: [...overMonth.content, newPlan] };
-              const finalMonths = updatedMonths.map((month) => (month.id === monthIndex ? newMonth : month));
+              createNewMonthPlanification([newPlan]).then((newItemFromResponse) => {
+                console.log('newItemFromResponse', newItemFromResponse);
+                const newMonth = { ...overMonth, content: [...overMonth.content, ...newItemFromResponse?.data.planificacion_mensual] };
+                const finalMonths = updatedMonths.map((month) => (month.id === monthIndex ? newMonth : month));
 
-              console.log('finalMonths', finalMonths);
-              setMonths(finalMonths);
+                console.log('finalMonths', finalMonths);
+                setMonths(finalMonths);
+              });
+
             } else {
               const newMonth = { ...overMonth, content: [...overMonth.content, newPlan] };
               const newMonths = months.map((month) => (month.id === monthIndex ? newMonth : month));
@@ -155,6 +159,7 @@ function Planification({ data, user, currentCourse }: Props) {
 
       if (isTrash) {
         console.log('delete', active.id);
+        const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id !== subthemeIndex)
         const newMonth = months[itemMonthIndex].content.filter((content) => content.subtema_id !== subthemeIndex)
         const newMonths = months.map((month) => {
           if (month.id === itemMonthIndex) {
@@ -162,10 +167,10 @@ function Planification({ data, user, currentCourse }: Props) {
           }
           return month
         })
-        const planificationForDelete = initialData[0].planificacion_mensual.find((plan) => plan.subtema_id === subthemeIndex)
+        /* const planificationForDelete = initialData[0].planificacion_mensual.find((plan) => plan.id === subthemeSelected?.id) */
         console.log('planificationForDelete', planificationForDelete);
         if (planificationForDelete) {
-          setPlanificationsForDelete([...planificationsForDelete, planificationForDelete.id!])
+          deleteMonthPlanification(planificationForDelete.id!)
         }
         const newPlanification = initialData[0].planificacion_mensual.filter((plan) => plan.subtema_id !== subthemeIndex)
 
@@ -262,71 +267,72 @@ function Planification({ data, user, currentCourse }: Props) {
   }, []);
 
   const createNewMonthPlanification = async (newMonthPlanification: IMonthPlanification[]) => {
-    await createNewMonthPlanificationAction(newMonthPlanification)
+    return await createNewMonthPlanificationAction(newMonthPlanification)
   }
 
-  const deleteMonthPlanification = async (planificationsForDelete: number[]) => {
-    planificationsForDelete.map(async (planificationId) => {
-      await deleteMonthPlanificationAction(planificationId)
-    })
+  const deleteMonthPlanification = async (planificationsForDelete: number) => {
+    await deleteMonthPlanificationAction(planificationsForDelete)
   }
 
-  useEffect(() => {
-
-    const currentMonthPlanification = initialData[0].planificacion_mensual
-    const newMonthPlanification = months.map((month) => month.content).flat()
-
-    if (newMonthPlanification.length > 0) {
-      const filteredNewMonthPlanification = newMonthPlanification.map((item) => {
-        return {
-          id: item.id,
-          planificacion_id: item.planificacion_id,
-          subtema_id: item.subtema_id,
-          tipo_actividad: item.tipo_actividad,
-          fecha: item.fecha,
-        }
-      })
-
-      console.log('currentMonthPlanification', currentMonthPlanification);
-      console.log('newMonthPlanification', newMonthPlanification);
-      console.log('filteredNewMonthPlanification', filteredNewMonthPlanification);
-
-      if (currentMonthPlanification.length > 0 || newMonthPlanification.length > 0) {
-
-        const allPLanifications = currentMonthPlanification.concat(filteredNewMonthPlanification);
-        const uniquePlanification = allPLanifications.filter(
-          (item, _, array) =>
-            array.filter(
-              (otro) => item.subtema_id === otro.subtema_id && item.fecha === otro.fecha
-            ).length === 1
-        );
-        console.log('diferentes', uniquePlanification);
-        const filterSubthemeInUniquePlanification = uniquePlanification.filter((item) => !item.id);
-        console.log('filterSubthemeInUniquePlanification', filterSubthemeInUniquePlanification);
-        console.log("planificationsForDelete", planificationsForDelete);
-
-        if (uniquePlanification.length > 0) {
-          if (data !== initialData) {
-            console.log("es distinto");
-            createNewMonthPlanification(uniquePlanification)
+  /* esto hacia que al cambiar de vista se envien los datos para crear y borrar los datos modificados de cada planificacion mensual
+     pero no funcionaba como corresponde en algunos casos, se está usando individualmente en las funciones de drag and drop
+     useEffect(() => {
+  
+      const currentMonthPlanification = initialData[0].planificacion_mensual
+      const newMonthPlanification = months.map((month) => month.content).flat()
+  
+      if (newMonthPlanification.length > 0) {
+        const filteredNewMonthPlanification = newMonthPlanification.map((item) => {
+          return {
+            id: item.id,
+            planificacion_id: item.planificacion_id,
+            subtema_id: item.subtema_id,
+            tipo_actividad: item.tipo_actividad,
+            fecha: item.fecha,
           }
-          //busca la primera conincidencia en initialDaata[0].planificacion_mensual de subthema_id  y lo elimnia
-          const filterSubthemeInUniquePlanificationByDelete = planificationsForDelete.map((planificationId) => uniquePlanification.find((item) => item.id === planificationId))
-          const firstNewData = initialData[0].planificacion_mensual.filter((item) => !filterSubthemeInUniquePlanificationByDelete.some((plan) => plan?.subtema_id === item.subtema_id && plan?.fecha === item.fecha))
-          const newData = [{ ...initialData[0], planificacion_mensual: [...firstNewData, ...filterSubthemeInUniquePlanification] }]
-          console.log('newData', newData);
-          setInitialData(newData)
-        }
-
-        if (planificationsForDelete.length > 0) {
-          deleteMonthPlanification(planificationsForDelete)
+        })
+  
+        console.log('currentMonthPlanification', currentMonthPlanification);
+        console.log('newMonthPlanification', newMonthPlanification);
+        console.log('filteredNewMonthPlanification', filteredNewMonthPlanification);
+  
+        if (currentMonthPlanification.length > 0 || newMonthPlanification.length > 0) {
+  
+          const allPLanifications = currentMonthPlanification.concat(filteredNewMonthPlanification);
+          const uniquePlanification = allPLanifications.filter(
+            (item, _, array) =>
+              array.filter(
+                (otro) => item.subtema_id === otro.subtema_id && item.fecha === otro.fecha
+              ).length === 1
+          );
+          console.log('diferentes', uniquePlanification);
+          const filterSubthemeInUniquePlanification = uniquePlanification.filter((item) => !item.id);
+          console.log('filterSubthemeInUniquePlanification', filterSubthemeInUniquePlanification);
+          console.log("planificationsForDelete", planificationsForDelete);
+  
+          if (uniquePlanification.length > 0) {
+            if (data !== initialData) {
+              console.log("es distinto");
+              createNewMonthPlanification(uniquePlanification).then((data) => {
+                console.log('data', data);
+              })
+            }
+            //busca la primera conincidencia en initialDaata[0].planificacion_mensual de subthema_id  y lo elimnia
+            const filterSubthemeInUniquePlanificationByDelete = planificationsForDelete.map((planificationId) => uniquePlanification.find((item) => item.id === planificationId))
+            const firstNewData = initialData[0].planificacion_mensual.filter((item) => !filterSubthemeInUniquePlanificationByDelete.some((plan) => plan?.subtema_id === item.subtema_id && plan?.fecha === item.fecha))
+            const newData = [{ ...initialData[0], planificacion_mensual: [...firstNewData, ...filterSubthemeInUniquePlanification] }]
+            console.log('newData', newData);
+            setInitialData(newData)
+          }
+  
+          if (planificationsForDelete.length > 0) {
+            deleteMonthPlanification(planificationsForDelete)
+          }
         }
       }
-    }
-
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view]);
+  
+  
+    }, [view]); */
 
   const handleMonthClick = (index: number) => {
     setCurrentMonthIndex(index)
