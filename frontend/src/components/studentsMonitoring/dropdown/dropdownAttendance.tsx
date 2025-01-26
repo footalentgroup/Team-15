@@ -27,7 +27,6 @@ export default function DropdownAttendance({ studentId, attendanceId }: Dropdown
 
     useEffect(() => {
         if (typeof studentId === "undefined" || typeof attendanceId === "undefined") {
-            console.error("Error: studentId or attendanceId is undefined");
             return;
         }
 

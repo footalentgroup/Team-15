@@ -45,7 +45,6 @@ export default function Config() {
         const configKey = `configData${courseId}`;
     
         localStorage.setItem(configKey, JSON.stringify(finalData));
-        console.log(`Datos guardados en ${configKey}:`, finalData);
     };
     
 

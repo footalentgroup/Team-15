@@ -72,7 +72,6 @@ export async function login(email: string, password: string) {
     });
 
     const responseData = await response.json();
-    console.log(responseData);
 
     if (!responseData.user) {
       throw new Error(responseData.message || "Error al iniciar sesión");
@@ -84,7 +83,7 @@ export async function login(email: string, password: string) {
     return responseData;
 
   } catch (error) {
-    console.log('error', error);
+    alert(error);
   }
 
 }

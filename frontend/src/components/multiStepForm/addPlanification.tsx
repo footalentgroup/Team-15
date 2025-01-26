@@ -104,20 +104,16 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       formData.append('file', planificationFile);
 
       if (planificationFile.type === 'application/pdf') {
-        console.log('pdf file');
         try {
           const result = await ImportPlanificationPdfAction(formData)
-          console.log('result', result);
 
           if (result.success) {
-            console.log('result', result)
             setContentList(result.data)
             setPlanificationFile(null)
           } else {
             setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
           }
         } catch (error) {
-          console.log(error);
           setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
         } finally {
           setLoading(false)
@@ -125,19 +121,16 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       }
 
       if (planificationFile.type === 'application/msword' || planificationFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        console.log('word file');
         try {
           const result = await ImportPlanificationAction(formData)
 
           if (result.success) {
-            console.log('result', result)
             setContentList(result.data)
             setPlanificationFile(null)
           } else {
             setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
           }
         } catch (error) {
-          console.log(error);
           setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
         } finally {
           setLoading(false)
@@ -145,7 +138,6 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       }
 
       /* formData.append('subjectId', subjectId!.toString()); */
-      console.log(subjectId);
     }
     setPlanificationStep(2)
   }
@@ -156,9 +148,6 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
   useEffect(() => {
     if (formState.success) {
-      console.log('formState', formState);
-      console.log('formState.data', formState.data);
-      console.log("formstate.data.planificacion", formState.data.planificacion);
       setCurrentPlanification(formState.data.planificacion)
       setPlanificationStep(3)
       setActiveTab(3)

@@ -16,8 +16,6 @@ export default async function AddCourse(props: {
   const currentPage = Number(searchParams?.page);
   const courseIdFromParams = Number(searchParams?.courseId);
 
-  console.log('page', currentPage);
-
   const cookieStore = cookies()
   const currentCourse = (await cookieStore).get("currentCourse");
 

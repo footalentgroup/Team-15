@@ -6,7 +6,6 @@ const SearchBar: FC = () => {
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
             event.preventDefault();
-            console.log("Buscar (Enter):", query);
             // API
         }
     };

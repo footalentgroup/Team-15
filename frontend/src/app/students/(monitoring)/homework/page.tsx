@@ -38,10 +38,8 @@ export default function Homework() {
 
     useEffect(() => {
         const studentData = localStorage.getItem("studentsData");
-        console.log("studentsData", studentData);
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            console.log("parsedData", parsedData);
             const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
@@ -58,7 +56,6 @@ export default function Homework() {
             const parsedConfig = JSON.parse(configData);
             setHomeworkGradeType(parsedConfig.homework?.gradeType || "");
         }
-        console.log("Cuatrimestre cambiado a:", quarterIndex);
 
         setMounted(true);
     }, []);

@@ -22,9 +22,6 @@ interface Props {
 }
 
 export default function AddToCalendar({ contentList, planificationStep, period, currentPlanification }: Props) {
-  console.log("currentPlanification", currentPlanification);
-  console.log(contentList);
-  console.log(period);
   const monthsLength = period?.duracion === 'semestral' ? 6 : period?.duracion === 'trimestral' ? 3 : 4
   const periodTitle = period?.duracion === 'semestral' ? 'semestre' : period?.duracion === 'trimestral' ? 'trimestre' : 'cuatrimestre'
   const startMonthFromPeriod = Number(period?.periodos[0].fecha_inicio.split('-')[1])
@@ -63,8 +60,6 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
   const handlePreviousMonths = () => {
     const newIndex = Math.max(currentMonthIndex - monthsLength, 0)
     const newPeriodIndex = currentPeriodIndex - 1
-    console.log("newPeriodIndex", newPeriodIndex);
-    console.log("currentPeriodIndex", currentPeriodIndex);
 
     setCurrentPeriodIndex(newPeriodIndex)
     setCurrentPeriod(period?.periodos[newPeriodIndex])
@@ -76,8 +71,6 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
   const handleNextMonths = () => {
     const newIndex = Math.min(currentMonthIndex + monthsLength, INITIAL_MONTHS.length - 4)
     const newPeriodIndex = currentPeriodIndex + 1
-    console.log("newPeriodIndex", newPeriodIndex);
-    console.log("currentPeriodIndex", currentPeriodIndex);
 
     if (newPeriodIndex >= period!.periodos.length) {
       return
@@ -97,7 +90,6 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
         monthPlanification.push(content);
       });
     });
-    console.log("monthPlanification", monthPlanification);
 
     createNewMonthPlanificationAction(monthPlanification).then((data) => {
       if (data?.success) {
@@ -118,9 +110,6 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
     if (over) {
       const [contentSubIndex] = (active.id as string).replace('content-', '').split('-').map(Number);
       const monthIndex = parseInt((over.id as string).replace('month-', ''), 10);
-      console.log("monthIndex", monthIndex);
-      console.log("contentSubIndex", contentSubIndex);
-
 
       const currentMonth = monthContent[monthIndex]
       const currentContent = allSubthemes.find((subtheme) => subtheme.id === contentSubIndex)
@@ -136,16 +125,11 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
         }
         updatedMonthContent[monthIndex].content.push(newContent)
         setMonthContent(updatedMonthContent)
-        console.log("updatedMonthContent", updatedMonthContent);
       }
-      console.log("currentMonth", currentMonth);
-      console.log("currentContent", currentContent);
     }
   }
 
   const handleDragStart = (event: DragEndEvent) => {
-    console.log('drag start', event.active.id);
-    console.log('drag start', event);
     setActiveId(event.active.id as string);
   };
 

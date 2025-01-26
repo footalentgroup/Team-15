@@ -102,15 +102,11 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       });
       return { ...month, content: newContent };
     });
-    console.log('newMonths', newMonths);
     setMonths!(newMonths);
     try {
       const response = await updateMonthPlanificationAction(monthPlanification);
-      console.log('response', response);
 
       const data = response!.data;
-
-      console.log('respuesta de actualizar la fecha', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -132,10 +128,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
           allDay,
         },
       ]);
-      console.log(draggedEvent);
-      console.log(resource);
       const currentMonthPlanification = allEvents.find((event) => event.title === draggedEvent);
-      console.log(currentMonthPlanification);
       const newEvent: IMonthPlanification = {
         planificacion_id: currentMonthPlanification!.resource!.id as number,
         id: currentMonthPlanification!.id as number,

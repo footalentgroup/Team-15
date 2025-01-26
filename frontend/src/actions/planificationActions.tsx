@@ -37,7 +37,6 @@ export async function getPlanification(subjectId: number) {
 }
 
 export async function createNewMonthPlanificationAction(monthPlanification: IMonthPlanification[]) {
-  console.log('Add to Calendar Action', monthPlanification);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -64,7 +63,6 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     return {
       data: responseData,
@@ -72,12 +70,14 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
     }
 
   } catch (error) {
-    console.log('error', error);
+    return {
+      data: error,
+      success: false
+    }
   }
 }
 
 export async function deleteMonthPlanificationAction(monthPlanificationId: number) {
-  console.log('Delete from Calendar Action', monthPlanificationId);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -111,12 +111,13 @@ export async function deleteMonthPlanificationAction(monthPlanificationId: numbe
     }
 
   } catch (error) {
-    console.log('error', error);
+    return {
+      success: false
+    }
   }
 }
 
 export async function updateMonthPlanificationAction(monthPlanification: IMonthPlanification) {
-  console.log('Update Month Planification Action', monthPlanification);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -142,10 +143,7 @@ export async function updateMonthPlanificationAction(monthPlanification: IMonthP
       body: JSON.stringify(monthPlanification)
     });
 
-    console.log(response);
-
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     return {
       data: responseData,
@@ -153,6 +151,9 @@ export async function updateMonthPlanificationAction(monthPlanification: IMonthP
     }
 
   } catch (error) {
-    console.log('error', error);
+    return {
+      data: error,
+      success: false
+    }
   }
 }

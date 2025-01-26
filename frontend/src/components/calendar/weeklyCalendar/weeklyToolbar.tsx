@@ -14,9 +14,7 @@ function WeeklyCustomToolbar({ toolbarProps }: Props) {
 
   const goToNext = () => {
     const mDate = toolbarProps.date;
-    console.log("mDate", mDate);
     const newDate = new Date(mDate.setMonth(mDate.getMonth()));
-    console.log("newDate", newDate);
     toolbarProps.onNavigate('NEXT', newDate);
   };
 

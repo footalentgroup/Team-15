@@ -23,9 +23,6 @@ function DailyPlanification({ date, startDate, endDate, data }: Props) {
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
 /*   const [isResourceModalOpen, setIsResourceModalOpen] = useState(false);
  */  const [currentTheme, setCurrentTheme] = useState<string>('');
-  console.log('currentDate', currentDate);
-  console.log("startDate", startDate);
-  console.log("endDate", endDate);
 
   const handleNextDay = () => {
     if (currentDate >= new Date(endDate)) {

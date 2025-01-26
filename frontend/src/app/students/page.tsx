@@ -58,8 +58,6 @@ const Students: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, studentsLocalData, isSaved]);
     
-    console.log('data', data);
-    
 
     return (
         <div>

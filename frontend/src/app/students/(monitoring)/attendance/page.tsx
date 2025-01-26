@@ -33,7 +33,6 @@ export default function Attendance() {
         const days: IAttendance[] = [];
 
         const storedAttendance = JSON.parse(localStorage.getItem("attendanceData") || "[]");
-        console.log("Stored attendance:", storedAttendance);
 
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, monthIndex, day);
@@ -80,30 +79,25 @@ export default function Attendance() {
     };
 
     useEffect(() => {
-        console.log("Attendance page mounted");
         const configData = JSON.parse(localStorage.getItem("configData") || "{}");
         const attendanceConfig = configData?.attendance?.selectedButtons || [];
 
         const studentData = localStorage.getItem("studentsData");
-        console.log("Student data from localStorage:", studentData);
         if (studentData) {
             const parsedData = JSON.parse(studentData);
             const studentsArray = Array.isArray(parsedData) ? parsedData : [];
-            console.log("Students array from localStorage:", studentsArray);
             setStudentList(studentsArray);
         } else {
             setStudentList(null);
         }
 
         setSelectedDays(attendanceConfig);
-        console.log("Selected days from localStorage:", attendanceConfig);
         setMounted(true);
     }, []);
 
     useEffect(() => {
         if (mounted) {
             const days = getDaysInMonth(monthIndex);
-            console.log("Days in month:", days);
             setAttendanceData(days);
             if (days.length > 0) {
                 saveAttendance(days);

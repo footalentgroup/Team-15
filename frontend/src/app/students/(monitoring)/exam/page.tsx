@@ -1,12 +1,12 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
-import { IStudents } from "@/interfaces/IStudents.interface";
 import { usePathname } from "next/navigation";
+import { IStudents } from "@/interfaces/IStudents.interface";
 import { IExam } from "@/interfaces/IExam.interfaces";
 import { ICourses } from "@/interfaces/ICourses.interface";
+import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownExam from "@/components/studentsMonitoring/dropdown/dropdownExam";
-import EmptyState from "@/components/studentsMonitoring/emptyState";
 
 export default function Exam() {
     const [mounted, setMounted] = useState(false);
@@ -40,7 +40,7 @@ export default function Exam() {
         const studentData = localStorage.getItem("studentsData");
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
             setStudentList(null);

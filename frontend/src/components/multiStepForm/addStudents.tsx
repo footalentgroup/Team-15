@@ -24,8 +24,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
     AddStudentAction,
     INITIAL_STATE
   );
-  console.log(formState);
-  console.log('courseId', courseId);
   const [studentName, setStudentName] = useState("");
   const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,7 +94,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
       try {
         const result = await ImportStudentsAction(formData);
-        console.log(result);
         if (result.success) {
           setStudentList({ alumnos: result.data.alumnos });
           setIsImportModalOpen(false);
@@ -105,7 +102,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
           setImportError('Ocurrio un error al importar estudiantes');
         }
       } catch (error) {
-        console.log(error);
         setImportError('Ocurrio un error al importar estudiantes');
       } finally {
         setLoading(false);

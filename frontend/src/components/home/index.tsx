@@ -47,13 +47,9 @@ interface Props {
 function Home({ data }: Props) {
   const [isVisible, setIsVisible] = useState(false)
   const [currentCourse, setCurrentCourse] = useState<ICourses | null>(data[0])
-  console.log(data);
-  console.log('currentCourse', currentCourse);
 
   useEffect(() => {
     if (currentCourse) {
-      console.log('currentCourse', currentCourse)
-      //manejar logica para guardar el curso seleccionado y poder usarlo en otras paginas
       localStorage.setItem('currentCourse', JSON.stringify(currentCourse))
       localStorage.setItem('studentsData', JSON.stringify(currentCourse.students))
       setCurrentCourseCookieAction(currentCourse)
