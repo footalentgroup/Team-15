@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'tipo_nota_conceptual',
     'planificacion_mensual',
     'asistencia',
-    'recurso',
     'tarea_asignada',
     'alumno_tarea',
     'examen_asignado',
@@ -209,7 +208,5 @@ MODEL = genai.GenerativeModel(
     generation_config=GENERATION_CONFIG,
 )
 
-
-# media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+FRONTEND_URL = env('FRONTEND_URL')
+ICON_URL = env('ICON_URL')
