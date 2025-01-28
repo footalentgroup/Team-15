@@ -134,9 +134,9 @@ class RegisterUserView(generics.CreateAPIView):
         #     reverse('verify-email', kwargs={'token': user.email_verification_token})
         # )
         
-        frontend_url = 'https://palprofe.vercel.app'
+        frontend_url = settings.FRONTEND_URL
         verification_url = f"{frontend_url}/auth/verify-email/{user.email_verification_token}"
-        svg_icon_url = request.build_absolute_uri(settings.MEDIA_URL + 'palprofe_icon.svg')
+        
 
         # Crear el contenido HTML del correo
         html_content = f"""
@@ -146,7 +146,7 @@ class RegisterUserView(generics.CreateAPIView):
             <p>Gracias por registrarte. Por favor, hace clic en el siguiente enlace para confirmar tu correo electrónico:</p>
             <a href="{verification_url}">Confirmar correo electrónico</a>
             <br><br>
-            <img src="{svg_icon_url}" alt="PalProfe icon" width="300" height="300">
+            <img src="{settings.ICON_URL}" alt="PalProfe icon" width="300" height="300">
         </body>
         </html>
         """
@@ -343,7 +343,7 @@ class RecoverPasswordView(APIView):
             #     reverse('reset-password', kwargs={'token': recovery_token})
             # )
 
-            frontend_url = 'https://palprofe.vercel.app'
+            frontend_url = settings.FRONTEND_URL
             recovery_url = f"{frontend_url}/auth/reset-password/{recovery_token}"
             
             # Crear el contenido HTML del correo

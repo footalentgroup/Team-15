@@ -14,10 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path, re_path
-from django.views.static import serve
+from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,8 +31,6 @@ urlpatterns = [
     path('sistema_notas/', include('sistema_notas.urls') ),
     path('tipo_nota_numerico/', include('tipo_nota_numerico.urls') ),
     path('planificacion_mensual/', include('planificacion_mensual.urls') ),
-    path('recurso/', include('recurso.urls') ),
-    # path('asistencia/', include('asistencia.urls') ),
     path('tarea_asignada/', include('tarea_asignada.urls') ),
     path('alumno_tarea/', include('alumno_tarea.urls') ),
     path('examen_asignado/', include('examen_asignado.urls') ),
@@ -43,12 +39,4 @@ urlpatterns = [
     path('alumno_asistencia/', include('alumno_asistencia.urls') ),
     path('planificacion_diaria/', include('planificacion_diaria.urls') ),
 ]
-
-urlpatterns += [
-    re_path(r'^media/(?P<path>.*)$', serve, {
-        'document_root': settings.MEDIA_ROOT,
-    }),
-]
-
-
 
