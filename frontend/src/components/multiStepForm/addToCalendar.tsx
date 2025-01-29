@@ -157,9 +157,9 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
           <StepIndicator step={planificationStep} />
         </div>
         <div className='flex flex-col gap-2 p-16 pt-0 h-[89%]'>
-          <h3 className="font-bold text-4xl">¿Quieres crear tu planificación anual?</h3>
+          <h3 className="font-bold text-4xl">¿Querés crear tu planificación anual?</h3>
           <div className="text-gray-600 text-xl my-2">
-            <p>Ya que tenés los contenidos, arrastralos al mes que elijas para su dictado. Luego podrás cambiar su organización. </p>
+            <p>Ya que tenés los contenidos, arrastralos al mes que elijas para dictarlos. Luego podrás reorganizarlos.</p>
           </div>
           <div className="w-10/12 self-center h-[400px] overflow-y-auto">
             <ul className="columns-1 sm:columns-2 lg:columns-3 gap-4 mt-4 px-6 overflow-y-auto">

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Onboarding from "../../components/onboarding/onboarding";
 import { useRouter } from "next/navigation";
 import withAuth from "@/actions/withAuth";
+import DialogInfo from "@/components/dialog/DialogInfo";
 
 const onboardingSteps = [
     {
@@ -64,6 +65,7 @@ const OnboardingPage = () => {
     }, []);
 
     return (
+        <>
         <Onboarding
             title={stepData.title}
             username={username}
@@ -75,6 +77,8 @@ const OnboardingPage = () => {
             onClickNext={handleNext}
             onClickBack={handleBack}
         />
+        <DialogInfo small={true} text="Al comenzar, crearás tu primera clase." />
+        </>
     );
 }
 
