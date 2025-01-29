@@ -5,8 +5,9 @@ import { IStudents } from "@/interfaces/IStudents.interface";
 import { IAttendance } from "@/interfaces/IAttendance.interfaces";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import DropdownAttendance from "@/components/studentsMonitoring/dropdown/dropdownAttendance";
+import withAuth from "@/actions/withAuth";
 
-export default function Attendance() {
+const Attendance: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [monthIndex, setMonthIndex] = useState(0);
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -151,3 +152,5 @@ export default function Attendance() {
         </div>
     );
 }
+
+export default withAuth(Attendance);

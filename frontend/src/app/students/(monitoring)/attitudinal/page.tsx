@@ -5,8 +5,9 @@ import { IStudents } from "@/interfaces/IStudents.interface";
 import { IAttitudinal } from "@/interfaces/IAttitudinal.interfaces";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import DropdownAttitudinal from "@/components/studentsMonitoring/dropdown/dropdownAttitudinal";
+import withAuth from "@/actions/withAuth";
 
-export default function Attitudinal() {
+const Attitudinal: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [mounted, setMounted] = useState(false);
     const [rangeType, setRangeType] = useState<"diario" | "semanal" | "mensual">("diario");
@@ -499,3 +500,5 @@ export default function Attitudinal() {
         </div>
     );
 }
+
+export default withAuth(Attitudinal);

@@ -7,8 +7,10 @@ import { ICourses } from "@/interfaces/ICourses.interface";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownExam from "@/components/studentsMonitoring/dropdown/dropdownExam";
+import withAuth from "@/actions/withAuth";
+import exp from "constants";
 
-export default function Exam() {
+const Exam: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [examName, setExamName] = useState("");
@@ -232,3 +234,5 @@ export default function Exam() {
         </div>
     )
 }
+
+export default withAuth(Exam);

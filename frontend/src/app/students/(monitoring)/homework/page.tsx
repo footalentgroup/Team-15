@@ -7,8 +7,9 @@ import { ICourses } from "@/interfaces/ICourses.interface";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownHomework from "@/components/studentsMonitoring/dropdown/dropdownHomework";
+import withAuth from "@/actions/withAuth";
 
-export default function Homework() {
+const Homework: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [homeworkName, setHomeworkName] = useState("");
@@ -232,3 +233,5 @@ export default function Homework() {
         </div>
     );
 }
+
+export default withAuth(Homework);

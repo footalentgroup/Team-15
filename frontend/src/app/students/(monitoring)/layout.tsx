@@ -2,11 +2,16 @@ import AddNewStudent from "@/components/studentsMonitoring/addNewStudent";
 import ChangeView from "@/components/studentsMonitoring/changeView";
 import { cookies } from "next/headers";
 import { IUser } from "@/interfaces/IAuth.interfaces";
+import { redirect } from "next/navigation";
 
 const MonitoringLayout = async ({ children }: { children: React.ReactNode }) => {
 
     const cookieStore = cookies()
     const user = (await cookieStore).get("user");
+
+    if (!user) {
+        redirect('/login')
+    }
     const userData: IUser = user ? JSON.parse(user.value).user : null;
     const username = userData
 
