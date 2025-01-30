@@ -1,9 +1,13 @@
 "use client"
+import { createNewExamenAction } from '@/actions/examenActions';
+import { createNewMonthPlanificationAction } from '@/actions/planificationActions';
+import { createNewTaskAction } from '@/actions/taskActions';
 import { IconArrow } from '@/icons';
-import { IPlanification } from '@/interfaces/IPlanification.interfaces';
+import { PLanificationMonth } from '@/interfaces/ICourses.interface';
+import { IMonthPlanification, IPlanification, ISubtheme } from '@/interfaces/IPlanification.interfaces';
 import ButtonContinue from '@/ui/buttons/buttonContinue';
 import SelectType from '@/ui/selects/SelectType';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const TYPE_CLASS = ['Examen', 'Clase teórica', 'Clase práctica'];
 
@@ -12,40 +16,170 @@ interface Props {
   startDate: string;
   endDate: string;
   data: IPlanification[]
+  months: PLanificationMonth[];
+  setMonths: (months: PLanificationMonth[]) => void;
+  period_id: number;
 }
 
-function DailyPlanification({ date, startDate, endDate, data }: Props) {
+function DailyPlanification({ date, startDate, endDate, data, months, setMonths, period_id }: Props) {
   const [currentDate, setCurrentDate] = useState(new Date(date))
   const [currentOption, setCurrentOption] = useState(TYPE_CLASS[0]);
-  const [currentThemes, setCurrentThemes] = useState<string[]>(["Revolución Francesa"]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentResources, setCurrentResources] = useState<string[]>(["Revolucion Francesa"]);
+  const [currentThemes, setCurrentThemes] = useState<ISubtheme[]>([]);
+  /* const [currentResources, setCurrentResources] = useState<string[]>(["Revolucion Francesa"]); */
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
 /*   const [isResourceModalOpen, setIsResourceModalOpen] = useState(false);
- */  const [currentTheme, setCurrentTheme] = useState<string>('');
-  console.log('currentDate', currentDate);
-  console.log("startDate", startDate);
-  console.log("endDate", endDate);
+ */  const [currentTheme, setCurrentTheme] = useState<ISubtheme>();
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isExamModalOpen, setIsExamModalOpen] = useState(false);
+  const [examName, setExamName] = useState("");
+  const [examType, setExamType] = useState("");
+  const [currentThemeId, setCurrentThemeId] = useState<number | null>(null);
+  const [homeworkName, setHomeworkName] = useState("");
+  const [homeworkType, setHomeworkType] = useState("");
+  const [detailsInput, setDetailsInput] = useState("");
 
   const handleNextDay = () => {
-    if (currentDate >= new Date(endDate)) {
-      return
-    }
-    setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() + 1)))
-  }
+    setCurrentDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(newDate.getDate() + 1);
+      return newDate;
+    });
+  };
 
   const handlePreviousDay = () => {
-    if (currentDate <= new Date(startDate)) {
-      return
-    }
-    setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() - 1)))
-  }
+    setCurrentDate(prevDate => {
+      const newDate = new Date(prevDate);
+      newDate.setDate(newDate.getDate() - 1);
+      return newDate;
+    });
+  };
+
   const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' })
 
-  const handleConfirmTheme = () => {
-    setCurrentThemes([...currentThemes, currentTheme]);
-    setIsThemeModalOpen(!isThemeModalOpen);
+  const handleConfirmTheme = async () => {
+    console.log('currentTheme', currentTheme);
+    setCurrentThemeId(currentTheme!.id_tema);
+    if (currentTheme) {
+      const monthPlanification: IMonthPlanification = {
+        fecha: currentDate.toISOString().split('T')[0],
+        subtema_id: currentTheme.id,
+        planificacion_id: data[0].id,
+        tipo_actividad: currentOption,
+      }
+
+      const response = await createNewMonthPlanificationAction([monthPlanification]);
+      console.log('response', response);
+      console.log('monthPlanification', monthPlanification);
+
+      const monthIndex = new Date(currentDate).getMonth();
+      console.log('monthIndex', monthIndex);
+      const newMonthPlanification = { ...monthPlanification, id: response!.data.planificacion_mensual[0].id };
+
+      const newMonths = months.map((month) => {
+        if (month.id === monthIndex) {
+          return { ...month, content: [...month.content, newMonthPlanification] }
+        }
+        return month;
+      }
+      );
+      console.log('newMonths', newMonths);
+
+      setMonths(newMonths);
+      setCurrentThemes([...currentThemes, currentTheme]);
+      setIsThemeModalOpen(!isThemeModalOpen);
+    }
   }
+
+  const handleCreateHomework = async () => {
+    console.log('create homework');
+    const newHomework = {
+      materia_id: data[0].materia_id,
+      subtema_id: currentTheme!.id,
+      periodo_id: period_id,
+      titulo: homeworkName,
+      tipo: homeworkType,
+      fecha: currentDate.toISOString().split('T')[0],
+    }
+
+    console.log('newHomework', newHomework);
+    const response = await createNewTaskAction(newHomework);
+    console.log('response', response);
+
+    if (response.success) {
+      setIsTaskModalOpen(!isTaskModalOpen);
+      console.log('tarea creada');
+    }
+
+    if (!response.success) {
+      console.log('error', response);
+    }
+  }
+
+  const handleCreateExamen = async () => {
+    console.log('create examen');
+    const newExam = {
+      materia_id: data[0].materia_id,
+      tema_id: currentThemeId ?? 1,
+      periodo_id: period_id,
+      titulo: examName,
+      tipo: examType,
+      fecha: currentDate.toISOString().split('T')[0],
+    }
+
+    console.log('newExam', newExam);
+    const response = await createNewExamenAction(newExam);
+    console.log('response', response);
+
+    if (response.success) {
+      setIsExamModalOpen(!isExamModalOpen);
+      console.log('examen creado');
+    }
+
+    if (!response.success) {
+      console.log('error', response);
+    }
+  }
+
+  useEffect(() => {
+    /* resetear estados al cambiar de fecha */
+    setCurrentOption(TYPE_CLASS[0]);
+    setCurrentThemes([]);
+    setCurrentTheme(undefined);
+    setCurrentThemeId(null);
+    setExamName("");
+    setExamType("");
+
+    const monthlyPlanification = data.flatMap(event => event.planificacion_mensual);
+    const dailyPlanification = data.flatMap(event => event.planificacion_diaria);
+    const allSubtopics = data.flatMap(event => event.temas).flatMap(tema => tema.subtemas);
+    const combinedList = dailyPlanification.map(dailyItem => {
+      const matchingItem = monthlyPlanification.find(monthlyItem => monthlyItem!.fecha === dailyItem!.fecha);
+      const subtema_id = matchingItem ? matchingItem.subtema_id : undefined;
+      const subtema = allSubtopics.find(sub => sub?.id === subtema_id);
+      const newDate = new Date(dailyItem!.fecha);
+      newDate.setDate(newDate.getDate() + 1)
+
+      return {
+        ...dailyItem,
+        title: subtema?.nombre ?? "-",
+        start: newDate,
+        end: newDate,
+        resource: { ...dailyItem, subtema_id: subtema_id, subtema },
+      };
+    });
+
+    console.log('combined list', combinedList);
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+
+    const filteredEvents = combinedList.filter(event => event.fecha === formattedCurrentDate);
+
+    if (filteredEvents.length > 0 && filteredEvents[0].resource.subtema_id) {
+      setCurrentThemes([filteredEvents[0].resource.subtema!]);
+      setCurrentThemeId(filteredEvents[0].resource.subtema!.id_tema);
+    }
+
+    console.log(filteredEvents);
+  }, [currentDate]);
 
   return (
     <div className='relative h-3/5'>
@@ -60,13 +194,13 @@ function DailyPlanification({ date, startDate, endDate, data }: Props) {
           </button>
         </div>
         <div className='flex gap-6'>
-          <ButtonContinue text='Crear tarea' type='button' height='h-10' />
-          <ButtonContinue text='Crear Exámen' type='button' height='h-10' />
+          <ButtonContinue text='Crear tarea' type='button' height='h-10' onClick={() => setIsTaskModalOpen(!isTaskModalOpen)} />
+          <ButtonContinue text='Crear Exámen' type='button' height='h-10' onClick={() => setIsExamModalOpen(!isExamModalOpen)} />
         </div>
       </div>
       <div className='flex flex-col gap-2'>
         <span>Tipo de clase</span>
-        <div className='w-28 h-8 mb-2'>
+        <div className='w-max  h-8 mb-2'>
           <SelectType options={TYPE_CLASS} value={currentOption} onChange={setCurrentOption} />
         </div>
         <span>Tema/s</span>
@@ -74,14 +208,14 @@ function DailyPlanification({ date, startDate, endDate, data }: Props) {
           <ButtonContinue text='+' type='button' width='w-8 ps-3 text-lg rounded-xl border-none filter drop-shadow-[-1px_-1px_0px_#000000]' height='h-8' onClick={() => setIsThemeModalOpen(!isThemeModalOpen)} />
           {currentThemes.map((theme, index) => (
             <div key={index} className='flex gap-4 font-semibold justify-between items-center border-2 border-black rounded-md p-2 bg-white'>
-              <span>{theme}</span>
+              <span>{theme.nombre}</span>
               <button className='cursor-pointer' onClick={() => setCurrentThemes(currentThemes.filter((item) => item !== theme))}>
                 X
               </button>
             </div>
           ))}
         </div>
-        <span>Recursos</span>
+        {/* <span>Recursos</span>
         <div className='flex gap-4 mb-4 h-8 items-center'>
           <ButtonContinue text='+' type='button' width='w-8 ps-3 text-lg rounded-xl border-none filter drop-shadow-[-1px_-1px_0px_#000000]' height='h-8' />
           {currentResources.map((theme, index) => (
@@ -92,11 +226,11 @@ function DailyPlanification({ date, startDate, endDate, data }: Props) {
               </button>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
       <div className='flex flex-col h-full'>
         <span className='text-[22px] font-semibold mb-2'>Detalles de la clase</span>
-        <textarea className='resize-none bg-transparent flex-1 w-full h-full font-medium border-2 border-black rounded-md p-3 overflow-y-auto' />
+        <textarea value={detailsInput} onChange={(e) => setDetailsInput(e.target.value)} className='resize-none bg-transparent flex-1 w-full h-full font-medium border-2 border-black rounded-md p-3 overflow-y-auto' />
       </div>
 
       {isThemeModalOpen && (
@@ -120,7 +254,7 @@ function DailyPlanification({ date, startDate, endDate, data }: Props) {
                         </li>
                         <div className="flex flex-col gap-2 items-center w-full  overflow-y-auto">
                           {content.subtemas.map((subtema) => (
-                            <li key={subtema.id} className={` ${currentTheme === subtema.nombre && "border-2 border-blue-light-500"} w-3/4 p-1 flex items-center border border-black px-2 rounded-md gap-2 cursor-pointer touch-none`} onClick={() => setCurrentTheme(subtema.nombre)}
+                            <li key={subtema.id} className={` ${currentTheme?.nombre === subtema.nombre && "border-2 border-blue-light-500"} w-3/4 p-1 flex items-center border border-black px-2 rounded-md gap-2 cursor-pointer touch-none`} onClick={() => setCurrentTheme(subtema)}
                             >
                               <span className='flex w-[90%] whitespace-nowrap overflow-hidden overflow-ellipsis' title={subtema.nombre}>{subtema.nombre}</span>
                             </li>
@@ -136,6 +270,112 @@ function DailyPlanification({ date, startDate, endDate, data }: Props) {
 
             <div className='flex justify-center'>
               <ButtonContinue text='Agregar tema' type='button' width='w-40' height='h-10' onClick={handleConfirmTheme} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isTaskModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+          <div className="bg-yellow-100 border-2 border-black p-6 rounded-md shadow-lg max-w-lg w-[500px] relative">
+            <button
+              type="button"
+              onClick={() => setIsTaskModalOpen(!isTaskModalOpen)}
+              className="absolute text-gray-800 text-sm font-bold top-6 right-6"
+            >
+              <i className="fa-solid fa-x"></i>
+            </button>
+            <h2 className="text-lg font-bold mb-4">Tarea</h2>
+
+            <div className="flex flex-col">
+              <input
+                type="text"
+                placeholder="Título de la tarea"
+                value={homeworkName}
+                onChange={(event) => setHomeworkName(event.target.value)}
+                className="p-2 mb-4 rounded border-2 border-black text-sm w-[170px]"
+              />
+
+              <select
+                value={homeworkType}
+                onChange={(event) => setHomeworkType(event.target.value)}
+                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+              >
+                <option value="">Tipo de tarea</option>
+                <option value="Cuestionario">Cuestionario</option>
+                <option value="Practico">Trabajo práctico</option>
+                <option value="Grupal">Trabajo grupal</option>
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                type="button"
+                onClick={() => setIsTaskModalOpen(!isTaskModalOpen)}
+                className="bg-gray-100 text-black text-semibold px-4 py-2 rounded"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleCreateHomework}
+                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+              >
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isExamModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+          <div className="bg-yellow-100 border-2 border-black p-6 rounded-md shadow-lg max-w-lg w-[500px] relative">
+            <button
+              type="button"
+              onClick={() => setIsExamModalOpen(!isExamModalOpen)}
+              className="absolute text-gray-800 text-sm font-bold top-6 right-6"
+            >
+              <i className="fa-solid fa-x"></i>
+            </button>
+            <h2 className="text-lg font-bold mb-4">Examen</h2>
+
+            <div className="flex flex-col">
+              <input
+                type="text"
+                placeholder="Título del examen"
+                value={examName}
+                onChange={(event) => setExamName(event.target.value)}
+                className="p-2 mb-4 rounded border-2 border-black text-sm w-[170px]"
+              />
+
+              <select
+                value={examType}
+                onChange={(event) => setExamType(event.target.value)}
+                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+              >
+                <option value="">Tipo de examen</option>
+                <option value="Regular">Examen Regular</option>
+                <option value="Recuperatorio">Examen Recuperatorio</option>
+              </select>
+
+            </div>
+
+            <div className="flex justify-end gap-2 mt-4">
+              <button
+                type="button"
+                onClick={() => setIsExamModalOpen(!isExamModalOpen)}
+                className="bg-gray-100 text-black text-semibold px-4 py-2 rounded"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleCreateExamen}
+                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+              >
+                Guardar
+              </button>
             </div>
           </div>
         </div>

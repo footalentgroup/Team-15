@@ -11,6 +11,8 @@ import { CalendarEvent } from '@/interfaces/IPlanification.interfaces';
 import { normalizeDate } from '@/utils/utils';
 import WeeklyCustomToolbar from './weeklyCalendar/weeklyToolbar';
 import WeeklyCustomHeader from './weeklyCalendar/weeklyHeader';
+import customDayLayoutAlgorithm from './weeklyCalendar/customDayLayoutAlgorithm';
+
 
 const localizer = momentLocalizer(moment);
 
@@ -92,6 +94,8 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
         toolbar={true}
         culture='es'
         style={{ border: 'none!important' }}
+        showAllEvents={true}
+        dayLayoutAlgorithm={customDayLayoutAlgorithm}
       />
     </div>
   );

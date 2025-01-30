@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { refreshToken } from "./authActions";
-import { IMonthPlanification, IPlanification } from "@/interfaces/IPlanification.interfaces";
+import { IDailyPlanification, IMonthPlanification, IPlanification } from "@/interfaces/IPlanification.interfaces";
 
 const API_URL = process.env.BASE_URL;
 
@@ -66,6 +66,13 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
     const responseData = await response.json();
     console.log('responseData', responseData);
 
+    if (responseData.detail) {
+      return {
+        success: false,
+        error: responseData.detail
+      }
+    }
+
     return {
       data: responseData,
       success: true
@@ -115,8 +122,82 @@ export async function deleteMonthPlanificationAction(monthPlanificationId: numbe
   }
 }
 
-export async function updateMonthPlanificationAction(monthPlanification: IMonthPlanification) {
-  console.log('Update Month Planification Action', monthPlanification);
+export async function getAllDailyPlanification() {
+  console.log('Get All Daily Planification Action');
+
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  refreshToken();
+
+  const dailyPlanificationUrl = `${API_URL}/planificacion_diaria/list/`;
+
+  try {
+    const response = await fetch(dailyPlanificationUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener la planificacion diaria');
+    }
+
+    const responseData = await response.json();
+    console.log('responseData', responseData);
+
+    return responseData;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function getAllMonthPlanification() {
+  console.log('Get All Month Planification Action');
+
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  refreshToken();
+
+  const monthPlanificationUrl = `${API_URL}/planificacion_mensual/list/`;
+
+  try {
+    const response = await fetch(monthPlanificationUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener la planificacion mensual');
+    }
+
+    const responseData = await response.json();
+    console.log('responseData', responseData);
+
+    return responseData;
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function createDailyPlanificationAction(dailyPlanification: IDailyPlanification) {
+  console.log('create daily Planification Action', dailyPlanification);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -130,19 +211,101 @@ export async function updateMonthPlanificationAction(monthPlanification: IMonthP
     refreshToken();
   }
 
-  const monthPlanificationUrl = `${API_URL}/planificacion_mensual/update/${monthPlanification.id}/`;
+  const dailyPlanificationUrl = `${API_URL}/planificacion_diaria/register/`;
 
   try {
-    const response = await fetch(monthPlanificationUrl, {
+    const response = await fetch(dailyPlanificationUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify(dailyPlanification)
+    });
+
+    console.log(response);
+
+    const responseData = await response.json();
+    console.log('responseData', responseData);
+
+    return {
+      data: responseData,
+      success: true
+    }
+
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+
+
+export async function updateDailyPlanificationAction(dailyPlanification: IDailyPlanification) {
+  console.log('Update Daily Planification Action', dailyPlanification);
+
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  if (!TOKEN) {
+    refreshToken();
+  }
+
+  const dailyPlanificationUrl = `${API_URL}/planificacion_diaria/update/${dailyPlanification.id}/`;
+
+  try {
+    const response = await fetch(dailyPlanificationUrl, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${TOKEN}`
       },
-      body: JSON.stringify(monthPlanification)
+      body: JSON.stringify(dailyPlanification)
     });
 
-    console.log(response);
+    const responseData = await response.json();
+    console.log('responseData', responseData);
+
+    return {
+      data: responseData,
+      success: true
+    }
+
+  } catch (error) {
+    console.log('error', error);
+  }
+}
+
+export async function updateMonthlyPlanificationAction(monthlyPlanification: IMonthPlanification) {
+  console.log('Update Month Planification Action', monthlyPlanification);
+
+  const cookieStore = cookies();
+  const user = (await cookieStore).get("user");
+  let TOKEN = ''
+
+  if (user) {
+    TOKEN = JSON.parse(user.value).access_token;
+  }
+
+  if (!TOKEN) {
+    refreshToken();
+  }
+
+  const dailyPlanificationUrl = `${API_URL}/planificacion_mensual/update/${monthlyPlanification.id}/`;
+
+  try {
+    const response = await fetch(dailyPlanificationUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${TOKEN}`
+      },
+      body: JSON.stringify(monthlyPlanification)
+    });
 
     const responseData = await response.json();
     console.log('responseData', responseData);

@@ -9,3 +9,11 @@ export interface IHomework {
   calificacion?: any
   cuatrimestre?: any
 }
+export interface ICreateHomework {
+  materia_id: number
+  subtema_id: number
+  periodo_id: number
+  titulo: string
+  tipo: string
+  fecha: string
+}

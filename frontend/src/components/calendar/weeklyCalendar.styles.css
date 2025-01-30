@@ -73,6 +73,7 @@
   border-radius: 0 0 12px 12px !important;
   background-color: white !important;
   margin: 0 !important;
+  overflow: auto;
 }
 
 .weekly-calendar .rbc-event-content {

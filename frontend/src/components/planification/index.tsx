@@ -136,7 +136,18 @@ function Planification({ data, user, currentCourse }: Props) {
 
               createNewMonthPlanification([newPlan]).then((newItemFromResponse) => {
                 console.log('newItemFromResponse', newItemFromResponse);
-                const newMonth = { ...overMonth, content: [...overMonth.content, ...newItemFromResponse?.data.planificacion_mensual] };
+                const newPlanificationMonthFromResponse = {
+                  ...newItemFromResponse?.data.planificacion_mensual,
+                  theme: newTheme,
+                };
+                const newPlanificationMonth = {
+                  id: newPlanificationMonthFromResponse[0].id,
+                  planificacion_id: newPlanificationMonthFromResponse[0].planificacion_id,
+                  subtema_id: newPlanificationMonthFromResponse[0].subtema_id,
+                  fecha: newPlanificationMonthFromResponse[0].fecha,
+                  theme: newTheme
+                };
+                const newMonth = { ...overMonth, content: [...overMonth.content, newPlanificationMonth] };
                 const finalMonths = updatedMonths.map((month) => (month.id === monthIndex ? newMonth : month));
 
                 console.log('finalMonths', finalMonths);
@@ -159,7 +170,7 @@ function Planification({ data, user, currentCourse }: Props) {
 
       if (isTrash) {
         console.log('delete', active.id);
-        const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id !== subthemeIndex)
+        const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id === subthemeIndex)
         const newMonth = months[itemMonthIndex].content.filter((content) => content.subtema_id !== subthemeIndex)
         const newMonths = months.map((month) => {
           if (month.id === itemMonthIndex) {
@@ -249,11 +260,24 @@ function Planification({ data, user, currentCourse }: Props) {
       return null;
     }).filter((item): item is NonNullable<typeof item> => item !== null);
 
+    const filteredNewMonthPlanification = newMonthPlanification.reduce((acc: { map: Map<string, boolean>; result: IMonthPlanification[] }, current) => {
+      const [year, month] = current.fecha!.split('-');
+      const key = `${current.subtema_id}-${year}-${month}`;
+
+      if (!acc.map.has(key)) {
+        acc.map.set(key, true);
+        acc.result.push(current);
+      }
+
+      return acc;
+    }, { map: new Map(), result: [] }).result;
+
     console.log('newMonthPlanification', newMonthPlanification);
+    console.log('filteredNewMonthPlanification', filteredNewMonthPlanification);
 
     const newMonths = months.map((month) => {
       const newContent = newMonthPlanification.filter((item) => {
-        const [itemYear, itemMonth] = item.fecha.split('-');
+        const [itemYear, itemMonth] = item.fecha!.split('-');
         const [monthYear, monthMonth] = month.date.split('-');
 
         return itemYear === monthYear && itemMonth === monthMonth;
@@ -464,10 +488,10 @@ function Planification({ data, user, currentCourse }: Props) {
           )
           }
           {view === "Mensual" && (
-            <DraggableCalendarWithExternalEvents currentMonthIndex={currentMonthIndex} months={months} startIndex={startMonthIndex} lastIndex={lastEndMonthIndex} setMonths={setMonths} />
+            <DraggableCalendarWithExternalEvents currentMonthIndex={currentMonthIndex} months={months} setMonths={setMonths} startIndex={startMonthIndex} lastIndex={lastEndMonthIndex} />
           )}
           {view === "Diaria" && (
-            <DailyPlanification data={initialData} date={new Date().toString()} startDate={startDate} endDate={endDate} />
+            <DailyPlanification data={initialData} months={months} setMonths={setMonths} date={new Date().toString()} startDate={startDate} endDate={endDate} period_id={currentCourse.periods![0].id} />
           )}
         </>
       </div>

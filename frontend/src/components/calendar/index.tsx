@@ -49,15 +49,53 @@ function HomeCalendar({ events }: Props) {
     )
   }).flat();
 
+
   const newEventsWithNames = newEvents.map(newEvent => {
     const correspondingEvent = events.find(event => event.planification?.id === newEvent.resource.planificacion_id);
+    const newStartDate = new Date(newEvent.start);
+    newStartDate.setDate(newStartDate.getDate() + 1);
+    const newEndDate = new Date(newEvent.end);
+    newEndDate.setDate(newEndDate.getDate() + 1);
     return {
       ...newEvent,
+      start: newStartDate,
+      end: newEndDate,
       schoolName: correspondingEvent?.schoolName ?? "Unknown School",
       subjectName: correspondingEvent?.subjectName ?? "Unknown Subject",
     };
   });
-  console.log("newEventsWithNames", newEventsWithNames);
+
+  const filteredEvents = newEventsWithNames.filter(event => {
+    const dateParts = event.resource.fecha.split('-');
+    const day = parseInt(dateParts[2], 10);
+    return day !== 1;
+  });
+
+  /* 
+  para hacer que sea con el dailyPLanification
+
+  const monthlyPlanification = events.flatMap(event => event.planification?.planificacion_mensual);
+  const dailyPlanification = events.flatMap(event => event.planification?.planificacion_diaria);
+  const combinedList = dailyPlanification.map(dailyItem => {
+    const matchingItem = monthlyPlanification.find(monthlyItem => monthlyItem!.fecha === dailyItem!.fecha);
+    const subtema_id = matchingItem ? matchingItem.subtema_id : undefined;
+    const subtema = allSubtopics.find(sub => sub?.id === subtema_id);
+    const planification = events.find(event => event.planification?.id === dailyItem!.planificacion_id);
+    const newDate = new Date(dailyItem!.fecha);
+    newDate.setDate(newDate.getDate() + 1)
+
+    return {
+      ...dailyItem,
+      title: subtema?.nombre ?? "-",
+      start: newDate,
+      end: newDate,
+      resource: { ...dailyItem, subtema_id: subtema_id, subtema },
+      schoolName: planification?.schoolName ?? "-",
+      subjectName: planification?.subjectName ?? "-"
+    };
+  });
+
+  console.log('combined list', combinedList); */
 
 
   console.log("allDatesWithSubtheme", allDatesWithSubtheme);
@@ -71,15 +109,15 @@ function HomeCalendar({ events }: Props) {
       </div>
       {/* aca al hacer click en cada dia te debe llevar a la vista diaria de ese dia, o al hacer click en el select te tiene que dejar cambiar a la vista diaria actual */}
       {isDaily ? (
-        <DailyCalendar date={date} events={newEventsWithNames} />
+        <DailyCalendar date={date} events={filteredEvents} />
       ) : (
         //al hacer click en un dia se setea ese dia en el state
-        <WeeklyCalendar date={date} setDate={setDate} setIsDaily={setIsDaily} events={newEventsWithNames} setCurrentPlanification={setCurrentPlanification} />
+        <WeeklyCalendar date={date} setDate={setDate} setIsDaily={setIsDaily} events={filteredEvents} setCurrentPlanification={setCurrentPlanification} />
       )}
       {currentPlanification && (
         <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-20'>
           <div className='w-5/6 h-4/6 flex flex-col gap-8 bg-yellow-100 p-14 filter drop-shadow-[18px_14px_0px_#000000] z-30'>
-            <h3 className='text-4xl font-semibold'>Planificación &gt; {currentPlanification.start?.toDateString()}</h3>
+            <h3 className='text-4xl font-semibold capitalize'>Planificación &gt; {currentPlanification.start?.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' })}</h3>
             <button className='absolute top-4 right-6 rounded-full px-2 border border-black bg-yellow-light-100 text-xl font-medium' onClick={() => setCurrentPlanification(null)}>
               X
             </button>

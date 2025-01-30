@@ -9,3 +9,13 @@ export interface IExam {
   calificacion?: any
   cuatrimestre?: any
 }
+
+export interface ICreateExamen {
+  materia_id: number
+  tema_id: number
+  periodo_id: number
+  titulo: string
+  tipo: string
+  fecha: string
+  es_recuperatorio?: boolean
+}

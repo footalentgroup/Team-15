@@ -23,43 +23,43 @@ const Students: React.FC = () => {
             });
         }
     };
-    
+
     useEffect(() => {
         const studentsData = window.localStorage.getItem("studentsData");
         const currentCourse = window.localStorage.getItem("currentCourse");
-    
+
         if (currentCourse) {
             const course = JSON.parse(currentCourse);
             setCurrentCourse(course);
             getData(course);
         }
-    
+
         if (currentCourse) {
             const course = JSON.parse(currentCourse);
-            const configDataKey = `configData${course.courseId}`;  
-            const configData = window.localStorage.getItem(configDataKey);  
-    
+            const configDataKey = `configData${course.courseId}`;
+            const configData = window.localStorage.getItem(configDataKey);
+
             if (configData) {
                 setIsSaved(true);
                 window.localStorage.setItem("configData", configData);
             }
         }
-    
+
         if (studentsData) {
             setStudentsLocalData(true);
         }
-    
+
         if (isSaved && data && data?.length > 0) {
 
             localStorage.setItem("studentsData", JSON.stringify(data));
             router.push("/students/homework");
         }
-    
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, studentsLocalData, isSaved]);
-    
+    }, [isSaved]);
+
     console.log('data', data);
-    
+
 
     return (
         <div>
