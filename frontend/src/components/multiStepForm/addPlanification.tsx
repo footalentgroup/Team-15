@@ -114,6 +114,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
             setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
           }
         } catch (error) {
+          console.error(error)
           setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
         } finally {
           setLoading(false)
@@ -131,6 +132,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
             setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
           }
         } catch (error) {
+          console.error(error)
           setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
         } finally {
           setLoading(false)

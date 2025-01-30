@@ -17,9 +17,10 @@ interface Props {
   list: ICourses[]
   setIsVisible: (value: boolean) => void
   setCurrentCourse: (value: ICourses) => void
+  currentCourse?: ICourses | null
 }
 
-export function Slider({ list, setIsVisible, setCurrentCourse }: Props) {
+export function Slider({ list, setIsVisible, setCurrentCourse, currentCourse }: Props) {
 
   const setCurrentCourseCookie = async (course: ICourses) => {
     setCurrentCourse(course)
@@ -30,17 +31,17 @@ export function Slider({ list, setIsVisible, setCurrentCourse }: Props) {
     <div className="flex relative">
       <Swiper
         modules={[Navigation, Scrollbar, A11y]}
-        spaceBetween={36}
+        spaceBetween={28}
         slidesPerView={5}
         navigation={{ nextEl: ".next-arrow", prevEl: ".prev-arrow" }}
         pagination={{ clickable: true }}
         scrollbar={{ hide: true, }}
-        style={{ padding: '8px 64px', minWidth: '100%' }}
+        style={{ padding: '8px 7rem', minWidth: '100%' }}
       >
         {
           list.map((item) => (
             <SwiperSlide key={item.courseId} onClick={() => setCurrentCourseCookie(item)}>
-              <CourseCard setIsVisible={setIsVisible} courses={item} color={item.color!} />
+              <CourseCard setIsVisible={setIsVisible} currentCourse={currentCourse} courses={item} color={item.color!} />
             </SwiperSlide>
           ))
         }

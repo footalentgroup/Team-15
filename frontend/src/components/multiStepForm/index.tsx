@@ -13,9 +13,10 @@ interface Props {
   periodFromProps?: PeriodFromAction;
   onlyStudents?: number;
   courseIdFromParams?: number;
+  newCourse?: string;
 }
 
-export default function MultiStepForm({ onlyPlanification, subjectIdFromProps, periodFromProps, onlyStudents, courseIdFromParams }: Props) {
+export default function MultiStepForm({ onlyPlanification, subjectIdFromProps, periodFromProps, onlyStudents, courseIdFromParams, newCourse }: Props) {
   const [activeTab, setActiveTab] = useState(onlyStudents ? 1 : onlyPlanification ? 2 : 0);
   const [contentList, setContentList] = useState<Content[]>([])
   const [courseId, setCourseId] = useState<number | null>(null);
@@ -25,7 +26,7 @@ export default function MultiStepForm({ onlyPlanification, subjectIdFromProps, p
   const [currentPlanification, setCurrentPlanification] = useState<IPlanification | null>(null);
 
   const formElements = [
-    <AddCourseForm setCourseId={setCourseId} setSubjectId={setSubjectId} setActiveTab={setActiveTab} key={0} setPeriod={setPeriod} />,
+    <AddCourseForm setCourseId={setCourseId} setSubjectId={setSubjectId} setActiveTab={setActiveTab} key={0} setPeriod={setPeriod} newCourse={newCourse} />,
     <AddStudentForm courseId={courseId ?? Number(courseIdFromParams)} setActiveTab={setActiveTab} key={1} onlyStudents={onlyStudents ? true : false} />,
     <AddPlanification setActiveTab={setActiveTab} contentList={contentList} setContentList={setContentList} key={2} planificationStep={planificationStep} setPlanificationStep={setPlanificationStep} subjectId={subjectId} setCurrentPlanification={setCurrentPlanification} />,
     <AddToCalendar contentList={contentList} key={3} planificationStep={planificationStep} period={period} currentPlanification={currentPlanification} />

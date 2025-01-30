@@ -58,6 +58,7 @@ export default function AddNewStudent() {
                 setData(updatedData);
                 localStorage.setItem("studentsData", JSON.stringify(updatedData));
             } catch (error) {
+                console.error(error);
                 alert("Ocurrio un error al eliminar el alumno.");
             }
         }
@@ -131,6 +132,7 @@ export default function AddNewStudent() {
             const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setData(studentsArray);
         } catch (error) {
+            console.error(error);
             setData([]);
         }
     }, [])
@@ -142,7 +144,7 @@ export default function AddNewStudent() {
                     <button
                         type="button"
                         onClick={handleEditModeToggle}
-                        className="min-w-[190px] min-h-8 bg-white text-black border-2 border-black font-semibold text-sm px-4 mt-[23px] mb-6 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                        className="min-w-[190px] min-h-8 bg-white text-black border-2 border-black font-semibold text-sm px-4 mt-[23px] mb-6 rounded-md filter drop-shadow-general"
                     >
                         {isEditMode ? "Finalizar edición" : "Editar lista de alumnos"}
                     </button>
@@ -151,7 +153,7 @@ export default function AddNewStudent() {
                         <button
                             onClick={() => setIsInputVisible(true)}
                             type="button"
-                            className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] flex justify-center items-center"
+                            className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general flex justify-center items-center"
                         >
                             <i className="fa-solid fa-plus"></i>
                         </button>
@@ -198,7 +200,7 @@ export default function AddNewStudent() {
                             ) : (
                                 <button
                                     type="button"
-                                    className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] flex justify-between items-center"
+                                    className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general flex justify-between items-center"
                                 >
                                     <span className={`${isEditMode ? "" : "mx-auto"}`}>{student.apellido} {student.nombre} </span>
 
@@ -262,14 +264,14 @@ export default function AddNewStudent() {
                             <button
                                 type="button"
                                 onClick={confirmDelete}
-                                className="bg-white text-black text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                                className="bg-white text-black text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
                             >
                                 Aceptar
                             </button>
                             <button
                                 type="button"
                                 onClick={cancelDelete}
-                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
                             >
                                 Cancelar
                             </button>

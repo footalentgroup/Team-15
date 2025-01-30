@@ -15,7 +15,7 @@ export const PlanificationDroppableMonth: React.FC<DroppableMonthProps> = ({ mon
   });
 
   return (
-    <div ref={setNodeRef} className={`flex flex-col border-2 border-black rounded-lg min-h-[340px] min-w-52 max-w-1/4 flex-1 ${isOver ? 'border-blue-light-500 z-20 filter drop-shadow-[4px_4px_0px_#01caf8]' : 'filter drop-shadow-[4px_4px_0px_#000000]'}`}>
+    <div ref={setNodeRef} className={`flex flex-col border-2 border-black rounded-lg min-h-[340px] min-w-52 max-w-1/4 flex-1 ${isOver ? 'border-blue-light-500 z-20 filter drop-shadow-[4px_4px_0px_#01caf8]' : 'filter drop-shadow-general'}`}>
       <div className={`${month.color} flex justify-between p-3 border-b-2 border-black rounded-t-md ${isOver && ' z-20'}`}>
         <h4 className="font-bold text-2xl">{month.month}</h4>
         <button className='flex justify-center items-center' type='button' onClick={() => setCurrentMonthIndex(index)}>

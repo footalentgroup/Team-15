@@ -7,6 +7,8 @@ import { startTransition, useActionState, useEffect } from "react"
 import { useState } from "react";
 import FlagStepIndicator from "./flagStepIndicator";
 import DialogInfo from "../dialog/DialogInfo";
+import { IconArrowBackCurved } from "@/icons";
+import { useRouter } from "next/navigation";
 
 const INITIAL_STATE = {
   data: null
@@ -35,9 +37,10 @@ interface Props {
   setCourseId: (id: number) => void;
   setSubjectId: (id: number) => void;
   setPeriod: (period: PeriodFromAction) => void;
+  newCourse?: string;
 }
 
-export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId, setPeriod }: Props) {
+export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId, setPeriod, newCourse }: Props) {
   const [formState, formAction] = useActionState(
     addCourseAction,
     INITIAL_STATE
@@ -53,6 +56,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   const [selectedOption, setSelectedOption] = useState("semestral");
   const [periodList, setPeriodList] = useState(Array.from({ length: 2 }));
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -176,7 +180,12 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
         <>
           <form onSubmit={handleSubmit} className="w-full h-screen flex flex-col items-center p-9">
             <div className="flex px-4 py-8 justify-start w-4/6 self-start">
-              <h2 className="font-bold text-4xl text-wrap">Comencemos creando un curso</h2>
+              {newCourse && (
+                <button type="button" onClick={() => router.push('/home')}>
+                  <IconArrowBackCurved />
+                </button>
+              )}
+              <h2 className={`${newCourse && "ms-2"} font-bold text-4xl text-wrap`}>Comencemos creando un curso</h2>
             </div>
             <div className="flex flex-col items-center gap-9 w-[337px] my-14">
               {INPUTS_INFO.map((input) => (
@@ -224,7 +233,10 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
           )}
         </>
       )}
-      <DialogInfo small={true} text="Empezá configurando tu primer curso." />
+      {!newCourse && (
+        <DialogInfo small={false} text="Empezá configurando un curso a la vez.
+Te guiaremos para completar todo lo necesario." />
+      )}
     </div>
   );
 }

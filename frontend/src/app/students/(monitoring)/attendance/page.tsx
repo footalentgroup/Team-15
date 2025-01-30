@@ -128,7 +128,7 @@ const Attendance: React.FC = () => {
                         <div key={attendance.id} className="inline-block">
                             <button
                                 type="button"
-                                className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                 data-date={attendance.fecha}
                             >
                                 {`${attendance.nombre_valoracion} ${attendance.fecha.split("-")[2]}/${(monthIndex + 1).toString().padStart(2, "0")}`}

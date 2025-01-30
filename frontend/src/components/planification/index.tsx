@@ -369,7 +369,7 @@ function Planification({ data, user, currentCourse }: Props) {
   return (
     <>
       <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
-      <div className="ms-12 h-screen w-full flex flex-col gap-2 px-16 py-4 ">
+      <div className={`h-screen flex flex-col gap-4 px-16 py-14 ${isVisible || isExpanded ? "w-[calc(100%-18rem)]" : "w-[calc(100%-7rem)]"}`}>
         {/* background when is over */}
         <div className={`${isOver ? "absolute w-full h-full bg-[#75757532] top-0 left-0 z-10" : "invisible"}`} />
         {/* más info */}
@@ -405,13 +405,13 @@ function Planification({ data, user, currentCourse }: Props) {
         )}
 
         <>
-          <div className='flex justify-between mb-8'>
+          <div className='flex justify-between mb-4'>
             <h1 className='text-4xl font-semibold'>Planificación</h1>
             <div className='flex gap-7'>
               <select
                 value={view}
                 onChange={(e) => setView(e.target.value)}
-                className="font-semibold p-2 border border-black bg-yellow-500 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                className="font-semibold p-2 border border-black bg-yellow-500 rounded-md filter drop-shadow-general"
               >
                 <option value={viewPeriodTitle}>Vista {viewPeriodTitle}</option>
                 <option value="Mensual">Vista Mensual</option>
@@ -428,7 +428,7 @@ function Planification({ data, user, currentCourse }: Props) {
             <>
               <div className='flex gap-2 justify-center horizontal-line'>
                 <div />
-                <div className='flex justify-center items-center gap-2 bg-white py-1 px-4 border-2 border-black rounded-md filter drop-shadow-[4px_4px_0px_#000000]'>
+                <div className='flex justify-center items-center gap-2 bg-white py-1 px-4 border-2 border-black rounded-md filter drop-shadow-general'>
                   {initialPeriodStep > 1 && (
                     <button className='cursor-pointer' onClick={handlePreviousMonth}>
                       <IconArrow color='black' classNames='rotate-180 size-6' />
@@ -447,7 +447,7 @@ function Planification({ data, user, currentCourse }: Props) {
               <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                 {data.length > 0 ? (
                   <div>
-                    <span className='flex text-xl mt-4 mb-2'>Contenidos asignados</span>
+                    <span className='flex text-xl my-2'>Contenidos asignados</span>
                     <ContentSlider data={initialData} setInitialData={setInitialData} setCurrentItem={setCurrentItem} />
                   </div>
                 ) : (
@@ -455,10 +455,10 @@ function Planification({ data, user, currentCourse }: Props) {
                     Cargando...
                   </>
                 )}
-                <div className='flex flex-col h-full max-h-[60%] overflow-x-auto'>
+                <div className='flex flex-col h-full overflow-x-auto'>
                   {months.length > 0 ? (
                     <>
-                      <span className='flex text-xl my-4'>Calendario {viewPeriodTitle}</span>
+                      <span className='flex text-xl my-2'>Calendario {viewPeriodTitle}</span>
                       {isOver && (
                         <DroppableDelete />
                       )}

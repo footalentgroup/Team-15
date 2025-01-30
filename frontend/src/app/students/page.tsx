@@ -86,7 +86,7 @@ const Students: React.FC = () => {
                     {isSaved ? (
                         <button
                             type="button"
-                            className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through cursor-not-allowed`}
+                            className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-general bg-white line-through cursor-not-allowed`}
                         >
                             <i className="pr-4 fa-solid fa-square-check text-green-500"></i>
                             Configurar el sistema de notas
@@ -96,7 +96,7 @@ const Students: React.FC = () => {
                         <Link href="/students/config">
                             <button
                                 type="button"
-                                className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-yellow-500`}
+                                className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-general bg-yellow-500`}
                             >
                                 <i className="pr-4 fa-regular fa-square"></i>
                                 Configurar el sistema de notas
@@ -105,14 +105,14 @@ const Students: React.FC = () => {
                         </Link>
                     )}
                     {(data && data.length > 0) ? (
-                        <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-white line-through cursor-not-allowed`}>
+                        <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-general bg-white line-through cursor-not-allowed`}>
                             <i className={`pr-4 fa-solid fa-square-check text-green-500`}></i>
                             Cargar la lista de alumnos
                             <i className="fa-solid fa-arrow-up pl-4"></i>
                         </button>
                     ) : (
                         <Link href={`/add-course?page=2&courseId=${currentCourse?.courseId}`} >
-                            <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-[4px_4px_0px_#000000] bg-yellow-500`}>
+                            <button type="button" className={`my-12 min-w-[420px] min-h-[80px] text-black border-2 border-black font-semibold text-[18px] rounded-md filter drop-shadow-general bg-yellow-500`}>
                                 <i className={`pr-4 fa-regular fa-square`}></i>
                                 Cargar la lista de alumnos
                                 <i className="fa-solid fa-arrow-up pl-4"></i>
@@ -134,7 +134,7 @@ const Students: React.FC = () => {
                         <p className="text-m text-gray-700 my-2">¡Tu configuración está completa! Ahora estás listo para hacer el seguimiento de tus alumnos.</p>
                         <div className="flex justify-end space-x-4 mt-10">
                             <button
-                                className="min-w-[130px] min-h-[48px] bg-pink-500 text-white border-2 border-black font-semibold text-[16px] px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                                className="min-w-[130px] min-h-[48px] bg-pink-500 text-white border-2 border-black font-semibold text-[16px] px-4 rounded-md filter drop-shadow-general"
                                 onClick={handleClick}
                             >
                                 Continuar

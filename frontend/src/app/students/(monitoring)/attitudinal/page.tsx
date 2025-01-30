@@ -8,8 +8,8 @@ import DropdownAttitudinal from "@/components/studentsMonitoring/dropdown/dropdo
 import withAuth from "@/actions/withAuth";
 
 const Attitudinal: React.FC = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [mounted, setMounted] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [rangeType, setRangeType] = useState<"diario" | "semanal" | "mensual">("diario");
     const [monthIndex, setMonthIndex] = useState(0);
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -343,7 +343,7 @@ const Attitudinal: React.FC = () => {
                                 <div key={attitudinal.id} className="inline-block">
                                     <button
                                         type="button"
-                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                         data-date={attitudinal.fecha}
                                     >
                                         {`${attitudinal.nombre_valoracion} ${attitudinal.fecha.split("-")[2]}/${(monthIndex + 1).toString().padStart(2, "0")}`}
@@ -369,7 +369,7 @@ const Attitudinal: React.FC = () => {
                                 <div key={attitudinal.id} className="inline-block">
                                     <button
                                         type="button"
-                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                         data-date={attitudinal.fecha}
                                     >
                                         {`${attitudinal.nombre_valoracion}`}
@@ -399,7 +399,7 @@ const Attitudinal: React.FC = () => {
                                 <div key={attitudinal.id} className="inline-block">
                                     <button
                                         type="button"
-                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                         data-date={attitudinal.fecha}
                                     >
                                         {`${attitudinal.nombre_valoracion}`}
@@ -425,7 +425,7 @@ const Attitudinal: React.FC = () => {
                                 <div key={attitudinal.id} className="inline-block">
                                     <button
                                         type="button"
-                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                         data-date={attitudinal.fecha}
                                     >
                                         {`${attitudinal.nombre_valoracion}`}
@@ -451,7 +451,7 @@ const Attitudinal: React.FC = () => {
                                 <div key={attitudinal.id} className="inline-block">
                                     <button
                                         type="button"
-                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                         data-date={attitudinal.fecha}
                                     >
                                         {`${attitudinal.nombre_valoracion}`}
@@ -477,7 +477,7 @@ const Attitudinal: React.FC = () => {
                                 <div key={attitudinal.id} className="inline-block">
                                     <button
                                         type="button"
-                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                        className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                         data-date={attitudinal.fecha}
                                     >
                                         {`${attitudinal.nombre_valoracion}`}

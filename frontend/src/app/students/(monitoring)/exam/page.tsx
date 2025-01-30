@@ -8,7 +8,6 @@ import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownExam from "@/components/studentsMonitoring/dropdown/dropdownExam";
 import withAuth from "@/actions/withAuth";
-import exp from "constants";
 
 const Exam: React.FC = () => {
     const [mounted, setMounted] = useState(false);
@@ -124,7 +123,7 @@ const Exam: React.FC = () => {
                     <div key={exam.examen_asignado_id}>
                         <button
                             type="button"
-                            className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                            className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                         >
                             {exam.nombre}
                         </button>
@@ -148,7 +147,7 @@ const Exam: React.FC = () => {
                     <button
                         type="button"
                         onClick={handleModalToggle}
-                        className="min-w-[170px] min-h-8 bg-yellow-100 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                        className="min-w-[170px] min-h-8 bg-yellow-100 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general"
                     >
                         +
                     </button>
@@ -187,13 +186,13 @@ const Exam: React.FC = () => {
                                 placeholder="Fecha de la clase"
                                 value={examDate}
                                 onChange={(event) => setExamDate(event.target.value)}
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
                             />
 
                             <select
                                 value={examType}
                                 onChange={(event) => setExamType(event.target.value)}
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
                             >
                                 <option value="">Tipo de examen</option>
                                 <option value="Regular">Examen Regular</option>
@@ -204,7 +203,7 @@ const Exam: React.FC = () => {
                                 value={examTheme}
                                 onChange={(event) => setExamTheme(event.target.value)}
                                 disabled
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-[4px_4px_0px_#000000] cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-general cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
                             >
                                 <option value="">Unidad</option>
                                 <option value="1">Unidad 1</option>
@@ -223,7 +222,7 @@ const Exam: React.FC = () => {
                             <button
                                 type="button"
                                 onClick={handleSaveExam}
-                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
                             >
                                 Guardar
                             </button>

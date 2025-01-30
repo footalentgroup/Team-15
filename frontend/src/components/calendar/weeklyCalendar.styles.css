@@ -1,3 +1,7 @@
+.weekly-calendar .rbc-calendar {
+  position: relative;
+}
+
 .weekly-calendar .rbc-button-link {
   font-size: 24px !important;
   text-align: center !important;
@@ -30,16 +34,16 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
-  gap: 36px;
-  filter: drop-shadow(5px 4px 0px #000000) !important;
+  gap: 28px;
+  filter: drop-shadow(4px 4px 0px #7a94ba) !important;
 }
 
 .weekly-calendar .rbc-time-content {
   display: flex;
   width: 100%;
   justify-content: space-between;
-  gap: 36px;
-  filter: drop-shadow(4px 4px 0px #000000) !important;
+  gap: 28px;
+  filter: drop-shadow(4px 4px 0px #7a94ba) !important;
   overflow: hidden;
 }
 
@@ -62,6 +66,10 @@
 .weekly-calendar .rbc-time-header-content,
 .weekly-calendar .rbc-time-content {
   border: none !important;
+}
+
+.weekly-calendar .rbc-time-view {
+  padding: 0 7.25rem;
 }
 
 .weekly-calendar .rbc-current-time-indicator {

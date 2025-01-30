@@ -16,7 +16,7 @@ const ButtonSideBar = ({ text, onClick, color, icon, url, isExpanded }: Props) =
   const pathname = usePathname()
   const isActive = pathname === url || (pathname.includes(url) && url !== '/home');
   return (
-    <Link href={isActive ? "#" : url} onClick={onClick} className={`${isActive ? 'bg-[#3a3838] text-white' : 'bg-white'} ${isExpanded ? "w-44" : ""} min-h-12 flex gap-2 items-center ${color ? color : ''} border-2 border-black text-black font-semibold py-2 px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]`}>
+    <Link href={isActive ? "#" : url} onClick={onClick} className={`${isActive ? 'bg-[#3a3838] text-white' : 'bg-white'} ${isExpanded ? "w-44" : ""} min-h-12 flex gap-2 items-center ${color ? color : ''} border-2 border-black text-black font-semibold py-2 px-4 rounded-md filter drop-shadow-general`}>
       <div className='!text-white'>
         {icon && icon}
       </div>

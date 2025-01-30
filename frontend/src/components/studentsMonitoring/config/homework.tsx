@@ -21,24 +21,24 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
     const handleMinGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newMinGrade = event.target.value === "" ? "" : Number(event.target.value);
         setMinGrade(newMinGrade);
-    
+
         if (typeof passingGrade === "number" && typeof newMinGrade === "number" && passingGrade < newMinGrade) {
             setPassingGrade(newMinGrade);
         }
     };
-    
+
     const handleMaxGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newMaxGrade = event.target.value === "" ? "" : Number(event.target.value);
         setMaxGrade(newMaxGrade);
-    
+
         if (typeof passingGrade === "number" && typeof newMaxGrade === "number" && passingGrade > newMaxGrade) {
             setPassingGrade(newMaxGrade);
         }
     };
-    
+
     const handlePassingGradeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newPassingGrade = event.target.value === "" ? "" : Number(event.target.value);
-    
+
         if (newPassingGrade === "") {
             setPassingGrade("");
         } else if (typeof newPassingGrade === "number") {
@@ -193,7 +193,7 @@ const HomeworkConfig = ({ onDataChange }: { onDataChange: (data: any) => void })
                             <button
                                 type="button"
                                 onClick={addConceptualValue}
-                                className="border-1 rounded-[15px] p-2 text-white w-[48px] text-sm bg-pink-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="border-1 rounded-[15px] p-2 text-white w-[48px] text-sm bg-pink-500 drop-shadow-general"
                             >
                                 <i className="fa-solid fa-plus"></i>
                             </button>

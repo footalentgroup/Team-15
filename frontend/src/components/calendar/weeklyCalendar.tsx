@@ -63,7 +63,7 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
   }
 
   return (
-    <div className='h-full max-h-[490px] px-16 weekly-calendar'>
+    <div className='h-full max-h-[490px] weekly-calendar'>
       <Calendar
         components={{
           event: ({ event }) => (

@@ -20,6 +20,7 @@ interface Props {
 }
 
 export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [formState, formAction] = useActionState(
     AddStudentAction,
     INITIAL_STATE
@@ -102,6 +103,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
           setImportError('Ocurrio un error al importar estudiantes');
         }
       } catch (error) {
+        console.error(error);
         setImportError('Ocurrio un error al importar estudiantes');
       } finally {
         setLoading(false);

@@ -32,7 +32,7 @@ function MonthlyCalendar({ months, startMonthIndex, endMonthIndex, setCurrentMon
   });
 
   return (
-    <div className="w-full flex gap-4 h-[460px] px-2 py-4 justify-between">
+    <div className="w-full flex gap-4 h-[calc(100%-60px)] px-2 py-4 justify-between">
       {filteredMonths.slice(startMonthIndex, endMonthIndex).map((month) => (
         <PlanificationDroppableMonth
           key={month.id}

@@ -66,18 +66,18 @@ const OnboardingPage = () => {
 
     return (
         <>
-        <Onboarding
-            title={stepData.title}
-            username={username}
-            description={stepData.description}
-            imageSrc={stepData.imageSrc}
-            currentStep={currentStep}
-            totalSteps={onboardingSteps.length}
-            buttonText={stepData.buttonText}
-            onClickNext={handleNext}
-            onClickBack={handleBack}
-        />
-        <DialogInfo small={true} text="Al comenzar, crearás tu primera clase." />
+            <Onboarding
+                title={stepData.title}
+                username={username}
+                description={stepData.description}
+                imageSrc={stepData.imageSrc}
+                currentStep={currentStep}
+                totalSteps={onboardingSteps.length}
+                buttonText={stepData.buttonText}
+                onClickNext={handleNext}
+                onClickBack={handleBack}
+            />
+            <DialogInfo small={true} text="Al comenzar, crearás tu primera clase." />
         </>
     );
 }

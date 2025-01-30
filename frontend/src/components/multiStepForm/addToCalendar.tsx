@@ -21,7 +21,7 @@ interface Props {
   currentPlanification: IPlanification | null
 }
 
-export default function AddToCalendar({ contentList, planificationStep, period, currentPlanification }: Props) {
+export default function AddToCalendar({ planificationStep, period, currentPlanification }: Props) {
   const monthsLength = period?.duracion === 'semestral' ? 6 : period?.duracion === 'trimestral' ? 3 : 4
   const periodTitle = period?.duracion === 'semestral' ? 'semestre' : period?.duracion === 'trimestral' ? 'trimestre' : 'cuatrimestre'
   const startMonthFromPeriod = Number(period?.periodos[0].fecha_inicio.split('-')[1])
@@ -111,7 +111,7 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
       const [contentSubIndex] = (active.id as string).replace('content-', '').split('-').map(Number);
       const monthIndex = parseInt((over.id as string).replace('month-', ''), 10);
 
-      const currentMonth = monthContent[monthIndex]
+      /* const currentMonth = monthContent[monthIndex] */
       const currentContent = allSubthemes.find((subtheme) => subtheme.id === contentSubIndex)
 
       if (currentContent) {

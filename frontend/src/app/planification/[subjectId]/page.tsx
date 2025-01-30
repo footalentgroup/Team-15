@@ -23,6 +23,7 @@ export default async function PlanificationPage({ params }: { params: Promise<{ 
     currentCourseData = filteredCourses ?? null;
 
   } catch (error) {
+    console.error(error)
     redirect('/home')
   }
 
@@ -37,11 +38,12 @@ export default async function PlanificationPage({ params }: { params: Promise<{ 
     planificationData = await getPlanification(Number(subjectId));
 
   } catch (error) {
+    console.error(error)
     redirect('/home')
   }
 
   return (
-    <div className="h-screen w-full flex flex-col gap-2 px-16 py-4">
+    <div className="h-screen flex">
       <Planification data={planificationData ?? []} user={userData} currentCourse={currentCourseData ?? {} as ICourses} />
     </div>
   );

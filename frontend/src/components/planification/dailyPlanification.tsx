@@ -299,7 +299,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
               <select
                 value={homeworkType}
                 onChange={(event) => setHomeworkType(event.target.value)}
-                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
               >
                 <option value="">Tipo de tarea</option>
                 <option value="Cuestionario">Cuestionario</option>
@@ -319,7 +319,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
               <button
                 type="button"
                 onClick={handleCreateHomework}
-                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
               >
                 Guardar
               </button>
@@ -352,7 +352,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
               <select
                 value={examType}
                 onChange={(event) => setExamType(event.target.value)}
-                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
               >
                 <option value="">Tipo de examen</option>
                 <option value="Regular">Examen Regular</option>
@@ -372,7 +372,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
               <button
                 type="button"
                 onClick={handleCreateExamen}
-                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
               >
                 Guardar
               </button>

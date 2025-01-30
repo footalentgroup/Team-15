@@ -126,7 +126,7 @@ export const IconBookmark = ({ classNames }: IconProps) => {
     <svg width="131" height="137" viewBox="0 0 131 137" fill="none" xmlns="http://www.w3.org/2000/svg" className={classNames}>
       <g filter="url(#filter0_d_1201_5763)">
         <path d="M2 131V-5H129V131L67 105L2 131Z" fill="#FEEEBE" shapeRendering="crispEdges" />
-        <path d="M2 131V-5H129V131L67 105L2 131Z" stroke="#EB3883" strokeOpacity="0.55" strokeWidth="4" strokeLinejoin="round" shapeRendering="crispEdges" />
+        <path d="M2 131V-5H129V131L67 105L2 131Z" stroke="#CD0052" strokeOpacity="0.55" strokeWidth="4" strokeLinejoin="round" shapeRendering="crispEdges" />
       </g>
       <defs>
         <filter id="filter0_d_1201_5763" x="0" y="-7" width="131" height="144" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
@@ -146,7 +146,7 @@ export const IconBookmark = ({ classNames }: IconProps) => {
 export const IconCalendarInput = ({ classNames, color }: IconProps) => {
   return (
     <svg className={classNames} width="28" height="25" viewBox="0 0 28 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9.33333 7.76562V3.76562M18.6667 7.76562V3.76562M8.16667 11.7656H19.8333M5.83333 21.7656H22.1667C23.4553 21.7656 24.5 20.8702 24.5 19.7656V7.76562C24.5 6.66106 23.4553 5.76562 22.1667 5.76562H5.83333C4.54467 5.76562 3.5 6.66106 3.5 7.76562V19.7656C3.5 20.8702 4.54467 21.7656 5.83333 21.7656Z" stroke={color ?? "#EB3883"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9.33333 7.76562V3.76562M18.6667 7.76562V3.76562M8.16667 11.7656H19.8333M5.83333 21.7656H22.1667C23.4553 21.7656 24.5 20.8702 24.5 19.7656V7.76562C24.5 6.66106 23.4553 5.76562 22.1667 5.76562H5.83333C4.54467 5.76562 3.5 6.66106 3.5 7.76562V19.7656C3.5 20.8702 4.54467 21.7656 5.83333 21.7656Z" stroke={color ?? "#CD0052"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -193,5 +193,78 @@ export const IconArrowUp = ({ classNames, color }: IconProps) => {
       <path fillRule="evenodd" clipRule="evenodd" d="M0.599609 18.4004C0.599609 17.7376 1.13687 17.2004 1.79961 17.2004H16.1996C16.8624 17.2004 17.3996 17.7376 17.3996 18.4004C17.3996 19.0631 16.8624 19.6004 16.1996 19.6004H1.79961C1.13687 19.6004 0.599609 19.0631 0.599609 18.4004ZM4.55108 6.04892C4.08245 5.58029 4.08245 4.82049 4.55108 4.35186L8.15108 0.751863C8.37612 0.526819 8.68135 0.400391 8.99961 0.400391C9.31787 0.400391 9.62309 0.526819 9.84814 0.751863L13.4481 4.35186C13.9168 4.82049 13.9168 5.58029 13.4481 6.04892C12.9795 6.51755 12.2197 6.51755 11.7511 6.04892L10.1996 4.49745L10.1996 13.6004C10.1996 14.2631 9.66235 14.8004 8.99961 14.8004C8.33687 14.8004 7.79961 14.2631 7.79961 13.6004L7.79961 4.49745L6.24814 6.04892C5.77951 6.51755 5.01971 6.51755 4.55108 6.04892Z" fill={color ?? "#111827"} />
     </svg>
 
+  )
+}
+
+export const IconLogout = ({ classNames, color }: IconProps) => {
+  return (
+    <svg width="24" height="24" className={classNames} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.66667 2.66667H10.6667C11.4 2.66667 12 2.06667 12 1.33333C12 0.6 11.4 0 10.6667 0H2.66667C1.2 0 0 1.2 0 2.66667V21.3333C0 22.8 1.2 24 2.66667 24H10.6667C11.4 24 12 23.4 12 22.6667C12 21.9333 11.4 21.3333 10.6667 21.3333H2.66667V2.66667Z" fill={color ?? "black"} />
+      <path d="M23.5333 11.5314L19.8133 7.81142C19.3867 7.38475 18.6667 7.67809 18.6667 8.27809V10.6648H9.33333C8.6 10.6648 8 11.2648 8 11.9981C8 12.7314 8.6 13.3314 9.33333 13.3314H18.6667V15.7181C18.6667 16.3181 19.3867 16.6114 19.8 16.1848L23.52 12.4648C23.7867 12.2114 23.7867 11.7848 23.5333 11.5314Z" fill={color ?? "black"} />
+    </svg>
+
+  )
+}
+
+export const IconFlag = ({ classNames, color }: IconProps) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="206"
+      height="65"
+      className={classNames}
+      fill={color ?? "none"}
+      viewBox="0 0 206 65"
+    >
+      <g filter="url(#filter0_d_4111_10131)" shapeRendering="crispEdges">
+        <path fill="#FEEEBE" d="M204 59H2V2h202l-19.441 28.5z"></path>
+        <path
+          stroke="#EB3883"
+          strokeLinejoin="round"
+          strokeOpacity="0.55"
+          strokeWidth="4"
+          d="M204 59H2V2h202l-19.441 28.5z"
+        ></path>
+      </g>
+      <defs>
+        <filter
+          id="filter0_d_4111_10131"
+          width="206"
+          height="65"
+          x="0"
+          y="0"
+          colorInterpolationFilters="sRGB"
+          filterUnits="userSpaceOnUse"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix"></feFlood>
+          <feColorMatrix
+            in="SourceAlpha"
+            result="hardAlpha"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+          ></feColorMatrix>
+          <feOffset dy="4"></feOffset>
+          <feComposite in2="hardAlpha" operator="out"></feComposite>
+          <feColorMatrix values="0 0 0 0 0.972549 0 0 0 0 0.00392157 0 0 0 0 0.517647 0 0 0 1 0"></feColorMatrix>
+          <feBlend
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_4111_10131"
+          ></feBlend>
+          <feBlend
+            in="SourceGraphic"
+            in2="effect1_dropShadow_4111_10131"
+            result="shape"
+          ></feBlend>
+        </filter>
+      </defs>
+    </svg>
+
+  )
+}
+
+export const IconArrowBackCurved = ({ classNames, color }: IconProps) => {
+  return (
+    <svg width="32" height="32" className={classNames} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path fillRule="evenodd" clipRule="evenodd" d="M12.3316 5.2655C12.9564 5.89034 12.9564 6.90341 12.3316 7.52825L8.66294 11.1969H17.6002C23.7858 11.1969 28.8002 16.2113 28.8002 22.3969V25.5969C28.8002 26.4805 28.0839 27.1969 27.2002 27.1969C26.3165 27.1969 25.6002 26.4805 25.6002 25.5969V22.3969C25.6002 17.9786 22.0185 14.3969 17.6002 14.3969H8.66294L12.3316 18.0655C12.9564 18.6903 12.9564 19.7034 12.3316 20.3282C11.7067 20.9531 10.6937 20.9531 10.0688 20.3282L3.66882 13.9282C3.04399 13.3034 3.04399 12.2903 3.66882 11.6655L10.0688 5.2655C10.6937 4.64067 11.7067 4.64067 12.3316 5.2655Z" fill={color ?? "#111827"} />
+    </svg>
   )
 }

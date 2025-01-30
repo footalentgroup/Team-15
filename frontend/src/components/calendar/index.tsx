@@ -100,11 +100,11 @@ function HomeCalendar({ events }: Props) {
 
   console.log("allDatesWithSubtheme", allDatesWithSubtheme);
   return (
-    <div className='h-full overflow-hidden mt-8'>
+    <div className='h-full overflow-hidden mt-8 relative'>
       {isDaily && (
-        <span className='text-4xl font-semibold absolute left-20'>Calendario General</span>
+        <span className='text-4xl font-semibold absolute left-0'>Calendario General</span>
       )}
-      <div className='flex absolute right-24 me-2'>
+      <div className='flex absolute right-0 me-2'>
         <SelectView options={['Semanal', 'Diario']} value={isDaily ? "Diario" : "Semanal"} isDaily={isDaily} onChange={setIsDaily} />
       </div>
       {/* aca al hacer click en cada dia te debe llevar a la vista diaria de ese dia, o al hacer click en el select te tiene que dejar cambiar a la vista diaria actual */}
