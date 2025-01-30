@@ -5,8 +5,9 @@ import { IStudents } from "@/interfaces/IStudents.interface";
 import { IAttendance } from "@/interfaces/IAttendance.interfaces";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import DropdownAttendance from "@/components/studentsMonitoring/dropdown/dropdownAttendance";
+import withAuth from "@/actions/withAuth";
 
-export default function Attendance() {
+const Attendance: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [monthIndex, setMonthIndex] = useState(0);
     const [selectedDays, setSelectedDays] = useState<string[]>([]);
@@ -33,7 +34,6 @@ export default function Attendance() {
         const days: IAttendance[] = [];
 
         const storedAttendance = JSON.parse(localStorage.getItem("attendanceData") || "[]");
-        console.log("Stored attendance:", storedAttendance);
 
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, monthIndex, day);
@@ -80,30 +80,25 @@ export default function Attendance() {
     };
 
     useEffect(() => {
-        console.log("Attendance page mounted");
         const configData = JSON.parse(localStorage.getItem("configData") || "{}");
         const attendanceConfig = configData?.attendance?.selectedButtons || [];
 
         const studentData = localStorage.getItem("studentsData");
-        console.log("Student data from localStorage:", studentData);
         if (studentData) {
             const parsedData = JSON.parse(studentData);
             const studentsArray = Array.isArray(parsedData) ? parsedData : [];
-            console.log("Students array from localStorage:", studentsArray);
             setStudentList(studentsArray);
         } else {
             setStudentList(null);
         }
 
         setSelectedDays(attendanceConfig);
-        console.log("Selected days from localStorage:", attendanceConfig);
         setMounted(true);
     }, []);
 
     useEffect(() => {
         if (mounted) {
             const days = getDaysInMonth(monthIndex);
-            console.log("Days in month:", days);
             setAttendanceData(days);
             if (days.length > 0) {
                 saveAttendance(days);
@@ -157,3 +152,5 @@ export default function Attendance() {
         </div>
     );
 }
+
+export default withAuth(Attendance);

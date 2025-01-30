@@ -7,8 +7,9 @@ import { ICourses } from "@/interfaces/ICourses.interface";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownHomework from "@/components/studentsMonitoring/dropdown/dropdownHomework";
+import withAuth from "@/actions/withAuth";
 
-export default function Homework() {
+const Homework: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [homeworkName, setHomeworkName] = useState("");
@@ -38,10 +39,8 @@ export default function Homework() {
 
     useEffect(() => {
         const studentData = localStorage.getItem("studentsData");
-        console.log("studentsData", studentData);
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            console.log("parsedData", parsedData);
             const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
@@ -58,7 +57,6 @@ export default function Homework() {
             const parsedConfig = JSON.parse(configData);
             setHomeworkGradeType(parsedConfig.homework?.gradeType || "");
         }
-        console.log("Cuatrimestre cambiado a:", quarterIndex);
 
         setMounted(true);
     }, []);
@@ -235,3 +233,5 @@ export default function Homework() {
         </div>
     );
 }
+
+export default withAuth(Homework);

@@ -48,7 +48,6 @@ export default function DropdownExam({ onGradeChange,
 
     useEffect(() => {
         if (typeof studentId === "undefined" || typeof examId === "undefined") {
-            console.error("Error: studentId or examId is undefined");
             return;
         }
 

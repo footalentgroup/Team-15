@@ -43,7 +43,6 @@ const AuthForm = ({ type }: AuthFormProps) => {
         });
 
         const data = await response.json();
-        console.log(data);
 
         if (data.error) {
           if (data.error === "Invalid credentials") {
@@ -91,19 +90,11 @@ const AuthForm = ({ type }: AuthFormProps) => {
           }
           return;
         }
-        console.log("Se registró la cuenta con:", {
-          username,
-          first_name,
-          last_name,
-          email,
-          password,
-        });
         localStorage.setItem("username", JSON.stringify(username));
         setTempUser({ email, password });
         router.push(`/register/confirm/${email}`);
       }
     } catch (error) {
-      console.error("Error:", error);
       alert("Hubo un error al procesar tu solicitud, por favor comunicate con soporte.");
     } finally {
       setLoading(false);

@@ -24,8 +24,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
     AddStudentAction,
     INITIAL_STATE
   );
-  console.log(formState);
-  console.log('courseId', courseId);
   const [studentName, setStudentName] = useState("");
   const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,7 +94,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
       try {
         const result = await ImportStudentsAction(formData);
-        console.log(result);
         if (result.success) {
           setStudentList({ alumnos: result.data.alumnos });
           setIsImportModalOpen(false);
@@ -105,7 +102,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
           setImportError('Ocurrio un error al importar estudiantes');
         }
       } catch (error) {
-        console.log(error);
         setImportError('Ocurrio un error al importar estudiantes');
       } finally {
         setLoading(false);
@@ -123,8 +119,8 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
       <FlagStepIndicator step={2} title="Alumnos" />
       <form onSubmit={handleSubmit} className="w-full h-screen p-16 flex flex-col">
         <div className="flex flex-col items-baseline gap-2">
-          <h2 className="font-semibold text-4xl">¿Quieres añadir tu lista de alumnos?</h2>
-          <span className="text-gray-500 text-xl">No te preocupes si ahora no tienes la lista competa, podrás agregar o editar alumnos más tarde</span>
+          <h2 className="font-semibold text-4xl">¿Querés añadir tu lista de alumnos?</h2>
+          <span className="text-gray-500 text-xl">No te preocupes si ahora no tenés la lista completa, podrás agregar o editar alumnos más tarde.</span>
         </div>
         <div className="flex flex-col gap-4 pt-11">
           <label htmlFor="studentName" className="mr-2 font-bold text-2xl">Apellido y nombre del alumno:</label>
@@ -169,10 +165,10 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
           <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
             <div className="flex justify-between items-center">
-              <h3 className="font-bold text-lg">Omitir Paso</h3>
+              <h3 className="font-bold text-lg">¿Querés omitir este paso?</h3>
               <button type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
             </div>
-            <p>Puedes añadir esta información más tarde desde la sección de seguimiento.</p>
+            <p>Si lo deseás, podés omitir este paso y añadir estos datos más tarde desde la sección de seguimiento.</p>
             <div className="flex justify-end space-x-4 mt-auto">
               <ButtonContinue type="button" text="Cancelar" color="bg-white" onClick={handleCancel} />
               <ButtonContinue text="Omitir este paso" onClick={handleNextStep} />
@@ -187,8 +183,8 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-bold text-3xl mb-2">Importar desde Excel</h3>
-                <p className="text-gray-600">Subí tu archivo Excel con la lista de alumnos. Asegúrate de que incluya una única columna para &apos;Apellido&apos; y &apos;Nombre&apos;.</p>
-                <p className="text-gray-600">¡Si lo deseas puedes descargar nuestra plantilla y rellenarla! <a className="text-blue-light-500" href="media/files/alumnos.xlsx" download="alumnos">Clica aquí para descargar la plantilla.</a></p>
+                <p className="text-gray-600">Subí tu archivo Excel con la lista de alumnos. Asegurate de que incluya una única columna para &apos;Apellido&apos; y &apos;Nombre&apos;.</p>
+                <p className="text-gray-600">¡Si lo deseas puedes descargar nuestra plantilla y rellenarla! <a className="text-blue-light-500" href="media/files/alumnos.xlsx" download="alumnos">Hacé clic aquí para descargarla.</a></p>
               </div>
               <button type="button" onClick={() => setIsImportModalOpen(!isImportModalOpen)}>✖</button>
             </div>
@@ -232,8 +228,8 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
               <h3 className="font-bold text-lg">¡Lista creada con éxito!</h3>
             </div>
             <div>
-              <p>Tu lista de alumnos fue creada con éxito</p>
-              <p>Esta disponible en Seguimiento</p>
+              <p>Tu lista de alumnos fue creada con éxito.</p>
+              <p>Estará disponible en la sección de seguimiento.</p>
             </div>
             <div className="flex justify-end space-x-4 mt-auto">
               <ButtonContinue type="button" text="Confirmar" onClick={handleNextStep} />

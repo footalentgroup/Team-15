@@ -26,8 +26,6 @@ interface Props {
 }
 
 function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanification }: Props) {
-  console.log("date from calendar", date);
-  console.log("events from calendar", events);
   /* const newEvents = events.map((content) => {
     const title = content.subtema?.nombre
     return ({
@@ -55,7 +53,6 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
   //al hacer click en un dia, se muestren los eventos de ese dia
 
   const handleClick = (date: Date) => {
-    console.log('Header clicked from weeklyCalendar:', date);
     setDate(date);
     /* setIsDaily(true); */
   }

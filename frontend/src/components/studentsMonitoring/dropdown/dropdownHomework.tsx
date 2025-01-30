@@ -44,7 +44,6 @@ export default function DropdownHomework({
 
     useEffect(() => {
         if (typeof studentId === "undefined" || typeof homeworkId === "undefined") {
-            console.error("Error: studentId or homeworkId is undefined");
             return;
         }
 

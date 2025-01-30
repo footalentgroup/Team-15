@@ -40,7 +40,6 @@ export default function SliderView({ onMonthChange, onCuatrimestreChange }: Slid
         if (configData) {
             const parsedConfig = JSON.parse(configData);
             const selectedButton = parsedConfig.attitudinal?.selectedButton;
-            console.log("Selected Button from attitudinal:", selectedButton);
 
             if (pathname.includes("/attendance")) {
                 setTitle(`Asistencia de ${months[monthIndex]}`);

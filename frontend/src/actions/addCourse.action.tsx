@@ -9,13 +9,12 @@ const API_URL = process.env.BASE_URL;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addCourseAction(prevState: any, body: { data: ICourses, period: Period }) {
-  console.log('estoy usando el addCourseAction', body);
   const { data, period } = body;
-  //recibe solo un nombre: la institucion
+
   const schoolUrl = `${API_URL}/institucion/register/`;
-  //recibe el nombre del curso y el id de la institucion:institucion_id
+
   const courseUrl = `${API_URL}/curso/register/`;
-  //recibe el nombre de la materia y el id del curso:curso_id
+
   const subjectUrl = `${API_URL}/materia/register/`;
 
   const cookieStore = cookies();
@@ -29,8 +28,6 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
   if (!TOKEN) {
     refreshToken();
   }
-
-  console.log('TOKEN', TOKEN);
 
   try {
     const schoolResponse = await fetch(schoolUrl, {
@@ -46,7 +43,6 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
 
 
     const schoolData = await schoolResponse.json();
-    console.log('schoolData', schoolData);
 
     const newPeriod: PeriodFromAction = {
       duracion: period.period,
@@ -120,14 +116,12 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
       course: courseData,
       subject: subjectData
     }
-    console.log('responseData', responseData);
     return {
       ...prevState,
       data: responseData,
       success: true
     }
   } catch (error) {
-    console.log('error', error);
     return {
       ...prevState,
       data: error,
@@ -139,7 +133,6 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function AddStudentAction(prevState: any, body: IStudentRequest) {
-  console.log('addStudentAction', body);
 
   const studentsUrl = `${API_URL}/alumno/list-register/`;
 
@@ -173,7 +166,6 @@ export async function AddStudentAction(prevState: any, body: IStudentRequest) {
       success: true
     }
   } catch (error) {
-    console.log('error', error);
     return {
       ...prevState,
       data: error,
@@ -184,7 +176,6 @@ export async function AddStudentAction(prevState: any, body: IStudentRequest) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function ImportStudentsAction(formData: FormData) {
-  console.log('ImportStudentsAction', formData);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -210,7 +201,6 @@ export async function ImportStudentsAction(formData: FormData) {
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     if (!response.ok) {
       throw new Error('Ocurrio un error al importar estudiantes', responseData);
@@ -220,8 +210,7 @@ export async function ImportStudentsAction(formData: FormData) {
       data: responseData,
       success: true
     }
-  } catch (error) {
-    console.log('error', error);
+  } catch (error) {;
     return {
       data: error,
       success: false
@@ -231,7 +220,6 @@ export async function ImportStudentsAction(formData: FormData) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function AddContentAction(prevState: any, list: Content[]) {
-  console.log('AddContentAction', list);
 
   return {
     ...prevState,
@@ -242,7 +230,6 @@ export async function AddContentAction(prevState: any, list: Content[]) {
 
 export async function setPeriodAction(period: Period) {
   const cookieStore = cookies();
-  console.log('setPeriodAction', period);
 
   const newPeriod: PeriodFromAction = {
     duracion: period.period,
@@ -264,7 +251,6 @@ export async function setPeriodAction(period: Period) {
       fecha_cierre: period['2 input end']
     });
   }
-  console.log('newPeriod', newPeriod);
 
   (await cookieStore).set('period', JSON.stringify(newPeriod));
 
@@ -286,7 +272,6 @@ export async function getPeriodAction() {
 
 //importa planificacino en formato word
 export async function ImportPlanificationAction(formData: FormData) {
-  console.log('import planification', formData);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -312,7 +297,6 @@ export async function ImportPlanificationAction(formData: FormData) {
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     if (!response.ok) {
       throw new Error('Ocurrio un error al importar la planificación', responseData);
@@ -330,7 +314,6 @@ export async function ImportPlanificationAction(formData: FormData) {
       success: true
     }
   } catch (error) {
-    console.log('error', error);
     return {
       data: error,
       success: false
@@ -340,7 +323,6 @@ export async function ImportPlanificationAction(formData: FormData) {
 
 //importa planificacion en formato pdf
 export async function ImportPlanificationPdfAction(formData: FormData) {
-  console.log('import planification', formData);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -366,7 +348,6 @@ export async function ImportPlanificationPdfAction(formData: FormData) {
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     if (!response.ok) {
       throw new Error('Ocurrio un error al importar la planificación', responseData);
@@ -384,7 +365,6 @@ export async function ImportPlanificationPdfAction(formData: FormData) {
       success: true
     }
   } catch (error) {
-    console.log('error', error);
     return {
       data: error,
       success: false
@@ -394,7 +374,6 @@ export async function ImportPlanificationPdfAction(formData: FormData) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function AddPlanificationAction(prevState: any, data: { subjectId: number | null, list: Content[] }) {
-  console.log('AddPlanification', data);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -424,7 +403,6 @@ export async function AddPlanificationAction(prevState: any, data: { subjectId: 
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     if (!response.ok) {
       throw new Error('Ocurrio un error al importar la planificación', responseData);
@@ -436,7 +414,6 @@ export async function AddPlanificationAction(prevState: any, data: { subjectId: 
       success: true
     }
   } catch (error) {
-    console.log('error', error);
     return {
       ...prevState,
       data: error,
@@ -447,7 +424,6 @@ export async function AddPlanificationAction(prevState: any, data: { subjectId: 
 
 export async function setCurrentCourseCookieAction(course: ICourses) {
   const cookieStore = cookies();
-  console.log('setCurrentCourseCookieAction', course);
 
   (await cookieStore).delete('currentCourse');
 

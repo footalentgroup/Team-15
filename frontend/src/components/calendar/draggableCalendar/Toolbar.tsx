@@ -19,9 +19,7 @@ function CustomToolbar({ toolbarProps, monthIndex, maxIndex, minIndex, setMonthI
 
   const goToNext = () => {
     const mDate = toolbarProps.date;
-    console.log("mDate", mDate);
     const newDate = new Date(mDate.setMonth(mDate.getMonth()));
-    console.log("newDate", newDate);
     toolbarProps.onNavigate('NEXT', newDate);
     setMonthIndex(monthIndex + 1);
   };

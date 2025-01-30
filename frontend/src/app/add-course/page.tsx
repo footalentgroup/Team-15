@@ -1,6 +1,7 @@
 import MultiStepForm from "@/components/multiStepForm";
 import { ICourses, PeriodFromAction } from "@/interfaces/ICourses.interface";
 import { cookies } from "next/headers";
+import { redirect } from 'next/navigation';
 
 /*   onlyPlanification?: boolean;
   subjectIdFromProps?: number;
@@ -16,9 +17,12 @@ export default async function AddCourse(props: {
   const currentPage = Number(searchParams?.page);
   const courseIdFromParams = Number(searchParams?.courseId);
 
-  console.log('page', currentPage);
-
   const cookieStore = cookies()
+  const user = (await cookieStore).get("user");
+
+  if (!user) {
+    redirect('/login')
+  }
   const currentCourse = (await cookieStore).get("currentCourse");
 
   const currentCourseData: ICourses = currentCourse ? JSON.parse(currentCourse.value) : null

@@ -104,20 +104,16 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       formData.append('file', planificationFile);
 
       if (planificationFile.type === 'application/pdf') {
-        console.log('pdf file');
         try {
           const result = await ImportPlanificationPdfAction(formData)
-          console.log('result', result);
 
           if (result.success) {
-            console.log('result', result)
             setContentList(result.data)
             setPlanificationFile(null)
           } else {
             setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
           }
         } catch (error) {
-          console.log(error);
           setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
         } finally {
           setLoading(false)
@@ -125,19 +121,16 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       }
 
       if (planificationFile.type === 'application/msword' || planificationFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        console.log('word file');
         try {
           const result = await ImportPlanificationAction(formData)
 
           if (result.success) {
-            console.log('result', result)
             setContentList(result.data)
             setPlanificationFile(null)
           } else {
             setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
           }
         } catch (error) {
-          console.log(error);
           setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
         } finally {
           setLoading(false)
@@ -145,7 +138,6 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       }
 
       /* formData.append('subjectId', subjectId!.toString()); */
-      console.log(subjectId);
     }
     setPlanificationStep(2)
   }
@@ -156,9 +148,6 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
   useEffect(() => {
     if (formState.success) {
-      console.log('formState', formState);
-      console.log('formState.data', formState.data);
-      console.log("formstate.data.planificacion", formState.data.planificacion);
       setCurrentPlanification(formState.data.planificacion)
       setPlanificationStep(3)
       setActiveTab(3)
@@ -189,11 +178,11 @@ export default function AddPlanification({ contentList, setContentList, setActiv
       <form onSubmit={handleSubmit} className="h-5/6 flex flex-col gap-2 rounded-lg">
         {contentList.length > 0 ? (
           <>
-            <h3 className="font-bold text-4xl">¿Quieres revisar los contenidos extraídos?</h3>
+            <h3 className="font-bold text-4xl">Revisá los contenidos extraídos</h3>
             <div>
               <div className="text-gray-600 text-xl my-6 mb-8">
                 <p>Estos son los temas que hemos extraído de tu documento.</p>
-                <p>Podés editarlos, eliminar lo que no necesites o agregar nuevos contenidos si hace falta.</p>
+                <p>Podés editarlos, eliminar lo que no necesites o agregar nuevos contenidos. Si la extracción es correcta, continuá.</p>
               </div>
             </div>
             <div className="flex content-center gap-4 my-4">
@@ -312,7 +301,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
           </>
         ) : (
           <>
-            <h3 className="font-bold text-4xl">¿Quieres subir tu planificación anual?</h3>
+            <h3 className="font-bold text-4xl">¿Querés subir tu planificación anual?</h3>
 
             <div className="text-gray-600 mt-2 mb-10 items-center">
               <p>Sube el documento con los temas oficiales y extraeremos los contenidos automáticamente.</p>
@@ -323,7 +312,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
               <div className="flex flex-col gap-4 items-center justify-center">
 
                 <div className="relative flex flex-col items-center justify-center border-2 bg-[#fef1ca] border-gray-500 rounded-lg p-4 h-64 gap-8 py-8 w-full">
-                  <p className="font-semibold">Sube aquí tu documento del ministerio (PDF/Word) con los temas oficiales</p>
+                  <p className="font-semibold">Arrastrar y soltar aquí el archivo (PDF/Word) con los temas oficiales.</p>
                   <input
                     type="file"
                     className="absolute top-0 opacity-0 w-full h-full cursor-pointer"
@@ -347,9 +336,9 @@ export default function AddPlanification({ contentList, setContentList, setActiv
               <div className='flex gap-2'>
                 <IconInfo />
                 <div className='text-gray-600'>
-                  <p>¿No tienes el documento a mano?</p>
-                  <p>No te preocupes, siempre podrás añadir contenidos manualmente más adelante</p>
-                  <p>Presiona en &quot;Omitir por ahora&quot;</p>
+                  <p>¿No tenés el documento a mano?</p>
+                  <p>No te preocupes, siempre podrás añadir contenidos manualmente más adelante.</p>
+                  <p>Hacé clic en &quot;Omitir por ahora&quot;</p>
                 </div>
               </div>
               {importError && <p className="text-red-500 my-2">{importError}</p>}

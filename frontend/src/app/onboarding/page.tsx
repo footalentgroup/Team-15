@@ -2,39 +2,41 @@
 import React, { useEffect, useState } from "react";
 import Onboarding from "../../components/onboarding/onboarding";
 import { useRouter } from "next/navigation";
+import withAuth from "@/actions/withAuth";
+import DialogInfo from "@/components/dialog/DialogInfo";
 
 const onboardingSteps = [
     {
         title: "¡Bienvenido",
         description:
-            "PalProfe te ayudara a organizar tu trabajo docente de manera sencilla y eficiente. Una plataforma donde todo está conectado: planificación, seguimiento de alumnos, notas rápidas y recursos, todo en un solo lugar.",
+            "PalProfe te ayudará a organizar tu trabajo docente de manera sencilla y eficiente. Una plataforma donde todo está conectado: planificación, seguimiento de alumnos, notas rápidas y recursos, todo en un único lugar.",
         imageSrc: "../media/img/ob-1.png",
         buttonText: "Comenzar",
     },
     {
-        title: "Planifica y crea tu contenido",
+        title: "Planificá y creá tu contenido",
         description:
-            "Planifica tus clases de forma sencilla. Organiza el contenido por meses y crea los temas y actividades organizandolas dia  a dia. Todo pensado para que ahorres tiempo.",
+            "Planificá tus clases de forma sencilla. Organizá el contenido por meses y creá los temas y actividades, distribuyéndolos día a día. Todo está pensado para que ahorres tiempo.",
         imageSrc: "../media/img/ob-2.png",
         buttonText: "Comenzar",
     },
     {
-        title: "Haz un seguimiento del alumnado",
+        title: "Llevá un seguimiento del alumnado",
         description:
-            "Lleva el control de tus clases y alumnos en un solo lugar. Registra asistencia, evalúa su desempeño y añade notas personalizadas para no olvidar ningún detalle.",
+            "Mantené el control de tus clases y alumnos en un solo lugar. Registrá asistencia, evaluá su desempeño y añadí notas personalizadas para no olvidar ningún detalle.",
         imageSrc: "../media/img/ob-3.png",
         buttonText: "Comenzar",
     },
     {
-        title: "Tus recursos y notas ¡siempre a mano!",
+        title: "¡Tené tus recursos y notas siempre a mano!",
         description:
-            "Guarda y organiza tus materiales: enlaces, documentos, presentaciones y más. Además, anota ideas importantes al instante con texto o grabaciones de audio. Todo estará siempre a mano.",
+            "Guardá y organizá tus materiales: enlaces, documentos, presentaciones y más. Además, anotá ideas importantes al instante, ya sea con texto o grabaciones de audio. Todo estará siempre a mano.",
         imageSrc: "../media/img/ob-4.png",
         buttonText: "Comenzar",
     },
 ];
 
-export default function OnboardingPage() {
+const OnboardingPage = () => {
     const [currentStep, setCurrentStep] = useState(1);
     const [username, setUsername] = useState<string | null>(null);
     const router = useRouter();
@@ -63,6 +65,7 @@ export default function OnboardingPage() {
     }, []);
 
     return (
+        <>
         <Onboarding
             title={stepData.title}
             username={username}
@@ -74,5 +77,9 @@ export default function OnboardingPage() {
             onClickNext={handleNext}
             onClickBack={handleBack}
         />
+        <DialogInfo small={true} text="Al comenzar, crearás tu primera clase." />
+        </>
     );
 }
+
+export default withAuth(OnboardingPage);

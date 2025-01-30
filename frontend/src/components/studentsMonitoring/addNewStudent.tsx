@@ -58,7 +58,7 @@ export default function AddNewStudent() {
                 setData(updatedData);
                 localStorage.setItem("studentsData", JSON.stringify(updatedData));
             } catch (error) {
-                console.error("Error al eliminar el alumno:", error);
+                alert("Ocurrio un error al eliminar el alumno.");
             }
         }
         setShowModal(false);
@@ -129,10 +129,8 @@ export default function AddNewStudent() {
         try {
             const parsedData = alumnos ? JSON.parse(alumnos) : { alumnos: [] };
             const studentsArray = Array.isArray(parsedData) ? parsedData : [];
-            console.log("Datos procesados:", studentsArray);
             setData(studentsArray);
         } catch (error) {
-            console.error("Error parsing students data:", error);
             setData([]);
         }
     }, [])

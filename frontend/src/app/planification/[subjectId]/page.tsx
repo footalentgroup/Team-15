@@ -23,7 +23,6 @@ export default async function PlanificationPage({ params }: { params: Promise<{ 
     currentCourseData = filteredCourses ?? null;
 
   } catch (error) {
-    console.log('Error al obtener la informacion del curso actual', error);
     redirect('/home')
   }
 
@@ -38,7 +37,6 @@ export default async function PlanificationPage({ params }: { params: Promise<{ 
     planificationData = await getPlanification(Number(subjectId));
 
   } catch (error) {
-    console.log('Error al obtener la planificacion', error);
     redirect('/home')
   }
 

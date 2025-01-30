@@ -38,7 +38,6 @@ function Sidebar({ isVisible, setIsVisible, data, currentCourse, isExpanded, set
 
   if (isExpanded || isVisible) {
     const index = data ? data!.findIndex((course) => course.courseName === currentCourse?.courseName) : null
-    console.log(index);
     const leftPosition =
       index === 0 || index === 1 ? 'left-[22.5rem]' :
         index === 2 ? 'left-[38.5rem]' :

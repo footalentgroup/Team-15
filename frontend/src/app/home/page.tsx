@@ -14,7 +14,6 @@ export default async function HomePage() {
 
   const response = await getCourses()
   const data: ICourses[] | null = Array.isArray(response.data) ? response.data : null
-  console.log('data', data);
 
   if (!data) {
     redirect('/login')

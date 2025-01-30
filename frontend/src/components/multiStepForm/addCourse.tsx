@@ -67,7 +67,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   };
 
   const handleConfirm = () => {
-    console.log(formState);
     setIsModalOpen(false);
     /*     startTransition(() => {
           formAction(data);
@@ -82,7 +81,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   useEffect(() => {
     if (formState.success) {
       setLoading(false);
-      console.log("formState", formState);
       setCourseId(formState.data.course.id);
       setSubjectId(formState.data.subject.materia.id);
       setActiveTab(1);
@@ -90,9 +88,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
 
     if (formState.error) {
       setLoading(false);
-      console.log('error error', formState.data.error);
-      console.log('error data', formState.data);
-      console.log('error formstate', formState);
       setError(formState.data.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,7 +108,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
 
   const handleConfirmPeriod = async (event: React.FormEvent) => {
     setLoading(true)
-    //TODO logica para enviar el periodo seleccionado
+
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
     const periodData = Array.from(formData.entries()).reduce((acc, [key, value]) => {
@@ -121,7 +116,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
       return acc;
     }, {} as Period);
 
-    console.log('periodData', periodData);
 
     startTransition(() => {
       formAction({ data, period: periodData });
@@ -140,11 +134,11 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
         <>
           <form onSubmit={handleConfirmPeriod} className="w-full h-screen flex flex-col items-center p-9">
             <div className="flex px-4 py-8 justify-start w-full">
-              <h2 className="font-bold text-4xl">Personaliza la dicisión del ciclo</h2>
+              <h2 className="font-bold text-4xl">Personalizá la división del ciclo</h2>
             </div>
             <div className="flex flex-col gap-9 w-[364px] my-14">
               <div className="flex flex-col items-start gap-3">
-                <label htmlFor="period" className="text-xl font-semibold">Tipo de division del ciclo: </label>
+                <label htmlFor="period" className="text-xl font-semibold">Tipo de división del ciclo:</label>
                 <select name="period" id="period" className="border-2 border-black p-2 rounded-md w-9/12" onChange={(e) => selectOnChange(e)} >
                   <option value="semestral">Semestral</option>
                   <option value="trimestral">Trimestral</option>
@@ -207,10 +201,10 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
               <div className="flex flex-col gap-2 bg-yellow-100 p-4 rounded-lg size-[448px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-lg">Revisa los detalles de tu clase</h3>
+                  <h3 className="font-bold text-lg">Revisá los detalles de tu curso</h3>
                   <button type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
                 </div>
-                <p>Tu clase está casi lista y queremos que todo quede perfecto</p>
+                <p>Tu curso está casi listo y queremos que todo quede perfecto.</p>
                 <div className="flex justify-center mb-4">
                   <CourseCard courses={{
                     schoolName: data.schoolName || '',
@@ -230,7 +224,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
           )}
         </>
       )}
-      <DialogInfo small={true} text="Comienza configurando tu primer grupo." />
+      <DialogInfo small={true} text="Empezá configurando tu primer curso." />
     </div>
   );
 }
