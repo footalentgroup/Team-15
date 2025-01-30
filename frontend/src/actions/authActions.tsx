@@ -104,3 +104,9 @@ export async function verifyEmailAction(token: string) {
     throw error;
   }
 }
+
+export async function deleteUserCookie() {
+  const cookieStore = cookies();
+
+  (await cookieStore).delete("user");
+}

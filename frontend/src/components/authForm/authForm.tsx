@@ -25,6 +25,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
     const isValidPassword = password.length >= 6 && password.length <= 20 && password.match(/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/);
     if (!isValidPassword) {
       setError('La contraseña debe tener entre 6 y 20 caracteres, al menos una letra mayúscula, una letra minúscula y un número.');
+      setLoading(false);
       return;
     }
     setError("");
@@ -45,10 +46,12 @@ const AuthForm = ({ type }: AuthFormProps) => {
         console.log(data);
 
         if (data.error) {
-          if (data.error === "invalid credentials") {
+          if (data.error === "Invalid credentials") {
             setError("Credenciales inválidas");
+            setLoading(false);
           } else {
             setError(data.error);
+            setLoading(false);
           }
           return;
         }
@@ -57,13 +60,13 @@ const AuthForm = ({ type }: AuthFormProps) => {
 
         if (!token) {
           setError("Token no encontrado");
+          setLoading(false);
           return;
         }
 
         localStorage.setItem("token", token);
         localStorage.setItem("username", JSON.stringify(data.user.name));
         await setUserCookie(data);
-        setLoading(false);
         router.push("/home");
 
       } else {
@@ -97,12 +100,13 @@ const AuthForm = ({ type }: AuthFormProps) => {
         });
         localStorage.setItem("username", JSON.stringify(username));
         setTempUser({ email, password });
-        setLoading(false);
         router.push(`/register/confirm/${email}`);
       }
     } catch (error) {
       console.error("Error:", error);
       alert("Hubo un error al procesar tu solicitud, por favor comunicate con soporte.");
+    } finally {
+      setLoading(false);
     }
   };
 

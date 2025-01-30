@@ -18,10 +18,10 @@ interface Props {
   data: IPlanification[]
   months: PLanificationMonth[];
   setMonths: (months: PLanificationMonth[]) => void;
-  period_id: number;
+  period_id?: number;
 }
 
-function DailyPlanification({ date, startDate, endDate, data, months, setMonths, period_id }: Props) {
+function DailyPlanification({ date, data, months, setMonths, period_id }: Props) {
   const [currentDate, setCurrentDate] = useState(new Date(date))
   const [currentOption, setCurrentOption] = useState(TYPE_CLASS[0]);
   const [currentThemes, setCurrentThemes] = useState<ISubtheme[]>([]);
@@ -95,7 +95,7 @@ function DailyPlanification({ date, startDate, endDate, data, months, setMonths,
     const newHomework = {
       materia_id: data[0].materia_id,
       subtema_id: currentTheme!.id,
-      periodo_id: period_id,
+      periodo_id: period_id!,
       titulo: homeworkName,
       tipo: homeworkType,
       fecha: currentDate.toISOString().split('T')[0],
@@ -120,7 +120,7 @@ function DailyPlanification({ date, startDate, endDate, data, months, setMonths,
     const newExam = {
       materia_id: data[0].materia_id,
       tema_id: currentThemeId ?? 1,
-      periodo_id: period_id,
+      periodo_id: period_id!,
       titulo: examName,
       tipo: examType,
       fecha: currentDate.toISOString().split('T')[0],

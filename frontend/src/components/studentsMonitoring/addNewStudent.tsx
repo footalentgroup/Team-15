@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { ICourses } from "@/interfaces/ICourses.interface";
-import { AddStudentAction } from "@/actions/addCourse.action";
-import { deleteStudentAction, updateStudentAction } from "@/actions/studentsActions";
+import { deleteStudentAction } from "@/actions/studentsActions";
 
 export default function AddNewStudent() {
     const [data, setData] = useState<IStudents[]>([]);
@@ -39,7 +38,7 @@ export default function AddNewStudent() {
             .filter(student => student.curso_id === courseId)
             .slice(startIndex, startIndex + (isEditMode ? 6 : 7))
         : [];
-        
+
 
     const handleDelete = (id: number) => {
         setStudentToDelete(id);
@@ -52,9 +51,9 @@ export default function AddNewStudent() {
                 if (!courseId) {
                     throw new Error("No se encontró un ID de curso válido.");
                 }
-    
+
                 await deleteStudentAction(studentToDelete, courseId);
-    
+
                 const updatedData = data.filter(student => student.id !== studentToDelete);
                 setData(updatedData);
                 localStorage.setItem("studentsData", JSON.stringify(updatedData));
@@ -64,7 +63,7 @@ export default function AddNewStudent() {
         }
         setShowModal(false);
     };
-    
+
 
 
     const cancelDelete = () => {
