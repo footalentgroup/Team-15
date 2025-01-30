@@ -15,6 +15,7 @@ function ConfirmMail({ mail, password }: { mail: string, password: string }) {
       await login(formattedMail, password);
       router.push("/onboarding");
     } catch (error) {
+      console.error(error);
       setError("Error al iniciar sesión");
     }
   };
@@ -22,7 +23,7 @@ function ConfirmMail({ mail, password }: { mail: string, password: string }) {
 
   return (
     <div className='h-screen w-screen flex flex-col items-center justify-center'>
-      <div className='flex flex-col items-center gap-4 bg-yellow-100 p-8 border-2 border-black rounded-md filter drop-shadow-[4px_4px_0px_#000000]'>
+      <div className='flex flex-col items-center gap-4 bg-yellow-100 p-8 border-2 border-black rounded-md filter drop-shadow-general'>
         <h2 className='font-bold text-xl'>Confirmación de email</h2>
         <h3>Se ha enviado un email de confirmacion a <span className='font-bold'>{formattedMail}</span></h3>
         <p>Por favor revisa tu casilla de correo y sigue las instrucciones para completar el registro</p>

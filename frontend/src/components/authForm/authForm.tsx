@@ -95,6 +95,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
         router.push(`/register/confirm/${email}`);
       }
     } catch (error) {
+      console.error(error);
       alert("Hubo un error al procesar tu solicitud, por favor comunicate con soporte.");
     } finally {
       setLoading(false);
@@ -105,7 +106,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
     <div className="authform flex items-center justify-center min-h-screen bg-yellow-light-100">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm p-6 bg-white border-2 border-black rounded-md filter drop-shadow-[4px_4px_0px_#000000] "
+        className="w-full max-w-sm p-6 bg-white border-2 border-black rounded-md filter drop-shadow-general "
       >
         <h2 className="mb-6 text-2xl font-semibold text-center text-gray-700">
           {type === "login" ? "Iniciar Sesión" : "Registro"}

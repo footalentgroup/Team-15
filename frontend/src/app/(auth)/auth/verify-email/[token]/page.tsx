@@ -13,7 +13,7 @@ async function Page({ params }: {
   const password = user ? JSON.parse(user.value).password : '';
   const email = user ? JSON.parse(user.value).email : '';
 
-  const message = await verifyEmailAction(token);
+  await verifyEmailAction(token);
 
   return (
     <VerifyEmail mail={email} password={password} />

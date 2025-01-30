@@ -41,6 +41,12 @@ export async function refreshToken() {
       access_token: data.access_token,
     };
 
+    /* (await cookieStore).set("user", JSON.stringify(updatedUserData), {
+      httpOnly: true,
+      path: '/',
+    }); */
+
+    /* console.log("Token refreshed", updatedUserData); */
     return updatedUserData;
   }
 
@@ -83,7 +89,7 @@ export async function login(email: string, password: string) {
     return responseData;
 
   } catch (error) {
-    alert(error);
+    console.error(error);
   }
 
 }
@@ -108,4 +114,11 @@ export async function deleteUserCookie() {
   const cookieStore = cookies();
 
   (await cookieStore).delete("user");
+}
+
+export async function resetCookies() {
+  const cookieStore = cookies();
+  (await cookieStore).delete("user");
+  (await cookieStore).delete("currentCourse");
+  (await cookieStore).delete("period");
 }

@@ -11,11 +11,13 @@ export default async function AddCourse(props: {
   searchParams?: Promise<{
     page?: string;
     courseId?: string;
+    newCourse?: string;
   }>;
 }) {
   const searchParams = await props.searchParams;
   const currentPage = Number(searchParams?.page);
   const courseIdFromParams = Number(searchParams?.courseId);
+  const newCourse = (searchParams?.newCourse);
 
   const cookieStore = cookies()
   const user = (await cookieStore).get("user");
@@ -35,7 +37,7 @@ export default async function AddCourse(props: {
 
   return (
     <div className="h-screen flex flex-col">
-      <MultiStepForm periodFromProps={period} subjectIdFromProps={subjectId} onlyPlanification={period && subjectId ? true : false} onlyStudents={currentPage} courseIdFromParams={courseIdFromParams} />
+      <MultiStepForm periodFromProps={period} subjectIdFromProps={subjectId} onlyPlanification={period && subjectId ? true : false} onlyStudents={currentPage} courseIdFromParams={courseIdFromParams} newCourse={newCourse} />
     </div>
   );
 }

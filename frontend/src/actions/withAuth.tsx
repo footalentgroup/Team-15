@@ -1,18 +1,29 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const withAuth = (WrappedComponent: React.ComponentType) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const AuthenticatedComponent = (props: any) => {
-        useEffect(() => {
-            const token = localStorage.getItem("token");
+        const [isClient, setIsClient] = useState(false);
+        const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-            if (!token) {
-                window.location.replace("/login"); 
-            }
+        useEffect(() => {
+            setIsClient(true);
         }, []);
 
-        const token = localStorage.getItem("token");
-        if (!token) {
+        useEffect(() => {
+            if (isClient) {
+                const token = localStorage.getItem("token");
+
+                if (!token) {
+                    window.location.replace("/login");
+                } else {
+                    setIsAuthenticated(true);
+                }
+            }
+        }, [isClient]);
+
+        if (!isClient || !isAuthenticated) {
             return null;
         }
 

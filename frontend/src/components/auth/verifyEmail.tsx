@@ -1,6 +1,6 @@
 "use client"
 
-import { login } from '@/actions/authActions';
+import { login, resetCookies } from '@/actions/authActions';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import ProgressBar from '../multiStepForm/progressBar';
@@ -12,9 +12,16 @@ function VerifyEmail({ mail, password }: { mail: string, password: string }) {
 
   const handleContinue = async () => {
     try {
-      await login(formattedMail, password);
-      router.push("/onboarding");
+      await resetCookies();
+      const response = await login(formattedMail, password);
+      console.log(response);
+      const data = await response.json();
+      if (data) {
+        router.push("/onboarding");
+      }
+
     } catch (error) {
+      console.error(error);
       setError("Error al iniciar sesión");
     }
   };
