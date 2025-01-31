@@ -54,8 +54,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       )
     }
     )
-  )).flat();
-  console.log("newevents", newEvents); */
+  )).flat();*/
   /*   const eventsForCalendar = events.map((event) => ({
       title: event.nombre,
       start: event.fecha_inicio ? formatDate(new Date(event.fecha_inicio)) : null,
@@ -123,7 +122,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       setMonths(newMonths);
 
     } catch (error) {
-      console.log('error', error);
+      alert("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -160,7 +159,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       return data;
 
     } catch (error) {
-      console.log('error', error);
+      alert("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 

@@ -50,13 +50,15 @@ const Students: React.FC = () => {
             setStudentsLocalData(true);
         }
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [studentsLocalData]);
+
+    useEffect(() => {
         if (isSaved && data && data?.length > 0) {
             setIsModalVisible(true);
             localStorage.setItem("studentsData", JSON.stringify(data));
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isSaved]);
+    }, [isSaved, data]);
 
     const handleClick = () => {
         router.push("/students/homework");

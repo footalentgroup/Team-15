@@ -36,7 +36,7 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
     }
     )
   }).flat();
-  console.log("newEvents", newEvents); */
+ */
   const formats = {
     dayFormat: (date: Date, culture?: string, localizer?: DateLocalizer) =>
       localizer!.format(date, 'dddd DD', culture),

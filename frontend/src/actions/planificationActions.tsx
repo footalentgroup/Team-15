@@ -37,7 +37,6 @@ export async function getPlanification(subjectId: number) {
 }
 
 export async function createNewMonthPlanificationAction(monthPlanification: IMonthPlanification[]) {
-
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
   let TOKEN = ''
@@ -77,7 +76,7 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al crear la planificacion mensual' + error);
   }
 }
 
@@ -115,7 +114,7 @@ export async function deleteMonthPlanificationAction(monthPlanificationId: numbe
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al eliminar la planificacion mensual' + error);
   }
 }
 
@@ -149,7 +148,7 @@ export async function getAllDailyPlanification() {
 
     return responseData;
   } catch (error) {
-    console.log('error', error);
+    alert('Error al obtener la planificacion diaria' + error);
   }
 }
 
@@ -182,7 +181,7 @@ export async function getAllMonthPlanification() {
     const responseData = await response.json();
     return responseData;
   } catch (error) {
-    console.log('error', error);
+    alert('Error al obtener la planificacion mensual' + error);
   }
 }
 
@@ -219,7 +218,7 @@ export async function createDailyPlanificationAction(dailyPlanification: IDailyP
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al crear la planificacion diaria' + error);
   }
 }
 
@@ -257,7 +256,7 @@ export async function updateDailyPlanificationAction(dailyPlanification: IDailyP
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al actualizar la planificacion diaria' + error);
   }
 }
 
@@ -295,6 +294,6 @@ export async function updateMonthlyPlanificationAction(monthlyPlanification: IMo
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al actualizar la planificacion mensual' + error);
   }
 }

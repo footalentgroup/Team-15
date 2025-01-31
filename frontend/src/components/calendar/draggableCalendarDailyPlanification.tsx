@@ -105,12 +105,16 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
     }
     try {
       const response = await updateDailyPlanificationAction(newDailyPlanification);
+<<<<<<< HEAD
+=======
+      const data = response!.data;
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
       }
     } catch (error) {
-      console.log('error', error);
+      alert ("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -155,7 +159,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
         setError("Ocurrio un error al guardar la planificación mensual");
       }
     } catch (error) {
-      console.log('error', error);
+      alert ("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -169,10 +173,8 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
         allDay,
         resource: months[monthIndex].content.find((event) => event.theme!.subtemas[0].nombre === draggedEvent),
       }];
-      console.log("newEvents", newEvents);
+
       setAllEvents(newEvents);
-      console.log(draggedEvent);
-      console.log(resource);
 
       const newMonthPlanification: IMonthPlanification = {
         id: draggedEvent!.id as number,
@@ -180,7 +182,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
         subtema_id: draggedEvent!.subtema_id as number,
         fecha: formatDate(start),
       }
-      console.log("newMonthPlanification", newMonthPlanification);
+
       const newEvent: IDailyPlanification = {
         planificacion_id: planificationId as number,
         fecha: formatDate(start),

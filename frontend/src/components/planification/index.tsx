@@ -66,7 +66,13 @@ function Planification({ data, user, currentCourse }: Props) {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+<<<<<<< HEAD
     setActiveId(null);
+=======
+
+    setActiveId(null);
+
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
     setIsOver(false);
 
     if (over) {
@@ -79,10 +85,17 @@ function Planification({ data, user, currentCourse }: Props) {
       const subthemeSelected = allSubthemes.find((subtheme) => subtheme.id === subthemeIndex);
 
       const themeWithSubthemeSelected = data[0].temas.find((theme) => theme.subtemas.some((subtheme) => subtheme.id === subthemeIndex));
+<<<<<<< HEAD
 
       if (overMonth && subthemeSelected && themeWithSubthemeSelected) {
         const newContent = overMonth.content.find((content) => content.subtema_id === subthemeIndex);
 
+=======
+
+
+      if (overMonth && subthemeSelected && themeWithSubthemeSelected) {
+        const newContent = overMonth.content.find((content) => content.subtema_id === subthemeIndex);
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
 
         if (!newContent) {
           const newTheme = { ...themeWithSubthemeSelected, subtemas: [subthemeSelected] };
@@ -105,6 +118,10 @@ function Planification({ data, user, currentCourse }: Props) {
                 if (month.id === itemMonthIndex) {
                   const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id !== subthemeIndex)
                   const newContent = month.content.filter((content) => content.subtema_id !== subthemeIndex);
+<<<<<<< HEAD
+=======
+
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
                   if (planificationForDelete) {
                     deleteMonthPlanification(planificationForDelete.id!)
                   }
@@ -114,6 +131,10 @@ function Planification({ data, user, currentCourse }: Props) {
               });
 
               createNewMonthPlanification([newPlan]).then((newItemFromResponse) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
                 const newPlanificationMonthFromResponse = {
                   ...newItemFromResponse?.data.planificacion_mensual,
                   theme: newTheme,
@@ -134,13 +155,22 @@ function Planification({ data, user, currentCourse }: Props) {
             } else {
               const newMonth = { ...overMonth, content: [...overMonth.content, newPlan] };
               const newMonths = months.map((month) => (month.id === monthIndex ? newMonth : month));
+<<<<<<< HEAD
+=======
+
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
               setMonths(newMonths);
             }
           }
         } /* else {
           const newMonth = { ...overMonth, content: overMonth.content.filter((content) => content.subtema_id !== subthemeIndex) };
           const newMonths = months.map((month) => (month.id === monthIndex ? newMonth : month));
+<<<<<<< HEAD
         } */
+=======
+
+        }
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
       }
 
       if (isTrash) {
@@ -153,6 +183,10 @@ function Planification({ data, user, currentCourse }: Props) {
           return month
         })
         /* const planificationForDelete = initialData[0].planificacion_mensual.find((plan) => plan.id === subthemeSelected?.id) */
+<<<<<<< HEAD
+=======
+
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
         if (planificationForDelete) {
           deleteMonthPlanification(planificationForDelete.id!)
         }
@@ -203,6 +237,10 @@ function Planification({ data, user, currentCourse }: Props) {
     setAllSubthemes(allSubthemes);
 
     const newMonthPlanification = data[0].planificacion_mensual.map((plan) => {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
       const theme = data[0].temas.find((tema) =>
         tema.subtemas.some((subtema) => subtema.id === plan.subtema_id)
       );
@@ -266,10 +304,6 @@ function Planification({ data, user, currentCourse }: Props) {
           }
         })
   
-        console.log('currentMonthPlanification', currentMonthPlanification);
-        console.log('newMonthPlanification', newMonthPlanification);
-        console.log('filteredNewMonthPlanification', filteredNewMonthPlanification);
-  
         if (currentMonthPlanification.length > 0 || newMonthPlanification.length > 0) {
   
           const allPLanifications = currentMonthPlanification.concat(filteredNewMonthPlanification);
@@ -279,14 +313,11 @@ function Planification({ data, user, currentCourse }: Props) {
                 (otro) => item.subtema_id === otro.subtema_id && item.fecha === otro.fecha
               ).length === 1
           );
-          console.log('diferentes', uniquePlanification);
+
           const filterSubthemeInUniquePlanification = uniquePlanification.filter((item) => !item.id);
-          console.log('filterSubthemeInUniquePlanification', filterSubthemeInUniquePlanification);
-          console.log("planificationsForDelete", planificationsForDelete);
   
           if (uniquePlanification.length > 0) {
             if (data !== initialData) {
-              console.log("es distinto");
               createNewMonthPlanification(uniquePlanification).then((data) => {
                 console.log('data', data);
               })
@@ -294,8 +325,7 @@ function Planification({ data, user, currentCourse }: Props) {
             //busca la primera conincidencia en initialDaata[0].planificacion_mensual de subthema_id  y lo elimnia
             const filterSubthemeInUniquePlanificationByDelete = planificationsForDelete.map((planificationId) => uniquePlanification.find((item) => item.id === planificationId))
             const firstNewData = initialData[0].planificacion_mensual.filter((item) => !filterSubthemeInUniquePlanificationByDelete.some((plan) => plan?.subtema_id === item.subtema_id && plan?.fecha === item.fecha))
-            const newData = [{ ...initialData[0], planificacion_mensual: [...firstNewData, ...filterSubthemeInUniquePlanification] }]
-            console.log('newData', newData);
+            const newData = [{ ...initialData[0], planificacion_mensual: [...firstNewData, ...filterSubthemeInUniquePlanification] }];
             setInitialData(newData)
           }
   
