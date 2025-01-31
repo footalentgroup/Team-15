@@ -149,7 +149,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
     setExamName("");
     setExamType("");
 
-    const monthlyPlanification = data.flatMap(event => event.planificacion_mensual);
+    const monthlyPlanification = months.flatMap(month => month.content)
     const filteredFirstDayInMonthlyPlanification = monthlyPlanification.filter(event => {
       return !event.fecha!.endsWith('-01') && event.fecha === currentDate.toISOString().split('T')[0];
     });
