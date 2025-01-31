@@ -172,7 +172,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
   }, [planificationFile]);
 
   return (
-    <div className='w-full h-screen relative p-16 pt-4'>
+    <div className='w-full h-screen relative px-16 py-14 pt-4'>
       <FlagStepIndicator step={3} title="Planificación" />
       <div className="flex justify-center py-4">
         <StepIndicator step={planificationStep} />
@@ -313,7 +313,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
               <div className="flex flex-col gap-4 items-center justify-center">
 
-                <div className="relative flex flex-col items-center justify-center border-2 bg-[#fef1ca] border-gray-500 rounded-lg p-4 h-64 gap-8 py-8 w-full">
+                <div className="relative flex flex-col items-center justify-center border-2 bg-yellow-500/25 border-gray-500 rounded-lg p-4 h-64 gap-8 py-8 w-full">
                   <p className="font-semibold">Arrastrar y soltar aquí el archivo (PDF/Word) con los temas oficiales.</p>
                   <input
                     type="file"

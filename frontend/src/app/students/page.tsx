@@ -123,8 +123,8 @@ const Students: React.FC = () => {
             </div>
 
             {isModalVisible && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-                    <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[532px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+                <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+                    <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[532px] px-6 filter drop-shadow-modal">
                         <div className="flex justify-center">
                             <img src="/media/img/config-done.png" alt="Configuración completa" className="w-[177px]" />
                         </div>

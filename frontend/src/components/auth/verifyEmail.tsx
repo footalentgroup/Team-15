@@ -35,7 +35,7 @@ function VerifyEmail({ mail, password }: { mail: string, password: string }) {
 
   return (
     <div className='h-screen flex items-center justify-center'>
-      <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+      <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-modal">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-lg">Procesando datos</h3>
         </div>

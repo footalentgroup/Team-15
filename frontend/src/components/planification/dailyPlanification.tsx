@@ -318,8 +318,8 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       </div>
 
       {isThemeModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-          <div className='flex flex-col gap-4 bg-yellow-light-100 p-10 w-4/6 h-4/6 rounded-xl filter drop-shadow-[18px_14px_0px_#000000]'>
+        <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+          <div className='flex flex-col gap-4 bg-yellow-light-100 p-10 w-4/6 h-4/6 rounded-xl filter drop-shadow-modal'>
             <button type="button" className='absolute top-4 right-4' onClick={() => setIsThemeModalOpen(!isThemeModalOpen)}>✖</button>
 
             <div>

@@ -113,7 +113,7 @@ function HomeCalendar({ events }: Props) {
       )}
       {currentPlanification && (
         <div className='fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-20'>
-          <div className='w-5/6 h-4/6 flex flex-col gap-8 bg-yellow-100 p-14 filter drop-shadow-[18px_14px_0px_#000000] z-30'>
+          <div className='w-5/6 h-4/6 flex flex-col gap-8 bg-yellow-100 p-14 filter drop-shadow-modal z-30'>
             <h3 className='text-4xl font-semibold capitalize'>Planificación &gt; {currentPlanification.start?.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' })}</h3>
             <button className='absolute top-4 right-6 rounded-full px-2 border border-black bg-yellow-light-100 text-xl font-medium' onClick={() => setCurrentPlanification(null)}>
               X

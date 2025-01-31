@@ -11,39 +11,7 @@ import Image from 'next/image';
 import { IUser } from '@/interfaces/IAuth.interfaces';
 import { IconLogout, IconUser } from '@/icons';
 import { deleteUserCookie } from '@/actions/authActions';
-
-/* const DUMMY_COURSES: ICourses[] = [
-  {
-    schoolName: 'Colegio San Agustin',
-    subjectName: 'Historia',
-    courseName: '1ro A',
-    color: 'bg-pink-100'
-  },
-  {
-    schoolName: 'Colegio San Agustin',
-    subjectName: 'Historia',
-    courseName: '2do B',
-    color: 'bg-yellow-100'
-  },
-  {
-    schoolName: 'Colegio Santa Cecilia',
-    subjectName: 'Ciudadania',
-    courseName: '3ro A',
-    color: 'bg-green-100'
-  },
-  {
-    schoolName: 'Colegio Santa Cecilia',
-    subjectName: 'Ciudadania',
-    courseName: '2do A',
-    color: 'bg-blue-light-100'
-  },
-  {
-    schoolName: 'Colegio Santa Cecilia',
-    subjectName: 'Ciudadania',
-    courseName: '2do A',
-    color: 'bg-lime-100'
-  },
-]; */
+import HomeDialogInfo from '../dialog/HomeDialogInfo';
 
 interface Props {
   data: ICourses[]
@@ -53,6 +21,7 @@ function Home({ data, user }: Props) {
   const [isVisible, setIsVisible] = useState(false)
   const [currentCourse, setCurrentCourse] = useState<ICourses | null>()
   const [userModal, setUserModal] = useState(false)
+  const [dialog, setDialog] = useState(false)
 
   useEffect(() => {
     if (currentCourse) {
@@ -116,6 +85,17 @@ function Home({ data, user }: Props) {
           <Slider list={data} setIsVisible={setIsVisible} setCurrentCourse={setCurrentCourse} currentCourse={currentCourse} />
         </>
         <HomeCalendar events={data} />
+        <button className='absolute right-16 bottom-2' type='button' onClick={() => setDialog(!dialog)}>
+          <Image src={"/media/img/mas-info.svg"} alt='más info' width={48} height={42} title='Presiona para obtener más info' />
+        </button>
+        {dialog &&
+          <div className='absolute top-0 left-0 w-full h-full bg-black-modal z-50'>
+            <HomeDialogInfo
+              title='¡Bienvenido/a a tu panel principal!'
+              handleClose={() => setDialog(false)}
+            />
+          </div>
+        }
       </div>
     </>
   );

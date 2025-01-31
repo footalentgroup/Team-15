@@ -32,9 +32,11 @@ export default {
         'green-500': '#00CF7F',
         'grey-500': '#3A3838',
         'lime-100': '#F8FFE4',
+        'black-modal': 'rgba(26, 25, 25, 0.95)',
+        'modal-text': '#2D3748',
       },
       dropShadow: {
-        modal: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+        modal: '20px 11px 0px rgba(91, 97, 102, 0.20)',
         general: '4px 4px 0px rgb(122, 148, 186)',
         light: '4px 4px 0px rgb(217, 217, 217)',
         generalBlue: '4px 4px 0px rgb(1, 143, 176)',
