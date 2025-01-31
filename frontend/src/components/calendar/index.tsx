@@ -12,7 +12,6 @@ interface Props {
 }
 
 function HomeCalendar({ events }: Props) {
-  console.log(events);
   const [isDaily, setIsDaily] = useState(false);
   const [date, setDate] = useState(new Date());
   const [currentPlanification, setCurrentPlanification] = useState<CalendarEvent | null>(null);
@@ -97,8 +96,6 @@ function HomeCalendar({ events }: Props) {
 
   console.log('combined list', combinedList); */
 
-
-  console.log("allDatesWithSubtheme", allDatesWithSubtheme);
   return (
     <div className='h-full overflow-hidden mt-8 relative'>
       {isDaily && (

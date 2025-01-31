@@ -14,7 +14,6 @@ function VerifyEmail({ mail, password }: { mail: string, password: string }) {
     try {
       await resetCookies();
       const response = await login(formattedMail, password);
-      console.log(response);
       const data = await response.json();
       if (data) {
         router.push("/onboarding");

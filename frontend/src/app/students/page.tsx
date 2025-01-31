@@ -58,8 +58,6 @@ const Students: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSaved]);
 
-    console.log('data', data);
-
     const handleClick = () => {
         router.push("/students/homework");
     }

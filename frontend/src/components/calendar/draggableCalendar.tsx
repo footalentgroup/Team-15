@@ -22,7 +22,7 @@ const ExternalEvent: React.FC<{ title: string, setDraggedEvent: (event: IMonthPl
   <div
     draggable
     onDragStart={() => setDraggedEvent(event)}
-    onDragEnd={(e) => console.log((e.target as HTMLElement).outerText)}
+    onDragEnd={() => { }}
     className='h-8 w-min max-w-full p-1 bg-yellow-100 border border-black rounded-md margin-10 padding-10 border-1 cursor-pointer'
   >
     <span className='flex whitespace-nowrap overflow-hidden overflow-ellipsis' title={title}>
@@ -100,18 +100,12 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       )
     )).flat();
 
-    console.log('newEvents', newEvents);
     setAllEvents(newEvents);
   }
 
   const onUpdateMonthPlanification = async (monthPlanification: IMonthPlanification) => {
     try {
       const response = await updateMonthlyPlanificationAction(monthPlanification);
-      console.log('response', response);
-
-      const data = response!.data;
-
-      console.log('respuesta de actualizar la fecha', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -126,7 +120,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         });
         return { ...month, content: newContent };
       });
-      console.log('newMonths', newMonths);
       setMonths(newMonths);
 
     } catch (error) {
@@ -137,17 +130,12 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
   const onCreateMonthPlanification = async (monthPlanification: IMonthPlanification) => {
     try {
       const response = await createNewMonthPlanificationAction([monthPlanification]);
-      console.log('response', response);
-
       const data = response!.data;
-
-      console.log('respuesta de crear nueva planificacion', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
       }
 
-      console.log('newItemFromResponse', data);
       const newPlanificationMonthFromResponse = {
         ...data.planificacion_mensual,
         theme: monthPlanification.theme,
@@ -159,7 +147,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         fecha: newPlanificationMonthFromResponse[0].fecha,
         theme: monthPlanification.theme
       };
-      console.log('newPlanificationMonth', newPlanificationMonth);
 
       const newMonths = months.map((month) => {
         if (month.id === monthIndex) {
@@ -168,7 +155,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         return month;
       }
       );
-      console.log('newMonths', newMonths);
       setMonths(newMonths);
 
       return data;
@@ -180,7 +166,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
 
   const onEventDrop: withDragAndDropProps['onEventDrop'] = (data) => {
     const newEvent: CalendarEvent = data.event
-    console.log('newEvent from eventDrop', newEvent);
     const newDate = new Date(data.start!);
 
     onUpdateMonthPlanification({
@@ -210,16 +195,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
           allDay,
         },
       ]);
-      console.log("new event", {
-        start: normalizeDate(new Date(start)),
-        end: new Date(end),
-        title: draggedEvent.theme!.subtemas[0].nombre,
-        allDay,
-      });
-      console.log("all events", allEvents);
-      console.log("draggedEvent", draggedEvent);
-      console.log('start', start);
-      console.log('end', end);
 
       const newEvent: IMonthPlanification = {
         planificacion_id: draggedEvent.planificacion_id,
@@ -229,15 +204,12 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         theme: draggedEvent.theme,
       }
 
-      onCreateMonthPlanification(newEvent).then((data) => {
-        console.log('data', data);
-      });
+      onCreateMonthPlanification(newEvent);
 
     }
   };
 
   useEffect(() => {
-    console.log("use effect");
     getNewEvents();
   }, [months]);
 

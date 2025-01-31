@@ -1,4 +1,7 @@
-"use client"
+/*
+este componente esta completamente comentado por que es una version en la que se utiliza dailyPlanification en vez de la actual que es con MonthlyPlanification
+
+ "use client"
 import React, { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer, Views, ToolbarProps, DateLocalizer, stringOrDate } from 'react-big-calendar';
 import moment from 'moment';
@@ -22,7 +25,7 @@ const ExternalEvent: React.FC<{ title: string, setDraggedEvent: (event: IMonthPl
   <div
     draggable
     onDragStart={() => setDraggedEvent(event)}
-    onDragEnd={(e) => console.log((e.target as HTMLElement).outerText)}
+    onDragEnd={() => { }}
     className='h-8 w-min max-w-full p-1 bg-yellow-100 border border-black rounded-md margin-10 padding-10 border-1 cursor-pointer'
   >
     <span className='flex whitespace-nowrap overflow-hidden overflow-ellipsis' title={title}>
@@ -58,8 +61,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
         title: content.theme?.subtemas[0].nombre
       }))
     );
-    console.log("eventsFromMonthsFiltered", eventsFromMonthsFiltered);
-    console.log("months");
 
     const newEvents = dailyPlanifications.map((event: IDailyPlanification) => {
       const startDate = new Date(event.fecha)
@@ -89,8 +90,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
       };
     })
 
-    console.log('newEvents', newEvents);
-    console.log('newEventsWithNames', newEventsWithNames);
     setAllEvents(newEventsWithNames);
   }
 
@@ -106,11 +105,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
     }
     try {
       const response = await updateDailyPlanificationAction(newDailyPlanification);
-      console.log('response', response);
-
-      const data = response!.data;
-
-      console.log('respuesta de actualizar la fecha', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -141,8 +135,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
       title: itemUpdated!.resource?.subtema?.nombre as string,
     }
 
-    console.log('newDailyPlanification', newDailyPlanification);
-
     updateDailyPlanification(newDailyPlanification);
     setAllEvents(newEvents);
     getNewEvents();
@@ -158,11 +150,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
     }
     try {
       const response = await createDailyPlanificationAction(newDailyPlanification);
-      console.log('response', response);
-
-      const data = response!.data;
-
-      console.log('respuesta de actualizar la fecha', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -262,4 +249,4 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
   );
 };
 
-export default DraggableCalendarWithExternalEvents;
+export default DraggableCalendarWithExternalEvents; */

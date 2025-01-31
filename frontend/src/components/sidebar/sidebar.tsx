@@ -17,8 +17,6 @@ interface Props {
 
 function Sidebar({ isVisible, setIsVisible, currentCourse, isExpanded, setIsExpanded, isHome }: Props) {
   const pathname = usePathname()
-  console.log("current course have plani", currentCourse?.havePlanification);
-  console.log("current course", currentCourse);
   const SIDEBAR_LINK = [
     {
       name: 'Inicio',

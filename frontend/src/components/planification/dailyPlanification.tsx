@@ -23,8 +23,6 @@ interface Props {
 
 function DailyPlanification({ date, data, months, setMonths, period_id }: Props) {
   const [currentDate, setCurrentDate] = useState(new Date(date))
-  console.log('currentDate', currentDate);
-  console.log("formatedCurrentData", currentDate.toISOString().split('T')[0]);
   const [currentOption, setCurrentOption] = useState(TYPE_CLASS[0]);
   const [currentThemes, setCurrentThemes] = useState<ISubtheme[]>([]);
   /* const [currentResources, setCurrentResources] = useState<string[]>(["Revolucion Francesa"]); */
@@ -62,7 +60,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
   const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' })
 
   const handleConfirmTheme = async () => {
-    console.log('currentTheme', currentTheme);
     setCurrentThemeId(currentTheme!.id_tema);
     if (currentTheme) {
       const monthPlanification: IMonthPlanification = {
@@ -73,11 +70,8 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       }
 
       const response = await createNewMonthPlanificationAction([monthPlanification]);
-      console.log('response', response);
-      console.log('monthPlanification', monthPlanification);
 
       const monthIndex = new Date(currentDate).getMonth();
-      console.log('monthIndex', monthIndex);
       const updatedTheme = data[0].temas.find((theme) => theme.id === currentTheme.id_tema);
       let newUpdatedTheme
       if (updatedTheme) {
@@ -96,7 +90,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
         return month;
       }
       );
-      console.log('newMonths', newMonths);
 
       setMonths(newMonths);
       setCurrentThemes([...currentThemes, currentTheme]);
@@ -106,7 +99,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
   }
 
   const handleCreateHomework = async () => {
-    console.log('create homework');
     const newHomework = {
       materia_id: data[0].materia_id,
       subtema_id: currentTheme!.id,
@@ -116,13 +108,10 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       fecha: currentDate.toISOString().split('T')[0],
     }
 
-    console.log('newHomework', newHomework);
     const response = await createNewTaskAction(newHomework);
-    console.log('response', response);
 
     if (response.success) {
       setIsTaskModalOpen(!isTaskModalOpen);
-      console.log('tarea creada');
     }
 
     if (!response.success) {
@@ -131,7 +120,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
   }
 
   const handleCreateExamen = async () => {
-    console.log('create examen');
     const newExam = {
       materia_id: data[0].materia_id,
       tema_id: currentThemeId ?? 1,
@@ -141,13 +129,10 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       fecha: currentDate.toISOString().split('T')[0],
     }
 
-    console.log('newExam', newExam);
     const response = await createNewExamenAction(newExam);
-    console.log('response', response);
 
     if (response.success) {
       setIsExamModalOpen(!isExamModalOpen);
-      console.log('examen creado');
     }
 
     if (!response.success) {
@@ -164,9 +149,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
     setExamName("");
     setExamType("");
 
-    console.log('data', data);
-
-
     const monthlyPlanification = data.flatMap(event => event.planificacion_mensual);
     const filteredFirstDayInMonthlyPlanification = monthlyPlanification.filter(event => {
       return !event.fecha!.endsWith('-01') && event.fecha === currentDate.toISOString().split('T')[0];
@@ -175,7 +157,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
     const allSubtopics = data.flatMap(event => event.temas).flatMap(tema => tema.subtemas);
     /* let combinedList = [] */
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
-    console.log('formattedCurrentDate', formattedCurrentDate);
     if (dailyPlanification.length > 0) {
       const singleDailyPlanification = dailyPlanification.find(event => event.fecha === formattedCurrentDate);
       if (singleDailyPlanification) {
@@ -185,7 +166,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
         setCurrentDailyPlanification(undefined);
         setDetailsInput("");
       }
-      console.log('singleDailyPlanification', singleDailyPlanification);
       /* combinedList = dailyPlanification.map(dailyItem => {
         const matchingItem = filteredFirstDayInMonthlyPlanification.find(monthlyItem => monthlyItem!.fecha === dailyItem!.fecha);
         const subtema_id = matchingItem ? matchingItem.subtema_id : undefined;
@@ -223,8 +203,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       };
     });
 
-    console.log('updatedMonthlyPlanification', updatedMonthlyPlanification);
-
     const filteredEvents = updatedMonthlyPlanification.filter(event => event.fecha === formattedCurrentDate);
 
     if (filteredEvents.length > 0 && filteredEvents[0].resource.subtema_id) {
@@ -232,7 +210,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       setCurrentThemes(newCurrentThemes);
       setCurrentThemeId(filteredEvents[0].resource.subtema!.id_tema);
     }
-    console.log(filteredEvents);
 
   }, [currentDate]);
 
@@ -256,8 +233,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
         ...currentDailyPlanification,
         detalle: detailsInputRef.current,
       }
-      console.log('updatedDailyPlanification', updatedDailyPlanification);
-      console.log('detailsInput', detailsInputRef.current);
+
       await updateDailyPlanificationAction(updatedDailyPlanification);
     }
   }
@@ -270,8 +246,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
         planificacion_id: data[0].id,
         tipo_clase: currentOption,
       }
-      console.log('newDailyPlanification', newDailyPlanification);
-      console.log('detailsInput', detailsInputRef.current);
+
       await createDailyPlanificationAction(newDailyPlanification);
     }
   }
