@@ -46,7 +46,6 @@ export async function refreshToken() {
       path: '/',
     }); */
 
-    /* console.log("Token refreshed", updatedUserData); */
     return updatedUserData;
   }
 

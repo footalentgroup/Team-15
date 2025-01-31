@@ -54,8 +54,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       )
     }
     )
-  )).flat();
-  console.log("newevents", newEvents); */
+  )).flat();*/
   /*   const eventsForCalendar = events.map((event) => ({
       title: event.nombre,
       start: event.fecha_inicio ? formatDate(new Date(event.fecha_inicio)) : null,
@@ -100,18 +99,13 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       )
     )).flat();
 
-    console.log('newEvents', newEvents);
     setAllEvents(newEvents);
   }
 
   const onUpdateMonthPlanification = async (monthPlanification: IMonthPlanification) => {
     try {
       const response = await updateMonthlyPlanificationAction(monthPlanification);
-      console.log('response', response);
-
       const data = response!.data;
-
-      console.log('respuesta de actualizar la fecha', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -126,28 +120,22 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         });
         return { ...month, content: newContent };
       });
-      console.log('newMonths', newMonths);
       setMonths(newMonths);
 
     } catch (error) {
-      console.log('error', error);
+      alert ("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
   const onCreateMonthPlanification = async (monthPlanification: IMonthPlanification) => {
     try {
       const response = await createNewMonthPlanificationAction([monthPlanification]);
-      console.log('response', response);
-
       const data = response!.data;
-
-      console.log('respuesta de crear nueva planificacion', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
       }
 
-      console.log('newItemFromResponse', data);
       const newPlanificationMonthFromResponse = {
         ...data.planificacion_mensual,
         theme: monthPlanification.theme,
@@ -159,7 +147,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         fecha: newPlanificationMonthFromResponse[0].fecha,
         theme: monthPlanification.theme
       };
-      console.log('newPlanificationMonth', newPlanificationMonth);
 
       const newMonths = months.map((month) => {
         if (month.id === monthIndex) {
@@ -168,19 +155,17 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         return month;
       }
       );
-      console.log('newMonths', newMonths);
       setMonths(newMonths);
 
       return data;
 
     } catch (error) {
-      console.log('error', error);
+      alert ("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
   const onEventDrop: withDragAndDropProps['onEventDrop'] = (data) => {
     const newEvent: CalendarEvent = data.event
-    console.log('newEvent from eventDrop', newEvent);
     const newDate = new Date(data.start!);
 
     onUpdateMonthPlanification({
@@ -210,16 +195,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
           allDay,
         },
       ]);
-      console.log("new event", {
-        start: normalizeDate(new Date(start)),
-        end: new Date(end),
-        title: draggedEvent.theme!.subtemas[0].nombre,
-        allDay,
-      });
-      console.log("all events", allEvents);
-      console.log("draggedEvent", draggedEvent);
-      console.log('start', start);
-      console.log('end', end);
 
       const newEvent: IMonthPlanification = {
         planificacion_id: draggedEvent.planificacion_id,

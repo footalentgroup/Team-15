@@ -39,8 +39,6 @@ function Planification({ data, user, currentCourse }: Props) {
   const startDate = currentCourse.periods![0].fecha_inicio
   const endDate = currentCourse.periods![2] ? currentCourse.periods![2].fecha_cierre : currentCourse.periods![1].fecha_cierre
 
-  console.log('monthLengthFromFirstPeriod', monthLengthFromFirstPeriod);
-  console.log('monthLengthFromNextPeriod', monthLengthFromNextPeriod);
   //el mes en donde comienza el periodo
   const firstStartMonthIndex = startMonthFromPeriod - 1
   //el ultimo mes del periodo, ultimo mes disponible para mostrar
@@ -70,12 +68,8 @@ function Planification({ data, user, currentCourse }: Props) {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    console.log('drag end', event);
-    console.log('currentItem', currentItem);
-    setActiveId(null);
 
-    console.log('active', active);
-    console.log('over', over);
+    setActiveId(null);
 
     setIsOver(false);
 
@@ -85,27 +79,19 @@ function Planification({ data, user, currentCourse }: Props) {
       const [themeIndex, subthemeIndex, itemMonthIndex] = active.id.toString().split('-').map((index) => parseInt(index));
       const monthIndex = over.id.toString().split('-').map((index) => parseInt(index))[1];
       const isTrash = over.id === 'trash';
-      console.log('themeIndex', themeIndex);
-      console.log('subthemeIndex', subthemeIndex);
-      console.log('monthIndex', monthIndex);
 
       const overMonth = months.find((month) => month.id === monthIndex);
       const subthemeSelected = allSubthemes.find((subtheme) => subtheme.id === subthemeIndex);
-      console.log('overMonth', overMonth);
-      console.log('subthemeSelected', subthemeSelected);
+
       const themeWithSubthemeSelected = data[0].temas.find((theme) => theme.subtemas.some((subtheme) => subtheme.id === subthemeIndex));
-      console.log('themeWithSubthemeSelected', themeWithSubthemeSelected);
+
 
       if (overMonth && subthemeSelected && themeWithSubthemeSelected) {
         const newContent = overMonth.content.find((content) => content.subtema_id === subthemeIndex);
-        console.log('newContent', newContent);
-
 
         if (!newContent) {
           const newTheme = { ...themeWithSubthemeSelected, subtemas: [subthemeSelected] };
           const plan = data[0].planificacion_mensual.find((plan) => plan.subtema_id === subthemeIndex);
-          console.log('plan', plan);
-          console.log('newTheme', newTheme);
 
           if (newTheme) {
             const newPlan: IMonthPlanification = {
@@ -119,13 +105,12 @@ function Planification({ data, user, currentCourse }: Props) {
 
             if (itemMonthIndex !== monthIndex) {
               //elimina del mes actual para agregarlo al overMonth
-              console.log('delete', active.id);
 
               const updatedMonths = months.map((month) => {
                 if (month.id === itemMonthIndex) {
                   const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id !== subthemeIndex)
                   const newContent = month.content.filter((content) => content.subtema_id !== subthemeIndex);
-                  console.log('newContent for delete', newContent);
+
                   if (planificationForDelete) {
                     deleteMonthPlanification(planificationForDelete.id!)
                   }
@@ -135,7 +120,7 @@ function Planification({ data, user, currentCourse }: Props) {
               });
 
               createNewMonthPlanification([newPlan]).then((newItemFromResponse) => {
-                console.log('newItemFromResponse', newItemFromResponse);
+
                 const newPlanificationMonthFromResponse = {
                   ...newItemFromResponse?.data.planificacion_mensual,
                   theme: newTheme,
@@ -150,26 +135,24 @@ function Planification({ data, user, currentCourse }: Props) {
                 const newMonth = { ...overMonth, content: [...overMonth.content, newPlanificationMonth] };
                 const finalMonths = updatedMonths.map((month) => (month.id === monthIndex ? newMonth : month));
 
-                console.log('finalMonths', finalMonths);
                 setMonths(finalMonths);
               });
 
             } else {
               const newMonth = { ...overMonth, content: [...overMonth.content, newPlan] };
               const newMonths = months.map((month) => (month.id === monthIndex ? newMonth : month));
-              console.log('newMonths', newMonths);
+
               setMonths(newMonths);
             }
           }
         } else {
           const newMonth = { ...overMonth, content: overMonth.content.filter((content) => content.subtema_id !== subthemeIndex) };
           const newMonths = months.map((month) => (month.id === monthIndex ? newMonth : month));
-          console.log('newMonths', newMonths);
+
         }
       }
 
       if (isTrash) {
-        console.log('delete', active.id);
         const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id === subthemeIndex)
         const newMonth = months[itemMonthIndex].content.filter((content) => content.subtema_id !== subthemeIndex)
         const newMonths = months.map((month) => {
@@ -179,7 +162,7 @@ function Planification({ data, user, currentCourse }: Props) {
           return month
         })
         /* const planificationForDelete = initialData[0].planificacion_mensual.find((plan) => plan.id === subthemeSelected?.id) */
-        console.log('planificationForDelete', planificationForDelete);
+
         if (planificationForDelete) {
           deleteMonthPlanification(planificationForDelete.id!)
         }
@@ -193,9 +176,6 @@ function Planification({ data, user, currentCourse }: Props) {
   }
 
   const handleDragStart = (event: DragEndEvent) => {
-    console.log('drag start', event.active.id);
-    console.log('drag start', event);
-    console.log('currentItem', currentItem);
     setIsOver(true);
     if (event.over) {
       console.log('over', event.over.id);
@@ -207,7 +187,6 @@ function Planification({ data, user, currentCourse }: Props) {
       if (theme.id === themeId) {
         theme.subtemas.map((subtheme) => {
           if (subtheme.id === subthemeId) {
-            console.log('subtheme', subtheme);
             setCurrentItem(subtheme);
           }
         })
@@ -237,7 +216,7 @@ function Planification({ data, user, currentCourse }: Props) {
     setAllSubthemes(allSubthemes);
 
     const newMonthPlanification = data[0].planificacion_mensual.map((plan) => {
-      console.log('plan', plan);
+
       const theme = data[0].temas.find((tema) =>
         tema.subtemas.some((subtema) => subtema.id === plan.subtema_id)
       );
@@ -272,8 +251,6 @@ function Planification({ data, user, currentCourse }: Props) {
       return acc;
     }, { map: new Map(), result: [] }).result;
 
-    console.log('newMonthPlanification', newMonthPlanification);
-    console.log('filteredNewMonthPlanification', filteredNewMonthPlanification);
 
     const newMonths = months.map((month) => {
       const newContent = newMonthPlanification.filter((item) => {
@@ -316,10 +293,6 @@ function Planification({ data, user, currentCourse }: Props) {
           }
         })
   
-        console.log('currentMonthPlanification', currentMonthPlanification);
-        console.log('newMonthPlanification', newMonthPlanification);
-        console.log('filteredNewMonthPlanification', filteredNewMonthPlanification);
-  
         if (currentMonthPlanification.length > 0 || newMonthPlanification.length > 0) {
   
           const allPLanifications = currentMonthPlanification.concat(filteredNewMonthPlanification);
@@ -329,14 +302,11 @@ function Planification({ data, user, currentCourse }: Props) {
                 (otro) => item.subtema_id === otro.subtema_id && item.fecha === otro.fecha
               ).length === 1
           );
-          console.log('diferentes', uniquePlanification);
+
           const filterSubthemeInUniquePlanification = uniquePlanification.filter((item) => !item.id);
-          console.log('filterSubthemeInUniquePlanification', filterSubthemeInUniquePlanification);
-          console.log("planificationsForDelete", planificationsForDelete);
   
           if (uniquePlanification.length > 0) {
             if (data !== initialData) {
-              console.log("es distinto");
               createNewMonthPlanification(uniquePlanification).then((data) => {
                 console.log('data', data);
               })
@@ -344,8 +314,7 @@ function Planification({ data, user, currentCourse }: Props) {
             //busca la primera conincidencia en initialDaata[0].planificacion_mensual de subthema_id  y lo elimnia
             const filterSubthemeInUniquePlanificationByDelete = planificationsForDelete.map((planificationId) => uniquePlanification.find((item) => item.id === planificationId))
             const firstNewData = initialData[0].planificacion_mensual.filter((item) => !filterSubthemeInUniquePlanificationByDelete.some((plan) => plan?.subtema_id === item.subtema_id && plan?.fecha === item.fecha))
-            const newData = [{ ...initialData[0], planificacion_mensual: [...firstNewData, ...filterSubthemeInUniquePlanification] }]
-            console.log('newData', newData);
+            const newData = [{ ...initialData[0], planificacion_mensual: [...firstNewData, ...filterSubthemeInUniquePlanification] }];
             setInitialData(newData)
           }
   
@@ -363,9 +332,6 @@ function Planification({ data, user, currentCourse }: Props) {
     setView('Mensual')
   }
 
-
-  console.log(view);
-  console.log(viewPeriodTitle);
   return (
     <>
       <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />

@@ -37,8 +37,6 @@ export async function getPlanification(subjectId: number) {
 }
 
 export async function createNewMonthPlanificationAction(monthPlanification: IMonthPlanification[]) {
-  console.log('Add to Calendar Action', monthPlanification);
-
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
   let TOKEN = ''
@@ -64,7 +62,6 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     if (responseData.detail) {
       return {
@@ -79,12 +76,11 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al crear la planificacion mensual' + error);
   }
 }
 
 export async function deleteMonthPlanificationAction(monthPlanificationId: number) {
-  console.log('Delete from Calendar Action', monthPlanificationId);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -118,12 +114,11 @@ export async function deleteMonthPlanificationAction(monthPlanificationId: numbe
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al eliminar la planificacion mensual' + error);
   }
 }
 
 export async function getAllDailyPlanification() {
-  console.log('Get All Daily Planification Action');
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -151,16 +146,14 @@ export async function getAllDailyPlanification() {
     }
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     return responseData;
   } catch (error) {
-    console.log('error', error);
+    alert ('Error al obtener la planificacion diaria' + error);
   }
 }
 
 export async function getAllMonthPlanification() {
-  console.log('Get All Month Planification Action');
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -188,16 +181,14 @@ export async function getAllMonthPlanification() {
     }
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     return responseData;
   } catch (error) {
-    console.log('error', error);
+    alert ('Error al obtener la planificacion mensual' + error);
   }
 }
 
 export async function createDailyPlanificationAction(dailyPlanification: IDailyPlanification) {
-  console.log('create daily Planification Action', dailyPlanification);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -223,10 +214,7 @@ export async function createDailyPlanificationAction(dailyPlanification: IDailyP
       body: JSON.stringify(dailyPlanification)
     });
 
-    console.log(response);
-
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     return {
       data: responseData,
@@ -234,14 +222,13 @@ export async function createDailyPlanificationAction(dailyPlanification: IDailyP
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert('Error al crear la planificacion diaria' + error);
   }
 }
 
 
 
 export async function updateDailyPlanificationAction(dailyPlanification: IDailyPlanification) {
-  console.log('Update Daily Planification Action', dailyPlanification);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -268,7 +255,6 @@ export async function updateDailyPlanificationAction(dailyPlanification: IDailyP
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     return {
       data: responseData,
@@ -276,12 +262,11 @@ export async function updateDailyPlanificationAction(dailyPlanification: IDailyP
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert ('Error al actualizar la planificacion diaria' + error);
   }
 }
 
 export async function updateMonthlyPlanificationAction(monthlyPlanification: IMonthPlanification) {
-  console.log('Update Month Planification Action', monthlyPlanification);
 
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
@@ -308,7 +293,6 @@ export async function updateMonthlyPlanificationAction(monthlyPlanification: IMo
     });
 
     const responseData = await response.json();
-    console.log('responseData', responseData);
 
     return {
       data: responseData,
@@ -316,6 +300,6 @@ export async function updateMonthlyPlanificationAction(monthlyPlanification: IMo
     }
 
   } catch (error) {
-    console.log('error', error);
+    alert ('Error al actualizar la planificacion mensual' + error);
   }
 }

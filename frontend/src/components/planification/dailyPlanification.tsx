@@ -57,7 +57,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
   const formattedDate = currentDate.toLocaleDateString('es-ES', { weekday: 'long', month: 'long', day: 'numeric' })
 
   const handleConfirmTheme = async () => {
-    console.log('currentTheme', currentTheme);
     setCurrentThemeId(currentTheme!.id_tema);
     if (currentTheme) {
       const monthPlanification: IMonthPlanification = {
@@ -68,11 +67,8 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       }
 
       const response = await createNewMonthPlanificationAction([monthPlanification]);
-      console.log('response', response);
-      console.log('monthPlanification', monthPlanification);
 
       const monthIndex = new Date(currentDate).getMonth();
-      console.log('monthIndex', monthIndex);
       const newMonthPlanification = { ...monthPlanification, id: response!.data.planificacion_mensual[0].id };
 
       const newMonths = months.map((month) => {
@@ -82,7 +78,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
         return month;
       }
       );
-      console.log('newMonths', newMonths);
 
       setMonths(newMonths);
       setCurrentThemes([...currentThemes, currentTheme]);
@@ -91,7 +86,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
   }
 
   const handleCreateHomework = async () => {
-    console.log('create homework');
     const newHomework = {
       materia_id: data[0].materia_id,
       subtema_id: currentTheme!.id,
@@ -101,22 +95,18 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       fecha: currentDate.toISOString().split('T')[0],
     }
 
-    console.log('newHomework', newHomework);
     const response = await createNewTaskAction(newHomework);
-    console.log('response', response);
 
     if (response.success) {
-      setIsTaskModalOpen(!isTaskModalOpen);
-      console.log('tarea creada');
+      setIsTaskModalOpen(!isTaskModalOpen);;
     }
 
     if (!response.success) {
-      console.log('error', response);
+      alert ("Ocurrio un error al guardar la tarea" + response);
     }
   }
 
   const handleCreateExamen = async () => {
-    console.log('create examen');
     const newExam = {
       materia_id: data[0].materia_id,
       tema_id: currentThemeId ?? 1,
@@ -126,17 +116,14 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       fecha: currentDate.toISOString().split('T')[0],
     }
 
-    console.log('newExam', newExam);
     const response = await createNewExamenAction(newExam);
-    console.log('response', response);
 
     if (response.success) {
       setIsExamModalOpen(!isExamModalOpen);
-      console.log('examen creado');
     }
 
     if (!response.success) {
-      console.log('error', response);
+      alert ("Ocurrio un error al guardar el examen" + response);
     }
   }
 
@@ -168,7 +155,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       };
     });
 
-    console.log('combined list', combinedList);
     const formattedCurrentDate = currentDate.toISOString().split('T')[0];
 
     const filteredEvents = combinedList.filter(event => event.fecha === formattedCurrentDate);
@@ -178,7 +164,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       setCurrentThemeId(filteredEvents[0].resource.subtema!.id_tema);
     }
 
-    console.log(filteredEvents);
   }, [currentDate]);
 
   return (

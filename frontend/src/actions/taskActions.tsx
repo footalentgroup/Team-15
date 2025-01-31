@@ -25,14 +25,11 @@ export async function createNewTaskAction(examen: ICreateHomework) {
     body: JSON.stringify(examen),
   });
 
-  console.log(response);
-
   if (!response.ok) {
     throw new Error("Error al crear el examen");
   }
 
   const data = await response.json();
-  console.log(data);
 
   return {
     data: data,

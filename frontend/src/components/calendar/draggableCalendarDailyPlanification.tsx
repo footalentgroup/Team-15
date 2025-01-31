@@ -58,8 +58,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
         title: content.theme?.subtemas[0].nombre
       }))
     );
-    console.log("eventsFromMonthsFiltered", eventsFromMonthsFiltered);
-    console.log("months");
 
     const newEvents = dailyPlanifications.map((event: IDailyPlanification) => {
       const startDate = new Date(event.fecha)
@@ -89,8 +87,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
       };
     })
 
-    console.log('newEvents', newEvents);
-    console.log('newEventsWithNames', newEventsWithNames);
     setAllEvents(newEventsWithNames);
   }
 
@@ -106,17 +102,13 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
     }
     try {
       const response = await updateDailyPlanificationAction(newDailyPlanification);
-      console.log('response', response);
-
       const data = response!.data;
-
-      console.log('respuesta de actualizar la fecha', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
       }
     } catch (error) {
-      console.log('error', error);
+      alert ("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -141,8 +133,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
       title: itemUpdated!.resource?.subtema?.nombre as string,
     }
 
-    console.log('newDailyPlanification', newDailyPlanification);
-
     updateDailyPlanification(newDailyPlanification);
     setAllEvents(newEvents);
     getNewEvents();
@@ -158,17 +148,13 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
     }
     try {
       const response = await createDailyPlanificationAction(newDailyPlanification);
-      console.log('response', response);
-
       const data = response!.data;
-
-      console.log('respuesta de actualizar la fecha', data);
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
       }
     } catch (error) {
-      console.log('error', error);
+      alert ("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -182,10 +168,8 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
         allDay,
         resource: months[monthIndex].content.find((event) => event.theme!.subtemas[0].nombre === draggedEvent),
       }];
-      console.log("newEvents", newEvents);
+
       setAllEvents(newEvents);
-      console.log(draggedEvent);
-      console.log(resource);
 
       const newMonthPlanification: IMonthPlanification = {
         id: draggedEvent!.id as number,
@@ -193,7 +177,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
         subtema_id: draggedEvent!.subtema_id as number,
         fecha: formatDate(start),
       }
-      console.log("newMonthPlanification", newMonthPlanification);
+
       const newEvent: IDailyPlanification = {
         planificacion_id: planificationId as number,
         fecha: formatDate(start),
