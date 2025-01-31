@@ -34,12 +34,21 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
   const [isImported, setIsImported] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter()
 
   const handleAddStudent = () => {
     if (studentName.trim()) {
       const [lastName, ...firstNameParts] = studentName.split(' ');
       const firstName = firstNameParts.length > 1 ? firstNameParts.join(' ') : firstNameParts[0];
+
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(studentName)) {
+        setError("El nombre no debe contener números ni caracteres especiales");
+        return;
+      }
+      setError(null);
+
       setStudentList({ alumnos: [...studentList.alumnos, { curso_id: courseId!, nombre: firstName, apellido: lastName }] });
       setStudentName("");
     }
@@ -88,7 +97,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
     setLoading(true);
     setImportError(null);
 
-    if (studentList.alumnos.length === 0 && excelFile) {
+    if (excelFile) {
       const formData = new FormData();
       formData.append('file', excelFile);
       formData.append('curso_id', courseId!.toString());
@@ -96,7 +105,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
       try {
         const result = await ImportStudentsAction(formData);
         if (result.success) {
-          setStudentList({ alumnos: result.data.alumnos });
+          setStudentList({ alumnos: [...studentList.alumnos, ...result.data.alumnos] });
           setIsImportModalOpen(false);
           setExcelFile(null);
         } else {
@@ -119,7 +128,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   return (
     <div className="relative">
       <FlagStepIndicator step={2} title="Alumnos" />
-      <form onSubmit={handleSubmit} className="w-full h-screen p-16 flex flex-col">
+      <form onSubmit={handleSubmit} className="w-full h-screen px-16 py-14 flex flex-col">
         <div className="flex flex-col items-baseline gap-2">
           <h2 className="font-semibold text-4xl">¿Querés añadir tu lista de alumnos?</h2>
           <span className="text-gray-500 text-xl">No te preocupes si ahora no tenés la lista completa, podrás agregar o editar alumnos más tarde.</span>
@@ -144,6 +153,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
           </div>
           <div className="text-gray-500 mt-2 flex gap-2"><IconInfo /> <span>Tu lista quedará ordenará automáticamente por orden alfabético</span></div>
+          {error && <div className="text-red-500">{error}</div>}
           <ul className="flex flex-wrap text-wrap gap-2 mt-4 px-32 max-h-[360px] overflow-y-scroll">
             {studentList.alumnos.sort().map((student, index) => (
               <li key={index} className="w-48 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2">
@@ -164,8 +174,8 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
       </form>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-modal">
             <div className="flex justify-between items-center">
               <h3 className="font-bold text-lg">¿Querés omitir este paso?</h3>
               <button type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
@@ -181,7 +191,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
       {isImportModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="flex flex-col gap-2 bg-yellow-100 text-black-300 p-10 rounded-lg px-6 filter drop-shadow-[18px_14px_0px_#000000] w-5/6">
+          <div className="flex flex-col gap-2 bg-yellow-100 text-black-300 p-10 rounded-lg px-6 filter drop-shadow-modal w-5/6">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-bold text-3xl mb-2">Importar desde Excel</h3>
@@ -224,8 +234,8 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
       )}
 
       {isImported && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-modal">
             <div className="flex justify-between items-center">
               <h3 className="font-bold text-lg">¡Lista creada con éxito!</h3>
             </div>
