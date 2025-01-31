@@ -8,6 +8,7 @@ import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownHomework from "@/components/studentsMonitoring/dropdown/dropdownHomework";
 import withAuth from "@/actions/withAuth";
+import Snackbar from "@/ui/snackbars/successBar";
 
 const Homework: React.FC = () => {
     const [mounted, setMounted] = useState(false);
@@ -21,6 +22,7 @@ const Homework: React.FC = () => {
     const [homeworkGradeType, setHomeworkGradeType] = useState("");
     const [homeworks, setHomeworks] = useState<IHomework[]>([]);
     const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     useEffect(() => {
         const currentCourse = localStorage.getItem("currentCourse");
@@ -96,6 +98,7 @@ const Homework: React.FC = () => {
             const updatedHomeworks = [...homeworks, newHomework];
             setHomeworks(updatedHomeworks);
             localStorage.setItem("homeworks", JSON.stringify(updatedHomeworks));
+            setShowSnackbar(true);
 
             handleModalToggle();
             setHomeworkName("");
@@ -230,6 +233,11 @@ const Homework: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {showSnackbar && (
+                <Snackbar message="Creaste una tarea con éxito" onClose={() => setShowSnackbar(false)} />
+            )}
+
         </div>
     );
 }

@@ -8,6 +8,7 @@ import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { IconInfo } from "@/icons";
 import FlagStepIndicator from "./flagStepIndicator";
 import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
 
 const INITIAL_STATE = {
   data: null
@@ -36,6 +37,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   const [isImported, setIsImported] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter()
+  const { showSnackbar } = useSnackbar();
 
   const handleAddStudent = () => {
     if (studentName.trim()) {
@@ -83,6 +85,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   const handleNextStep = () => {
     if (onlyStudents) {
       router.push('/home');
+      showSnackbar("Lista de alumnos cargada con éxito");
     } else {
       setActiveTab(2);
     }

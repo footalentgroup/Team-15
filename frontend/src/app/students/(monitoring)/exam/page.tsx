@@ -8,6 +8,7 @@ import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownExam from "@/components/studentsMonitoring/dropdown/dropdownExam";
 import withAuth from "@/actions/withAuth";
+import Snackbar from "@/ui/snackbars/successBar";
 
 const Exam: React.FC = () => {
     const [mounted, setMounted] = useState(false);
@@ -21,6 +22,7 @@ const Exam: React.FC = () => {
     const [examGradeType, setExamGradeType] = useState("");
     const [exams, setExams] = useState<IExam[]>([]);
     const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     useEffect(() => {
         const currentCourse = localStorage.getItem("currentCourse");
@@ -95,6 +97,7 @@ const Exam: React.FC = () => {
             const updatedExams = [...exams, newExam];
             setExams(updatedExams);
             localStorage.setItem("exams", JSON.stringify(updatedExams));
+            setShowSnackbar(true);
 
             handleModalToggle();
             setExamName("");
@@ -230,6 +233,11 @@ const Exam: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {showSnackbar && (
+                <Snackbar message="Creaste un exámen con éxito" onClose={() => setShowSnackbar(false)} />
+            )}
+
         </div>
     )
 }

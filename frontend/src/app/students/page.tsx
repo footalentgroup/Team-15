@@ -7,6 +7,7 @@ import { getStudentsAction } from "@/actions/studentsActions";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import { useRouter } from "next/navigation";
 import withAuth from "@/actions/withAuth";
+import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
 
 const Students: React.FC = () => {
     const [isSaved, setIsSaved] = useState(false);
@@ -15,6 +16,7 @@ const Students: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const router = useRouter();
     const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+    const { showSnackbar } = useSnackbar();
 
     const getData = async (currentCourse: ICourses) => {
         if (currentCourse) {
@@ -62,6 +64,7 @@ const Students: React.FC = () => {
 
     const handleClick = () => {
         router.push("/students/homework");
+        showSnackbar("Configuraste el seguimiento exitosamente");
     }
 
 
