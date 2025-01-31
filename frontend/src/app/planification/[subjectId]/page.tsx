@@ -1,18 +1,17 @@
 
+import { refreshToken } from "@/actions/authActions";
 import { getCourses } from "@/actions/getCourse.action";
 import { getPlanification } from "@/actions/planificationActions";
 import Planification from "@/components/planification";
 import { IUser } from "@/interfaces/IAuth.interfaces";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import { IPlanification } from "@/interfaces/IPlanification.interfaces";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function PlanificationPage({ params }: { params: Promise<{ subjectId: string }> }) {
   const { subjectId } = await params;
-  const cookieStore = cookies()
-  const user = (await cookieStore).get("user");
-  const userData: IUser = user ? JSON.parse(user.value).user : null;
+  const user = await refreshToken();
+  const userData: IUser = user ?? null;
 
   let currentCourseData: ICourses | null = null;
 

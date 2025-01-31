@@ -17,16 +17,11 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
 
   const subjectUrl = `${API_URL}/materia/register/`;
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken()
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
-  }
-
-  if (!TOKEN) {
-    refreshToken();
+    TOKEN = user.access_token;
   }
 
   try {
@@ -136,16 +131,11 @@ export async function AddStudentAction(prevState: any, body: IStudentRequest) {
 
   const studentsUrl = `${API_URL}/alumno/list-register/`;
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
-  }
-
-  if (!TOKEN) {
-    refreshToken();
+    TOKEN = user.access_token;
   }
 
   try {
@@ -177,17 +167,14 @@ export async function AddStudentAction(prevState: any, body: IStudentRequest) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function ImportStudentsAction(formData: FormData) {
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const studentsUrl = `${API_URL}/alumno/process_excel/`;
 
@@ -210,7 +197,8 @@ export async function ImportStudentsAction(formData: FormData) {
       data: responseData,
       success: true
     }
-  } catch (error) {;
+  } catch (error) {
+    ;
     return {
       data: error,
       success: false
@@ -273,17 +261,14 @@ export async function getPeriodAction() {
 //importa planificacino en formato word
 export async function ImportPlanificationAction(formData: FormData) {
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const planificationUrl = `${API_URL}/planificacion/process_word/`;
 
@@ -323,18 +308,14 @@ export async function ImportPlanificationAction(formData: FormData) {
 
 //importa planificacion en formato pdf
 export async function ImportPlanificationPdfAction(formData: FormData) {
-
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const planificationUrl = `${API_URL}/planificacion/extract-pdf-text/`;
 
@@ -375,17 +356,14 @@ export async function ImportPlanificationPdfAction(formData: FormData) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function AddPlanificationAction(prevState: any, data: { subjectId: number | null, list: Content[] }) {
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const planificationUrl = `${API_URL}/planificacion/register/`;
 

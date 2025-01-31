@@ -1,3 +1,4 @@
+import { refreshToken } from "@/actions/authActions";
 import MultiStepForm from "@/components/multiStepForm";
 import { ICourses, PeriodFromAction } from "@/interfaces/ICourses.interface";
 import { cookies } from "next/headers";
@@ -20,7 +21,7 @@ export default async function AddCourse(props: {
   const newCourse = (searchParams?.newCourse);
 
   const cookieStore = cookies()
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
 
   if (!user) {
     redirect('/login')

@@ -41,11 +41,6 @@ export async function refreshToken() {
       access_token: data.access_token,
     };
 
-    /* (await cookieStore).set("user", JSON.stringify(updatedUserData), {
-      httpOnly: true,
-      path: '/',
-    }); */
-
     return updatedUserData;
   }
 

@@ -1,21 +1,17 @@
 "use server"
 
-import { cookies } from "next/headers";
-import { refreshToken } from "./authActions";
 import { IDailyPlanification, IMonthPlanification, IPlanification } from "@/interfaces/IPlanification.interfaces";
+import { refreshToken } from "./authActions";
 
 const API_URL = process.env.BASE_URL;
 
 export async function getPlanification(subjectId: number) {
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
-
-  refreshToken();
 
   const response = await fetch(`${API_URL}/planificacion/list/`, {
     method: "GET",
@@ -37,17 +33,14 @@ export async function getPlanification(subjectId: number) {
 }
 
 export async function createNewMonthPlanificationAction(monthPlanification: IMonthPlanification[]) {
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const monthPlanificationUrl = `${API_URL}/planificacion_mensual/list-register/`;
 
@@ -82,17 +75,14 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
 
 export async function deleteMonthPlanificationAction(monthPlanificationId: number) {
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const monthPlanificationUrl = `${API_URL}/planificacion_mensual/delete/${monthPlanificationId}/`;
 
@@ -119,15 +109,12 @@ export async function deleteMonthPlanificationAction(monthPlanificationId: numbe
 }
 
 export async function getAllDailyPlanification() {
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
-
-  refreshToken();
 
   const dailyPlanificationUrl = `${API_URL}/planificacion_diaria/list/`;
 
@@ -153,15 +140,12 @@ export async function getAllDailyPlanification() {
 }
 
 export async function getAllMonthPlanification() {
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
-
-  refreshToken();
 
   const monthPlanificationUrl = `${API_URL}/planificacion_mensual/list/`;
 
@@ -186,17 +170,14 @@ export async function getAllMonthPlanification() {
 }
 
 export async function createDailyPlanificationAction(dailyPlanification: IDailyPlanification) {
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const dailyPlanificationUrl = `${API_URL}/planificacion_diaria/register/`;
 
@@ -225,17 +206,14 @@ export async function createDailyPlanificationAction(dailyPlanification: IDailyP
 
 
 export async function updateDailyPlanificationAction(dailyPlanification: IDailyPlanification) {
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const dailyPlanificationUrl = `${API_URL}/planificacion_diaria/update/${dailyPlanification.id}/`;
 
@@ -262,17 +240,14 @@ export async function updateDailyPlanificationAction(dailyPlanification: IDailyP
 
 export async function updateMonthlyPlanificationAction(monthlyPlanification: IMonthPlanification) {
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
 
-  if (!TOKEN) {
-    refreshToken();
-  }
+
 
   const dailyPlanificationUrl = `${API_URL}/planificacion_mensual/update/${monthlyPlanification.id}/`;
 

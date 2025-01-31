@@ -1,20 +1,17 @@
 "use server"
 
-import { cookies } from "next/headers";
-import { refreshToken } from "./authActions";
 import { ICreateExamen } from "@/interfaces/IExam.interfaces";
+import { refreshToken } from "./authActions";
 
 const API_URL = process.env.BASE_URL;
 
 export async function createNewExamenAction(examen: ICreateExamen) {
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
-  refreshToken();
 
   const response = await fetch(`${API_URL}/examen_asignado/register/`, {
     method: "POST",

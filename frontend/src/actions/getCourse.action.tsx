@@ -2,9 +2,7 @@
 
 import { Course, ICourses, School, Subject } from "@/interfaces/ICourses.interface";
 import { getColorByPosition } from "@/utils/getRandomColor";
-import { cookies } from "next/headers";
 import { refreshToken } from "./authActions";
-
 
 const API_URL = process.env.BASE_URL;
 
@@ -16,19 +14,16 @@ export async function getCourses() {
 
   const subjectUrl = `${API_URL}/materia/list/`;
 
-  const cookieStore = cookies();
-  const user = (await cookieStore).get("user");
+  const user = await refreshToken();
   let professorId = 0;
   if (user) {
-    professorId = JSON.parse(user.value).user.id;
+    professorId = user.user.id;
   }
   let TOKEN = ''
 
   if (user) {
-    TOKEN = JSON.parse(user.value).access_token;
+    TOKEN = user.access_token;
   }
-
-  refreshToken();
 
   try {
     const schoolResponse = await fetch(schoolUrl, {
