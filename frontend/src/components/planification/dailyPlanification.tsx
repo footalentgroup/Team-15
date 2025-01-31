@@ -72,7 +72,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       const response = await createNewMonthPlanificationAction([monthPlanification]);
 
       const monthIndex = new Date(currentDate).getMonth();
-<<<<<<< HEAD
       const updatedTheme = data[0].temas.find((theme) => theme.id === currentTheme.id_tema);
       let newUpdatedTheme
       if (updatedTheme) {
@@ -83,9 +82,6 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
         }];
       }
       const newMonthPlanification = { ...monthPlanification, id: response!.data.planificacion_mensual[0].id, theme: newUpdatedTheme![0] };
-=======
-      const newMonthPlanification = { ...monthPlanification, id: response!.data.planificacion_mensual[0].id };
->>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
 
       const newMonths = months.map((month) => {
         if (month.id === monthIndex) {
@@ -207,13 +203,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       };
     });
 
-<<<<<<< HEAD
     const filteredEvents = updatedMonthlyPlanification.filter(event => event.fecha === formattedCurrentDate);
-=======
-    const formattedCurrentDate = currentDate.toISOString().split('T')[0];
-
-    const filteredEvents = combinedList.filter(event => event.fecha === formattedCurrentDate);
->>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
 
     if (filteredEvents.length > 0 && filteredEvents[0].resource.subtema_id) {
       const newCurrentThemes = filteredEvents.map(event => event.resource.subtema!);
