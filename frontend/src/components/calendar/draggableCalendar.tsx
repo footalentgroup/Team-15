@@ -237,8 +237,9 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
   };
 
   useEffect(() => {
+    console.log("use effect");
     getNewEvents();
-  }, []);
+  }, [months]);
 
   const filteredMonths = months.map(month => {
     const filteredContent = month.content.reduce((acc: { map: Map<string, boolean>; result: IMonthPlanification[] }, current) => {
@@ -273,6 +274,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
           className='h-[628px]'
           localizer={localizer}
           events={allEvents}
+          showAllEvents
           date={currentDate}
           onNavigate={(date) => setCurrentDate(date)}
           startAccessor={(event: CalendarEvent) => (event.start ? normalizeDate(new Date(event.start)) : new Date('0000-00-00'))}

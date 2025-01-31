@@ -368,7 +368,7 @@ function Planification({ data, user, currentCourse }: Props) {
   console.log(viewPeriodTitle);
   return (
     <>
-      <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+      <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} isExpanded={isExpanded} setIsExpanded={setIsExpanded} currentCourse={currentCourse} />
       <div className={`h-screen flex flex-col gap-4 px-16 py-14 ${isVisible || isExpanded ? "w-[calc(100%-18rem)]" : "w-[calc(100%-7rem)]"}`}>
         {/* background when is over */}
         <div className={`${isOver ? "absolute w-full h-full bg-[#75757532] top-0 left-0 z-10" : "invisible"}`} />
