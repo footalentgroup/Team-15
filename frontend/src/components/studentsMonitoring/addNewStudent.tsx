@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import { deleteStudentAction } from "@/actions/studentsActions";
+import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
 
 export default function AddNewStudent() {
     const [data, setData] = useState<IStudents[]>([]);
@@ -14,6 +15,7 @@ export default function AddNewStudent() {
     const [editingStudentId, setEditingStudentId] = useState<number | null>(null);
     const [isInputVisible, setIsInputVisible] = useState(false);;
     const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+    const { showSnackbar } = useSnackbar();
 
     useEffect(() => {
         const currentCourse = localStorage.getItem("currentCourse");
@@ -117,6 +119,8 @@ export default function AddNewStudent() {
 
             setStudentName("");
             setIsInputVisible(false);
+
+            showSnackbar("Agregaste un nuevo alumno a la lista");
         }
     };
 

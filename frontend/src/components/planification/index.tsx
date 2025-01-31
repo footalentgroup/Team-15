@@ -15,6 +15,7 @@ import { createNewMonthPlanificationAction, deleteMonthPlanificationAction } fro
 import Image from 'next/image';
 import DialogInfo from '../dialog/DialogInfo';
 import DailyPlanification from './dailyPlanification';
+import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
 
 interface Props {
   data: IPlanification[]
@@ -60,6 +61,7 @@ function Planification({ data, user, currentCourse }: Props) {
   const [showHelp, setShowHelp] = useState(false)
   //el mes que va a ir cuando clickee en ver el mes
   const [currentMonthIndex, setCurrentMonthIndex] = useState<number>(0)
+  const { showSnackbar } = useSnackbar();
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -273,6 +275,7 @@ function Planification({ data, user, currentCourse }: Props) {
 
   const deleteMonthPlanification = async (planificationsForDelete: number) => {
     await deleteMonthPlanificationAction(planificationsForDelete)
+    showSnackbar("Eliminaste el contenido del calendario");
   }
 
   /* esto hacia que al cambiar de vista se envien los datos para crear y borrar los datos modificados de cada planificacion mensual

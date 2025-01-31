@@ -8,6 +8,7 @@ import AttitudinalConfig from "@/components/studentsMonitoring/config/attitudina
 import AttendanceConfig from "@/components/studentsMonitoring/config/attendance";
 import { ICourses } from '@/interfaces/ICourses.interface';
 import withAuth from "@/actions/withAuth";
+import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
 
 const Config: React.FC = () => {
     const [cuatrimestreData, setCuatrimestreData] = useState({});
@@ -18,6 +19,7 @@ const Config: React.FC = () => {
     const [isFormValid, setIsFormValid] = useState(false);
     const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
     const [showModal, setShowModal] = useState(false);
+    const { showSnackbar } = useSnackbar();
 
     useEffect(() => {
         const currentCourse = localStorage.getItem("currentCourse");
@@ -47,6 +49,7 @@ const Config: React.FC = () => {
         const configKey = `configData${courseId}`;
 
         localStorage.setItem(configKey, JSON.stringify(finalData));
+        showSnackbar("Configuración de notas realizada con éxito");
     };
 
 
