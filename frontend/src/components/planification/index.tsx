@@ -31,11 +31,9 @@ function Planification({ data, user, currentCourse }: Props) {
   const startMonthFromPeriod = Number(currentCourse.periods![0].fecha_inicio.split('-')[1])
   const endMonthFromPeriod = Number(currentCourse.periods![0].fecha_cierre.split('-')[1])
 
-  const nextStartMonthFromPeriod = Number(currentCourse.periods![1].fecha_inicio.split('-')[1])
   const nextEndMonthFromPeriod = Number(currentCourse.periods![1].fecha_cierre.split('-')[1])
 
   const monthLengthFromFirstPeriod = endMonthFromPeriod - startMonthFromPeriod + 1
-  const monthLengthFromNextPeriod = nextEndMonthFromPeriod - nextStartMonthFromPeriod + 1
 
   const startDate = currentCourse.periods![0].fecha_inicio
   const endDate = currentCourse.periods![2] ? currentCourse.periods![2].fecha_cierre : currentCourse.periods![1].fecha_cierre
@@ -70,14 +68,11 @@ function Planification({ data, user, currentCourse }: Props) {
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
     setActiveId(null);
-
     setIsOver(false);
 
-
-
     if (over) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [themeIndex, subthemeIndex, itemMonthIndex] = active.id.toString().split('-').map((index) => parseInt(index));
       const monthIndex = over.id.toString().split('-').map((index) => parseInt(index))[1];
       const isTrash = over.id === 'trash';
@@ -87,9 +82,9 @@ function Planification({ data, user, currentCourse }: Props) {
 
       const themeWithSubthemeSelected = data[0].temas.find((theme) => theme.subtemas.some((subtheme) => subtheme.id === subthemeIndex));
 
-
       if (overMonth && subthemeSelected && themeWithSubthemeSelected) {
         const newContent = overMonth.content.find((content) => content.subtema_id === subthemeIndex);
+
 
         if (!newContent) {
           const newTheme = { ...themeWithSubthemeSelected, subtemas: [subthemeSelected] };
@@ -112,7 +107,6 @@ function Planification({ data, user, currentCourse }: Props) {
                 if (month.id === itemMonthIndex) {
                   const planificationForDelete = months[itemMonthIndex].content.find((content) => content.subtema_id !== subthemeIndex)
                   const newContent = month.content.filter((content) => content.subtema_id !== subthemeIndex);
-
                   if (planificationForDelete) {
                     deleteMonthPlanification(planificationForDelete.id!)
                   }
@@ -122,7 +116,6 @@ function Planification({ data, user, currentCourse }: Props) {
               });
 
               createNewMonthPlanification([newPlan]).then((newItemFromResponse) => {
-
                 const newPlanificationMonthFromResponse = {
                   ...newItemFromResponse?.data.planificacion_mensual,
                   theme: newTheme,
@@ -143,15 +136,13 @@ function Planification({ data, user, currentCourse }: Props) {
             } else {
               const newMonth = { ...overMonth, content: [...overMonth.content, newPlan] };
               const newMonths = months.map((month) => (month.id === monthIndex ? newMonth : month));
-
               setMonths(newMonths);
             }
           }
-        } else {
+        } /* else {
           const newMonth = { ...overMonth, content: overMonth.content.filter((content) => content.subtema_id !== subthemeIndex) };
           const newMonths = months.map((month) => (month.id === monthIndex ? newMonth : month));
-
-        }
+        } */
       }
 
       if (isTrash) {
@@ -164,7 +155,6 @@ function Planification({ data, user, currentCourse }: Props) {
           return month
         })
         /* const planificationForDelete = initialData[0].planificacion_mensual.find((plan) => plan.id === subthemeSelected?.id) */
-
         if (planificationForDelete) {
           deleteMonthPlanification(planificationForDelete.id!)
         }
@@ -179,9 +169,6 @@ function Planification({ data, user, currentCourse }: Props) {
 
   const handleDragStart = (event: DragEndEvent) => {
     setIsOver(true);
-    if (event.over) {
-      console.log('over', event.over.id);
-    }
 
     const [themeId, subthemeId] = event.active.id.toString().split('-').map((index) => parseInt(index));
 
@@ -218,7 +205,6 @@ function Planification({ data, user, currentCourse }: Props) {
     setAllSubthemes(allSubthemes);
 
     const newMonthPlanification = data[0].planificacion_mensual.map((plan) => {
-
       const theme = data[0].temas.find((tema) =>
         tema.subtemas.some((subtema) => subtema.id === plan.subtema_id)
       );
@@ -240,19 +226,6 @@ function Planification({ data, user, currentCourse }: Props) {
       }
       return null;
     }).filter((item): item is NonNullable<typeof item> => item !== null);
-
-    const filteredNewMonthPlanification = newMonthPlanification.reduce((acc: { map: Map<string, boolean>; result: IMonthPlanification[] }, current) => {
-      const [year, month] = current.fecha!.split('-');
-      const key = `${current.subtema_id}-${year}-${month}`;
-
-      if (!acc.map.has(key)) {
-        acc.map.set(key, true);
-        acc.result.push(current);
-      }
-
-      return acc;
-    }, { map: new Map(), result: [] }).result;
-
 
     const newMonths = months.map((month) => {
       const newContent = newMonthPlanification.filter((item) => {
@@ -337,7 +310,7 @@ function Planification({ data, user, currentCourse }: Props) {
 
   return (
     <>
-      <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} isExpanded={isExpanded} setIsExpanded={setIsExpanded} />
+      <Sidebar isVisible={isVisible} setIsVisible={setIsVisible} isExpanded={isExpanded} setIsExpanded={setIsExpanded} currentCourse={currentCourse} />
       <div className={`h-screen flex flex-col gap-4 px-16 py-14 ${isVisible || isExpanded ? "w-[calc(100%-18rem)]" : "w-[calc(100%-7rem)]"}`}>
         {/* background when is over */}
         <div className={`${isOver ? "absolute w-full h-full bg-[#75757532] top-0 left-0 z-10" : "invisible"}`} />

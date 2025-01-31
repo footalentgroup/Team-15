@@ -93,7 +93,8 @@ function HomeCalendar({ events }: Props) {
       subjectName: planification?.subjectName ?? "-"
     };
   });
- */
+
+  console.log('combined list', combinedList); */
 
   return (
     <div className='h-full overflow-hidden mt-8 relative'>

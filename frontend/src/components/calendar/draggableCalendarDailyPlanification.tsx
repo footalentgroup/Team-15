@@ -1,4 +1,7 @@
-"use client"
+/*
+este componente esta completamente comentado por que es una version en la que se utiliza dailyPlanification en vez de la actual que es con MonthlyPlanification
+
+ "use client"
 import React, { useEffect, useState } from 'react';
 import { Calendar, momentLocalizer, Views, ToolbarProps, DateLocalizer, stringOrDate } from 'react-big-calendar';
 import moment from 'moment';
@@ -22,7 +25,7 @@ const ExternalEvent: React.FC<{ title: string, setDraggedEvent: (event: IMonthPl
   <div
     draggable
     onDragStart={() => setDraggedEvent(event)}
-    onDragEnd={(e) => console.log((e.target as HTMLElement).outerText)}
+    onDragEnd={() => { }}
     className='h-8 w-min max-w-full p-1 bg-yellow-100 border border-black rounded-md margin-10 padding-10 border-1 cursor-pointer'
   >
     <span className='flex whitespace-nowrap overflow-hidden overflow-ellipsis' title={title}>
@@ -102,7 +105,10 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
     }
     try {
       const response = await updateDailyPlanificationAction(newDailyPlanification);
+<<<<<<< HEAD
+=======
       const data = response!.data;
+>>>>>>> 344eab2b1e23578927572609a932a79ba919d46d
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -148,7 +154,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
     }
     try {
       const response = await createDailyPlanificationAction(newDailyPlanification);
-      const data = response!.data;
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -246,4 +251,4 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, cu
   );
 };
 
-export default DraggableCalendarWithExternalEvents;
+export default DraggableCalendarWithExternalEvents; */

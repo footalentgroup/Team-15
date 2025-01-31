@@ -1,13 +1,13 @@
 "use client"
 import { createNewExamenAction } from '@/actions/examenActions';
-import { createNewMonthPlanificationAction } from '@/actions/planificationActions';
+import { createDailyPlanificationAction, createNewMonthPlanificationAction, deleteMonthPlanificationAction, updateDailyPlanificationAction } from '@/actions/planificationActions';
 import { createNewTaskAction } from '@/actions/taskActions';
 import { IconArrow } from '@/icons';
 import { PLanificationMonth } from '@/interfaces/ICourses.interface';
-import { IMonthPlanification, IPlanification, ISubtheme } from '@/interfaces/IPlanification.interfaces';
+import { IDailyPlanification, IMonthPlanification, IPlanification, ISubtheme } from '@/interfaces/IPlanification.interfaces';
 import ButtonContinue from '@/ui/buttons/buttonContinue';
 import SelectType from '@/ui/selects/SelectType';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const TYPE_CLASS = ['Examen', 'Clase teórica', 'Clase práctica'];
 
@@ -37,6 +37,9 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
   const [homeworkName, setHomeworkName] = useState("");
   const [homeworkType, setHomeworkType] = useState("");
   const [detailsInput, setDetailsInput] = useState("");
+  const detailsInputRef = useRef(detailsInput);
+  const [currentDailyPlanification, setCurrentDailyPlanification] = useState<IDailyPlanification>();
+
 
   const handleNextDay = () => {
     setCurrentDate(prevDate => {
@@ -69,7 +72,16 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       const response = await createNewMonthPlanificationAction([monthPlanification]);
 
       const monthIndex = new Date(currentDate).getMonth();
-      const newMonthPlanification = { ...monthPlanification, id: response!.data.planificacion_mensual[0].id };
+      const updatedTheme = data[0].temas.find((theme) => theme.id === currentTheme.id_tema);
+      let newUpdatedTheme
+      if (updatedTheme) {
+        const updatedSubtema = updatedTheme.subtemas.find((subtema) => subtema.id === currentTheme!.id);
+        newUpdatedTheme = [{
+          ...updatedTheme,
+          subtemas: updatedSubtema ? [updatedSubtema] : [],
+        }];
+      }
+      const newMonthPlanification = { ...monthPlanification, id: response!.data.planificacion_mensual[0].id, theme: newUpdatedTheme![0] };
 
       const newMonths = months.map((month) => {
         if (month.id === monthIndex) {
@@ -81,6 +93,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
 
       setMonths(newMonths);
       setCurrentThemes([...currentThemes, currentTheme]);
+      setCurrentTheme(undefined);
       setIsThemeModalOpen(!isThemeModalOpen);
     }
   }
@@ -98,11 +111,11 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
     const response = await createNewTaskAction(newHomework);
 
     if (response.success) {
-      setIsTaskModalOpen(!isTaskModalOpen);;
+      setIsTaskModalOpen(!isTaskModalOpen);
     }
 
     if (!response.success) {
-      alert ("Ocurrio un error al guardar la tarea" + response);
+      alert("Ocurrio un error al guardar la tarea" + response);
     }
   }
 
@@ -123,7 +136,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
     }
 
     if (!response.success) {
-      alert ("Ocurrio un error al guardar el examen" + response);
+      alert("Ocurrio un error al guardar el examen" + response);
     }
   }
 
@@ -137,34 +150,120 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
     setExamType("");
 
     const monthlyPlanification = data.flatMap(event => event.planificacion_mensual);
+    const filteredFirstDayInMonthlyPlanification = monthlyPlanification.filter(event => {
+      return !event.fecha!.endsWith('-01') && event.fecha === currentDate.toISOString().split('T')[0];
+    });
     const dailyPlanification = data.flatMap(event => event.planificacion_diaria);
     const allSubtopics = data.flatMap(event => event.temas).flatMap(tema => tema.subtemas);
-    const combinedList = dailyPlanification.map(dailyItem => {
-      const matchingItem = monthlyPlanification.find(monthlyItem => monthlyItem!.fecha === dailyItem!.fecha);
-      const subtema_id = matchingItem ? matchingItem.subtema_id : undefined;
-      const subtema = allSubtopics.find(sub => sub?.id === subtema_id);
-      const newDate = new Date(dailyItem!.fecha);
-      newDate.setDate(newDate.getDate() + 1)
+    /* let combinedList = [] */
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+    if (dailyPlanification.length > 0) {
+      const singleDailyPlanification = dailyPlanification.find(event => event.fecha === formattedCurrentDate);
+      if (singleDailyPlanification) {
+        setCurrentDailyPlanification(singleDailyPlanification);
+        setDetailsInput(singleDailyPlanification.detalle);
+      } else {
+        setCurrentDailyPlanification(undefined);
+        setDetailsInput("");
+      }
+      /* combinedList = dailyPlanification.map(dailyItem => {
+        const matchingItem = filteredFirstDayInMonthlyPlanification.find(monthlyItem => monthlyItem!.fecha === dailyItem!.fecha);
+        const subtema_id = matchingItem ? matchingItem.subtema_id : undefined;
+        const subtema = allSubtopics.find(sub => sub?.id === subtema_id);
+        const newDate = new Date(dailyItem!.fecha);
 
+        return {
+          ...dailyItem,
+          title: subtema?.nombre ?? "-",
+          start: newDate,
+          end: newDate,
+          resource: { ...dailyItem, subtema_id: subtema_id, subtema },
+        };
+      });
+
+      console.log('combined list', combinedList);
+
+      const filteredEvents = combinedList.filter(event => event.fecha === formattedCurrentDate);
+
+      if (filteredEvents.length > 0 && filteredEvents[0].resource.subtema_id) {
+        setCurrentThemes([filteredEvents[0].resource.subtema!]);
+        setCurrentThemeId(filteredEvents[0].resource.subtema!.id_tema);
+      }
+      console.log(filteredEvents); */
+    }
+
+    const updatedMonthlyPlanification = filteredFirstDayInMonthlyPlanification.map(monthlyItem => {
+      const subtema = allSubtopics.find(sub => sub?.id === monthlyItem.subtema_id);
       return {
-        ...dailyItem,
+        ...monthlyItem,
         title: subtema?.nombre ?? "-",
-        start: newDate,
-        end: newDate,
-        resource: { ...dailyItem, subtema_id: subtema_id, subtema },
+        start: new Date(monthlyItem.fecha!),
+        end: new Date(monthlyItem.fecha!),
+        resource: { ...monthlyItem, subtema_id: monthlyItem.subtema_id, subtema },
       };
     });
 
-    const formattedCurrentDate = currentDate.toISOString().split('T')[0];
-
-    const filteredEvents = combinedList.filter(event => event.fecha === formattedCurrentDate);
+    const filteredEvents = updatedMonthlyPlanification.filter(event => event.fecha === formattedCurrentDate);
 
     if (filteredEvents.length > 0 && filteredEvents[0].resource.subtema_id) {
-      setCurrentThemes([filteredEvents[0].resource.subtema!]);
+      const newCurrentThemes = filteredEvents.map(event => event.resource.subtema!);
+      setCurrentThemes(newCurrentThemes);
       setCurrentThemeId(filteredEvents[0].resource.subtema!.id_tema);
     }
 
   }, [currentDate]);
+
+  const handleDeleteTheme = async (theme: ISubtheme) => {
+    const currentMonthPlanification = data[0].planificacion_mensual.find(
+      (plan) => plan.fecha === currentDate.toISOString().split('T')[0] && plan.subtema_id === theme.id
+    );
+    if (currentMonthPlanification) {
+      const response = await deleteMonthPlanificationAction(currentMonthPlanification.id!);
+      if (response!.success) {
+        setCurrentThemes(currentThemes.filter(currentTheme => currentTheme !== theme));
+      } else {
+        console.log('error', response);
+      }
+    }
+  }
+
+  const updateDailyPlanification = async () => {
+    if (currentDailyPlanification && detailsInputRef.current) {
+      const updatedDailyPlanification: IDailyPlanification = {
+        ...currentDailyPlanification,
+        detalle: detailsInputRef.current,
+      }
+
+      await updateDailyPlanificationAction(updatedDailyPlanification);
+    }
+  }
+
+  const createDailyPlanification = async () => {
+    if (!currentDailyPlanification && detailsInputRef.current) {
+      const newDailyPlanification: IDailyPlanification = {
+        fecha: currentDate.toISOString().split('T')[0],
+        detalle: detailsInputRef.current,
+        planificacion_id: data[0].id,
+        tipo_clase: currentOption,
+      }
+
+      await createDailyPlanificationAction(newDailyPlanification);
+    }
+  }
+
+  useEffect(() => {
+    detailsInputRef.current = detailsInput;
+  }, [detailsInput]);
+
+  useEffect(() => {
+    return () => {
+      if (currentDailyPlanification) {
+        updateDailyPlanification();
+      } else {
+        createDailyPlanification();
+      }
+    };
+  }, []);
 
   return (
     <div className='relative h-3/5'>
@@ -194,7 +293,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
           {currentThemes.map((theme, index) => (
             <div key={index} className='flex gap-4 font-semibold justify-between items-center border-2 border-black rounded-md p-2 bg-white'>
               <span>{theme.nombre}</span>
-              <button className='cursor-pointer' onClick={() => setCurrentThemes(currentThemes.filter((item) => item !== theme))}>
+              <button className='cursor-pointer' onClick={() => handleDeleteTheme(theme)}>
                 X
               </button>
             </div>

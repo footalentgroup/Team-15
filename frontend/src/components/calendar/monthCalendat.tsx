@@ -13,7 +13,6 @@ interface Props {
 }
 
 function MonthlyCalendar({ months, startMonthIndex, endMonthIndex, setCurrentMonthIndex }: Props) {
-
   const filteredMonths = months.map(month => {
     const filteredContent = month.content.reduce((acc: { map: Map<string, boolean>; result: IMonthPlanification[] }, current) => {
       const [year, month] = current.fecha!.split('-');

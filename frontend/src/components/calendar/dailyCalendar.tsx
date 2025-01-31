@@ -23,7 +23,6 @@ function DailyCalendar({ date, events }: Props) {
   const dayNumber = date.getDate();
   const fullDate = `${dayName} ${dayNumber}`;
   const currentEvents = events.filter(event => event.start!.getDate() === date.getDate());
-
   return (
     <div className='h-full rounded-xl filter drop-shadow-general content-end'>
       <div className='mx-28 bg-yellow-light text-center border-2 border-b-0 border-black content-center h-16 text-lg font-semibold rounded-t-xl'>

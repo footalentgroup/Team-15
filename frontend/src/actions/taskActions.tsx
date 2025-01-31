@@ -30,7 +30,6 @@ export async function createNewTaskAction(examen: ICreateHomework) {
   }
 
   const data = await response.json();
-
   return {
     data: data,
     success: true

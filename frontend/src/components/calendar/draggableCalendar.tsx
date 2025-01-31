@@ -22,7 +22,7 @@ const ExternalEvent: React.FC<{ title: string, setDraggedEvent: (event: IMonthPl
   <div
     draggable
     onDragStart={() => setDraggedEvent(event)}
-    onDragEnd={(e) => console.log((e.target as HTMLElement).outerText)}
+    onDragEnd={() => { }}
     className='h-8 w-min max-w-full p-1 bg-yellow-100 border border-black rounded-md margin-10 padding-10 border-1 cursor-pointer'
   >
     <span className='flex whitespace-nowrap overflow-hidden overflow-ellipsis' title={title}>
@@ -105,7 +105,6 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
   const onUpdateMonthPlanification = async (monthPlanification: IMonthPlanification) => {
     try {
       const response = await updateMonthlyPlanificationAction(monthPlanification);
-      const data = response!.data;
 
       if (response && !response.success) {
         setError("Ocurrio un error al guardar la planificación mensual");
@@ -123,7 +122,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       setMonths(newMonths);
 
     } catch (error) {
-      alert ("Ocurrio un error al guardar la planificación mensual" + error);
+      alert("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -160,7 +159,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       return data;
 
     } catch (error) {
-      alert ("Ocurrio un error al guardar la planificación mensual" + error);
+      alert("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -204,16 +203,14 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
         theme: draggedEvent.theme,
       }
 
-      onCreateMonthPlanification(newEvent).then((data) => {
-        console.log('data', data);
-      });
+      onCreateMonthPlanification(newEvent);
 
     }
   };
 
   useEffect(() => {
     getNewEvents();
-  }, []);
+  }, [months]);
 
   const filteredMonths = months.map(month => {
     const filteredContent = month.content.reduce((acc: { map: Map<string, boolean>; result: IMonthPlanification[] }, current) => {
@@ -248,6 +245,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
           className='h-[628px]'
           localizer={localizer}
           events={allEvents}
+          showAllEvents
           date={currentDate}
           onNavigate={(date) => setCurrentDate(date)}
           startAccessor={(event: CalendarEvent) => (event.start ? normalizeDate(new Date(event.start)) : new Date('0000-00-00'))}
