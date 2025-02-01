@@ -7,7 +7,7 @@ import { getStudentsAction } from "@/actions/studentsActions";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import { useRouter } from "next/navigation";
 import withAuth from "@/actions/withAuth";
-import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 const Students: React.FC = () => {
     const [isSaved, setIsSaved] = useState(false);

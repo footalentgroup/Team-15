@@ -9,6 +9,8 @@ import FlagStepIndicator from "./flagStepIndicator";
 import DialogInfo from "../dialog/DialogInfo";
 import { IconArrow } from "@/icons";
 import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
+
 
 const INITIAL_STATE = {
   data: null
@@ -57,6 +59,8 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   const [periodList, setPeriodList] = useState(Array.from({ length: 2 }));
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { showSnackbar } = useSnackbar();
+
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -68,6 +72,7 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
     const specialCharRegex = /[^a-zA-Z0-9\s°]/;
     if (specialCharRegex.test(courseNameInput)) {
       setError("El nombre del curso no puede contener caracteres especiales, excepto °.");
+      showSnackbar("El nombre del curso no puede contener caracteres especiales, excepto °.");
       return;
     }
 

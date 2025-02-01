@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { ICourses } from "@/interfaces/ICourses.interface";
 import { deleteStudentAction } from "@/actions/studentsActions";
-import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 export default function AddNewStudent() {
     const [data, setData] = useState<IStudents[]>([]);

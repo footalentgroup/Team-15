@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { SnackbarProvider } from "@/contexts/snackbar/snackbarContext";
+import { SnackbarProvider } from "@/contexts/snackbar/SnackbarContext";
 
 export const metadata: Metadata = {
   title: "PalProfe",

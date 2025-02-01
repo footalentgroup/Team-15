@@ -15,7 +15,7 @@ import { createNewMonthPlanificationAction, deleteMonthPlanificationAction } fro
 import Image from 'next/image';
 import DialogInfo from '../dialog/DialogInfo';
 import DailyPlanification from './dailyPlanification';
-import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 interface Props {
   data: IPlanification[]

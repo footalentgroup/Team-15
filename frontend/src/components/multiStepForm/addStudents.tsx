@@ -8,7 +8,7 @@ import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { IconInfo } from "@/icons";
 import FlagStepIndicator from "./flagStepIndicator";
 import { useRouter } from "next/navigation";
-import { useSnackbar } from "@/contexts/snackbar/snackbarContext";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 const INITIAL_STATE = {
   data: null
