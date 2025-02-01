@@ -12,8 +12,10 @@ function ConfirmMail({ mail, password }: { mail: string, password: string }) {
 
   const handleContinue = async () => {
     try {
-      await login(formattedMail, password);
-      router.push("/onboarding");
+      const response = await login(formattedMail, password);
+      if (response.user) {
+        router.push("/onboarding");
+      }
     } catch (error) {
       console.error(error);
       setError("Error al iniciar sesión");

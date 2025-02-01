@@ -8,7 +8,7 @@ export default function Layout({
 
   return (
     <div className="flex h-screen">
-      <main className="flex overflow-y-auto h-full">
+      <main className="flex overflow-y-auto h-full w-full">
         {children}
       </main>
     </div>

@@ -96,8 +96,10 @@ export async function verifyEmailAction(token: string) {
         "Content-Type": "application/json",
       },
     });
+    console.log("response", response);
 
     const data = await response.json();
+    console.log("data", data);
     return data;
   } catch (error) {
     throw error;
