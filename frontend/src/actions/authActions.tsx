@@ -1,6 +1,7 @@
 "use server"
 
 import { IAuth } from "@/interfaces/IAuth.interfaces";
+import { redirect } from 'next/navigation';
 import { cookies } from "next/headers";
 
 const API_URL = process.env.BASE_URL;
@@ -44,6 +45,7 @@ export async function refreshToken() {
     return updatedUserData;
   }
 
+  redirect('/login')
   throw new Error("No user found in cookies");
 
 }
