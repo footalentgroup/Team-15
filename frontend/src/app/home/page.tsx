@@ -7,7 +7,7 @@ import { redirect } from 'next/navigation';
 
 export default async function HomePage() {
   const user = await refreshToken();
-  const userData: IUser = user ?? null;
+  const userData: IUser = user.user ?? null;
 
   if (!user) {
     redirect('/login')

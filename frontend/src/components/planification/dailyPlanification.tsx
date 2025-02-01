@@ -8,6 +8,7 @@ import { IDailyPlanification, IMonthPlanification, IPlanification, ISubtheme } f
 import ButtonContinue from '@/ui/buttons/buttonContinue';
 import SelectType from '@/ui/selects/SelectType';
 import React, { useEffect, useRef, useState } from 'react';
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 const TYPE_CLASS = ['Examen', 'Clase teórica', 'Clase práctica'];
 
@@ -21,8 +22,10 @@ interface Props {
   period_id?: number;
 }
 
-function DailyPlanification({ date, data, months, setMonths, period_id }: Props) {
-  const [currentDate, setCurrentDate] = useState(new Date(date))
+function DailyPlanification({ data, months, setMonths, period_id, startDate }: Props) {
+  const newDate = new Date(startDate);
+  newDate.setHours(0, 0, 0, 0);
+  const [currentDate, setCurrentDate] = useState(newDate)
   const [currentOption, setCurrentOption] = useState(TYPE_CLASS[0]);
   const [currentThemes, setCurrentThemes] = useState<ISubtheme[]>([]);
   /* const [currentResources, setCurrentResources] = useState<string[]>(["Revolucion Francesa"]); */
@@ -39,6 +42,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
   const [detailsInput, setDetailsInput] = useState("");
   const detailsInputRef = useRef(detailsInput);
   const [currentDailyPlanification, setCurrentDailyPlanification] = useState<IDailyPlanification>();
+  const { showSnackbar } = useSnackbar();
 
 
   const handleNextDay = () => {
@@ -95,10 +99,12 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       setCurrentThemes([...currentThemes, currentTheme]);
       setCurrentTheme(undefined);
       setIsThemeModalOpen(!isThemeModalOpen);
+      showSnackbar("Enlazaste un tema a la planificación diaria", "success");
     }
   }
 
   const handleCreateHomework = async () => {
+    console.log("currentTheme", currentTheme);
     const newHomework = {
       materia_id: data[0].materia_id,
       subtema_id: currentTheme!.id,
@@ -112,10 +118,11 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
 
     if (response.success) {
       setIsTaskModalOpen(!isTaskModalOpen);
+      showSnackbar("Creaste una tarea con éxito", "success");
     }
 
     if (!response.success) {
-      alert("Ocurrio un error al guardar la tarea" + response);
+      showSnackbar("Ocurrio un error al guardar la tarea" + response);
     }
   }
 
@@ -133,10 +140,11 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
 
     if (response.success) {
       setIsExamModalOpen(!isExamModalOpen);
+      showSnackbar("Creaste un examen con éxito", "success");
     }
 
     if (!response.success) {
-      alert("Ocurrio un error al guardar el examen" + response);
+      showSnackbar("Ocurrio un error al guardar el examen", "error");
     }
   }
 
@@ -208,7 +216,8 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
     if (filteredEvents.length > 0 && filteredEvents[0].resource.subtema_id) {
       const newCurrentThemes = filteredEvents.map(event => event.resource.subtema!);
       setCurrentThemes(newCurrentThemes);
-      setCurrentThemeId(filteredEvents[0].resource.subtema!.id_tema);
+      setCurrentTheme(filteredEvents[0].resource.subtema);
+      setCurrentThemeId(filteredEvents[0].theme!.id);
     }
 
   }, [currentDate]);
@@ -221,6 +230,7 @@ function DailyPlanification({ date, data, months, setMonths, period_id }: Props)
       const response = await deleteMonthPlanificationAction(currentMonthPlanification.id!);
       if (response!.success) {
         setCurrentThemes(currentThemes.filter(currentTheme => currentTheme !== theme));
+        showSnackbar("Desvinculaste un tema de la planificación diaria", "success");
       } else {
         console.log('error', response);
       }
