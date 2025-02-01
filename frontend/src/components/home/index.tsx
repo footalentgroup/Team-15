@@ -46,6 +46,7 @@ function Home({ data, user }: Props) {
 
   const handleLogout = async () => {
     localStorage.removeItem('currentCourse')
+    localStorage.removeItem('token')
     await deleteUserCookie()
     redirect('/login')
   }
