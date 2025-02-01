@@ -23,27 +23,55 @@ body {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
   background: #dddddd;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-left: 3px solid white;
-  border-right: 3px solid white;
   border-radius: 2px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #01caf8;
-  width: 19px;
+  background-image: url('/icons/view-list.svg');
+  background-position: center center, center -40px;
+  background-repeat: no-repeat, no-repeat;
+  background-size: contain, contain;
+  width: 20px;
   height: 62px;
-  border-radius: 2px;
+  border-radius: 6px;
   border: 1px solid black;
   background-clip: content-box;
+}
+
+::-webkit-scrollbar-button:single-button {
+  background-color: #dddddd;
+  display: block;
+  height: 13px;
+  width: 16px;
+}
+/* Up */
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  border-radius: 0px 0px 5px 5px;
+  height: 16px;
+  width: 16px;
+  background-position: center center;
+  background-image: url('/icons/arrow.svg');
+}
+
+::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+  border-color: transparent transparent #777777 transparent;
+}
+/* Down */
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  border-radius: 0px 0px 5px 5px;
+  height: 16px;
+  width: 16px;
+  background-position: center center;
+  background-image: url('/icons/arrow-down.svg');
 }
 
 [type='date']::-webkit-inner-spin-button {
