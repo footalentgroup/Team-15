@@ -76,17 +76,17 @@ input[type='date']::-moz-focus-outer {
 }
 
 @layer base {
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
 }
 
-  input[type="number"] {
-    -moz-appearance: textfield;
-    appearance: none;
-  }
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: none;
+}
 
 .trapezoid {
   --p: 17px;
@@ -119,12 +119,23 @@ input:focus {
   border-radius: 5px;
   border: 2px solid black;
   font-weight: nprmal;
-  box-shadow: 4px 4px 0px #00cf7f;
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 250px;
   height: 64px;
+}
+
+.success {
+  box-shadow: 4px 4px 0px #00cf7f;
+}
+
+.error {
+  box-shadow: 4px 4px 0px #d71519;
+}
+
+.info {
+  box-shadow: 4px 4px 0px #fbc82d;
 }
 
 .close-btn {

@@ -7,6 +7,7 @@ export default {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/ui/**/*.{js,ts,jsx,tsx,mdx}',
     './node_modules/@fortawesome/fontawesome-free/**/*',
+    './src/contexts/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
@@ -34,6 +35,7 @@ export default {
         'lime-100': '#F8FFE4',
         'black-modal': 'rgba(26, 25, 25, 0.95)',
         'modal-text': '#2D3748',
+        'red-500': '#D71519',
       },
       dropShadow: {
         modal: '20px 11px 0px rgba(91, 97, 102, 0.20)',

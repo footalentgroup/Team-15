@@ -53,7 +53,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
     subjectName: ''
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [error, setError] = useState('');
   const [nextStep, setNextStep] = useState(false);
   const [selectedOption, setSelectedOption] = useState("semestral");
   const [periodList, setPeriodList] = useState(Array.from({ length: 2 }));
@@ -71,18 +70,17 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
 
     const specialCharRegex = /[^a-zA-Z0-9\s°]/;
     if (specialCharRegex.test(courseNameInput)) {
-      setError("El nombre del curso no puede contener caracteres especiales, excepto °.");
-      showSnackbar("El nombre del curso no puede contener caracteres especiales, excepto °.");
+      showSnackbar("El nombre del curso no puede contener caracteres especiales, excepto °.", 'error');
       return;
     }
 
     const allSpecialCharRegex = /[^a-zA-Z0-9\s]/;
     if (allSpecialCharRegex.test(schoolNameInput)) {
-      setError("El nombre del centro educativo no puede contener caracteres especiales.");
+      showSnackbar("El nombre del centro educativo no puede contener caracteres especiales.", 'error');
       return;
     }
     if (allSpecialCharRegex.test(subjectNameInput)) {
-      setError("El nombre de la materia no puede contener caracteres especiales.");
+      showSnackbar("El nombre de la materia no puede contener caracteres especiales.", 'error');
       return;
     }
 
@@ -93,7 +91,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
     });
 
     setIsModalOpen(true);
-    setError('');
   };
 
   const handleConfirm = () => {
@@ -113,12 +110,13 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
       setLoading(false);
       setCourseId(formState.data.course.id);
       setSubjectId(formState.data.subject.materia.id);
+      showSnackbar('Curso creado correctamente', 'success');
       setActiveTab(1);
     }
 
     if (formState.error) {
       setLoading(false);
-      setError(formState.data.message);
+      showSnackbar(`${formState.data.message}`, 'error');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formState.success, nextStep]);
@@ -138,7 +136,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
 
   const handleConfirmPeriod = async (event: React.FormEvent) => {
     setLoading(true)
-    setError('');
 
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
@@ -159,13 +156,13 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
       //queda pendiente hacer la validacion para la longitud del periodo
 
       if (startDate < today || endDate < today) {
-        setError(`Las fechas del ${i + 1}° periodo no pueden ser del pasado.`);
+        showSnackbar(`Las fechas del ${i + 1}° periodo no pueden ser del pasado.`, 'error');
         setLoading(false);
         return;
       }
 
       if (startDate >= endDate) {
-        setError(`La fecha de inicio del ${i + 1}° periodo no puede ser posterior a la fecha de cierre.`);
+        showSnackbar(`La fecha de inicio del ${i + 1}° periodo no puede ser posterior a la fecha de cierre.`, 'error');
         setLoading(false);
         return;
       }
@@ -173,14 +170,14 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
       if (i > 0) {
         const prevEndDate = new Date(periodData[`${i - 1} input end`]);
         if (startDate <= prevEndDate) {
-          setError(`La fecha de inicio del ${i + 1}° periodo no puede ser anterior a la fecha de cierre del periodo anterior.`);
+          showSnackbar(`La fecha de inicio del ${i + 1}° periodo no puede ser anterior a la fecha de cierre del periodo anterior.`, 'error');
           setLoading(false);
           return;
         }
       }
 
       if (startDate > twoYearsFromNow || endDate > twoYearsFromNow) {
-        setError(`Las fechas del ${i + 1}° periodo no pueden ser mayores a 2 años en el futuro.`);
+        showSnackbar(`Las fechas del ${i + 1}° periodo no pueden ser mayores a 2 años en el futuro.`, 'error');
         setLoading(false);
         return;
       }
@@ -241,7 +238,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
               </div>
             </div>
             <ButtonContinue text="Continuar" loading={loading} />
-            {error && <p className="text-red-500 my-2">{error}</p>}
 
           </form>
         </>
@@ -272,7 +268,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
               ))}
             </div>
             <ButtonContinue text="Continuar" />
-            {error && <p className="text-red-500 my-2">{error}</p>}
           </form>
 
           {isModalOpen && (

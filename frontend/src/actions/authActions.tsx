@@ -46,7 +46,6 @@ export async function refreshToken() {
   }
 
   redirect('/login')
-  throw new Error("No user found in cookies");
 
 }
 

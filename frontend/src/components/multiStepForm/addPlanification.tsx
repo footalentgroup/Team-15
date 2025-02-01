@@ -10,6 +10,7 @@ import { IconEdit, IconInfo, IconTrash } from '@/icons'
 import FlagStepIndicator from './flagStepIndicator'
 import OmitModal from './omitModal'
 import { IPlanification } from '@/interfaces/IPlanification.interfaces'
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 const INITIAL_STATE = {
   data: null
@@ -43,7 +44,8 @@ export default function AddPlanification({ contentList, setContentList, setActiv
   const [addSubContent, setAddSubContent] = useState<string>("")
   const [isVisibleAddSubContentIndex, setIsVisibleAddSubContentIndex] = useState<number | null>(null);
   const [planificationFile, setPlanificationFile] = useState<File | null>(null)
-  const [importError, setImportError] = useState<string | null>(null)
+  const { showSnackbar } = useSnackbar();
+
 
   const handleAddContent = () => {
     if (contentName.trim()) {
@@ -97,7 +99,6 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
   const dummyHandleImportData = async () => {
     setLoading(true)
-    setImportError(null)
 
     if (planificationFile) {
       const formData = new FormData();
@@ -110,12 +111,13 @@ export default function AddPlanification({ contentList, setContentList, setActiv
           if (result.success) {
             setContentList(result.data)
             setPlanificationFile(null)
+            showSnackbar("Contenidos extraídos correctamente")
           } else {
-            setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+            showSnackbar("Hubo un error al importar los datos. Por favor, intenta de nuevo.", "error")
           }
         } catch (error) {
           console.error(error)
-          setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+          showSnackbar("Hubo un error al importar los datos. Por favor, intenta de nuevo.", "error")
         } finally {
           setLoading(false)
         }
@@ -128,12 +130,14 @@ export default function AddPlanification({ contentList, setContentList, setActiv
           if (result.success) {
             setContentList(result.data)
             setPlanificationFile(null)
+            showSnackbar("Contenidos extraídos correctamente")
           } else {
-            setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+            showSnackbar("Hubo un error al importar los datos. Por favor, intenta de nuevo.", "error")
+
           }
         } catch (error) {
           console.error(error)
-          setImportError("Hubo un error al importar los datos. Por favor, intenta de nuevo.")
+          showSnackbar("Hubo un error al importar los datos. Por favor, intenta de nuevo.", "error")
         } finally {
           setLoading(false)
         }
@@ -150,6 +154,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
 
   useEffect(() => {
     if (formState.success) {
+      showSnackbar("Planificación guardada correctamente")
       setCurrentPlanification(formState.data.planificacion)
       setPlanificationStep(3)
       setActiveTab(3)
@@ -343,7 +348,6 @@ export default function AddPlanification({ contentList, setContentList, setActiv
                   <p>Hacé clic en &quot;Omitir por ahora&quot;</p>
                 </div>
               </div>
-              {importError && <p className="text-red-500 my-2">{importError}</p>}
               <div className="flex justify-center space-x-4 mt-auto">
                 <ButtonContinue type='button' text="Omitir por ahora" color="bg-white" onClick={() => setIsModalOpen(!isModalOpen)} />
               </div>

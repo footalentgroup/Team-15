@@ -32,10 +32,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [excelFile, setExcelFile] = useState<File | null>(null);
-  const [importError, setImportError] = useState<string | null>(null);
-  const [importSuccess, setImportSuccess] = useState<string | null>(null);
   const [isImported, setIsImported] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter()
   const { showSnackbar } = useSnackbar();
 
@@ -46,10 +43,9 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
       const nameRegex = /^[a-zA-Z\s]+$/;
       if (!nameRegex.test(studentName)) {
-        setError("El nombre no debe contener números ni caracteres especiales");
+        showSnackbar("El nombre no debe contener números ni caracteres especiales", "error");
         return;
       }
-      setError(null);
 
       setStudentList({ alumnos: [...studentList.alumnos, { curso_id: courseId!, nombre: firstName, apellido: lastName }] });
       setStudentName("");
@@ -71,7 +67,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
   const handleConfirm = () => {
     setIsModalOpen(false);
-    setImportSuccess('Estudiantes importados correctamente, será redirigido en breve...');
+    showSnackbar("Lista de alumnos cargada con éxito");
     startTransition(() => {
       formAction(studentList);
     });
@@ -85,7 +81,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   const handleNextStep = () => {
     if (onlyStudents) {
       router.push('/home');
-      showSnackbar("Lista de alumnos cargada con éxito");
     } else {
       setActiveTab(2);
     }
@@ -98,7 +93,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   //cambiar nombre de la funcion y la logica cuando se pueda conectar
   const handleImportData = async () => {
     setLoading(true);
-    setImportError(null);
 
     if (excelFile) {
       const formData = new FormData();
@@ -111,12 +105,13 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
           setStudentList({ alumnos: [...studentList.alumnos, ...result.data.alumnos] });
           setIsImportModalOpen(false);
           setExcelFile(null);
+          showSnackbar("Lista de alumnos importada con éxito");
         } else {
-          setImportError('Ocurrio un error al importar estudiantes');
+          showSnackbar("Ocurrio un error al importar estudiantes", "error");
         }
       } catch (error) {
         console.error(error);
-        setImportError('Ocurrio un error al importar estudiantes');
+        showSnackbar("Ocurrio un error al importar estudiantes", "error");
       } finally {
         setLoading(false);
       }
@@ -156,7 +151,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
           </div>
           <div className="text-gray-500 mt-2 flex gap-2"><IconInfo /> <span>Tu lista quedará ordenará automáticamente por orden alfabético</span></div>
-          {error && <div className="text-red-500">{error}</div>}
           <ul className="flex flex-wrap text-wrap gap-2 mt-4 px-32 max-h-[360px] overflow-y-scroll">
             {studentList.alumnos.sort().map((student, index) => (
               <li key={index} className="w-48 h-10 flex justify-between items-center border border-black px-2 rounded-md gap-2">
@@ -230,8 +224,6 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
               <ButtonContinue text="Cancelar" type="button" color="bg-white" onClick={handleCancelImport} />
               <ButtonContinue text={loading ? "Cargando..." : "Subir archivo Excel"} onClick={handleImportData} />
             </div>
-            {importError && <div className="text-red-500 font-semibold capitalize">{importError}</div>}
-            {importSuccess && <div className="text-green-500 font-semibold capitalize">{importSuccess}</div>}
           </div>
         </div>
       )}
