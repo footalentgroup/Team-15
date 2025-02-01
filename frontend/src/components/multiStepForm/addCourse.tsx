@@ -7,6 +7,8 @@ import { startTransition, useActionState, useEffect } from "react"
 import { useState } from "react";
 import FlagStepIndicator from "./flagStepIndicator";
 import DialogInfo from "../dialog/DialogInfo";
+import { IconArrow } from "@/icons";
+import { useRouter } from "next/navigation";
 
 const INITIAL_STATE = {
   data: null
@@ -35,9 +37,10 @@ interface Props {
   setCourseId: (id: number) => void;
   setSubjectId: (id: number) => void;
   setPeriod: (period: PeriodFromAction) => void;
+  newCourse?: string;
 }
 
-export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId, setPeriod }: Props) {
+export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId, setPeriod, newCourse }: Props) {
   const [formState, formAction] = useActionState(
     addCourseAction,
     INITIAL_STATE
@@ -53,21 +56,42 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   const [selectedOption, setSelectedOption] = useState("semestral");
   const [periodList, setPeriodList] = useState(Array.from({ length: 2 }));
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
+    const schoolNameInput = formData.get("schoolName") as string;
+    const courseNameInput = formData.get("courseName") as string;
+    const subjectNameInput = formData.get("subjectName") as string;
+
+    const specialCharRegex = /[^a-zA-Z0-9\s°]/;
+    if (specialCharRegex.test(courseNameInput)) {
+      setError("El nombre del curso no puede contener caracteres especiales, excepto °.");
+      return;
+    }
+
+    const allSpecialCharRegex = /[^a-zA-Z0-9\s]/;
+    if (allSpecialCharRegex.test(schoolNameInput)) {
+      setError("El nombre del centro educativo no puede contener caracteres especiales.");
+      return;
+    }
+    if (allSpecialCharRegex.test(subjectNameInput)) {
+      setError("El nombre de la materia no puede contener caracteres especiales.");
+      return;
+    }
+
     setData({
-      schoolName: formData.get("schoolName") as string,
-      courseName: formData.get("courseName") as string,
-      subjectName: formData.get("subjectName") as string
+      schoolName: schoolNameInput,
+      courseName: courseNameInput,
+      subjectName: subjectNameInput
     });
 
     setIsModalOpen(true);
+    setError('');
   };
 
   const handleConfirm = () => {
-    console.log(formState);
     setIsModalOpen(false);
     /*     startTransition(() => {
           formAction(data);
@@ -82,7 +106,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   useEffect(() => {
     if (formState.success) {
       setLoading(false);
-      console.log("formState", formState);
       setCourseId(formState.data.course.id);
       setSubjectId(formState.data.subject.materia.id);
       setActiveTab(1);
@@ -90,9 +113,6 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
 
     if (formState.error) {
       setLoading(false);
-      console.log('error error', formState.data.error);
-      console.log('error data', formState.data);
-      console.log('error formstate', formState);
       setError(formState.data.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,7 +133,8 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
 
   const handleConfirmPeriod = async (event: React.FormEvent) => {
     setLoading(true)
-    //TODO logica para enviar el periodo seleccionado
+    setError('');
+
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
     const periodData = Array.from(formData.entries()).reduce((acc, [key, value]) => {
@@ -121,7 +142,46 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
       return acc;
     }, {} as Period);
 
-    console.log('periodData', periodData);
+    for (let i = 0; i < periodList.length; i++) {
+      const startDate = new Date(periodData[`${i} input start`]);
+      const endDate = new Date(periodData[`${i} input end`]);
+
+      const today = new Date();
+      today.setDate(today.getDate() - 1);
+      const twoYearsFromNow = new Date();
+      twoYearsFromNow.setFullYear(today.getFullYear() + 2);
+
+      //queda pendiente hacer la validacion para la longitud del periodo
+
+      if (startDate < today || endDate < today) {
+        setError(`Las fechas del ${i + 1}° periodo no pueden ser del pasado.`);
+        setLoading(false);
+        return;
+      }
+
+      if (startDate >= endDate) {
+        setError(`La fecha de inicio del ${i + 1}° periodo no puede ser posterior a la fecha de cierre.`);
+        setLoading(false);
+        return;
+      }
+
+      if (i > 0) {
+        const prevEndDate = new Date(periodData[`${i - 1} input end`]);
+        if (startDate <= prevEndDate) {
+          setError(`La fecha de inicio del ${i + 1}° periodo no puede ser anterior a la fecha de cierre del periodo anterior.`);
+          setLoading(false);
+          return;
+        }
+      }
+
+      if (startDate > twoYearsFromNow || endDate > twoYearsFromNow) {
+        setError(`Las fechas del ${i + 1}° periodo no pueden ser mayores a 2 años en el futuro.`);
+        setLoading(false);
+        return;
+      }
+
+    }
+
 
     startTransition(() => {
       formAction({ data, period: periodData });
@@ -138,13 +198,13 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
       <FlagStepIndicator step={1} title="Cursos" />
       {nextStep ? (
         <>
-          <form onSubmit={handleConfirmPeriod} className="w-full h-screen flex flex-col items-center p-9">
+          <form onSubmit={handleConfirmPeriod} className="w-full h-screen flex flex-col items-center py-14 px-16">
             <div className="flex px-4 py-8 justify-start w-full">
-              <h2 className="font-bold text-4xl">Personaliza la dicisión del ciclo</h2>
+              <h2 className="font-bold text-4xl">Personalizá la división del ciclo</h2>
             </div>
             <div className="flex flex-col gap-9 w-[364px] my-14">
               <div className="flex flex-col items-start gap-3">
-                <label htmlFor="period" className="text-xl font-semibold">Tipo de division del ciclo: </label>
+                <label htmlFor="period" className="text-xl font-semibold">Tipo de división del ciclo:</label>
                 <select name="period" id="period" className="border-2 border-black p-2 rounded-md w-9/12" onChange={(e) => selectOnChange(e)} >
                   <option value="semestral">Semestral</option>
                   <option value="trimestral">Trimestral</option>
@@ -176,13 +236,20 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
               </div>
             </div>
             <ButtonContinue text="Continuar" loading={loading} />
+            {error && <p className="text-red-500 my-2">{error}</p>}
+
           </form>
         </>
       ) : (
         <>
-          <form onSubmit={handleSubmit} className="w-full h-screen flex flex-col items-center p-9">
+          <form onSubmit={handleSubmit} className="w-full h-screen flex flex-col items-center py-14 px-16">
             <div className="flex px-4 py-8 justify-start w-4/6 self-start">
-              <h2 className="font-bold text-4xl text-wrap">Comencemos creando un curso</h2>
+              {newCourse && (
+                <button type="button" onClick={() => router.push('/home')}>
+                  <IconArrow color="black" classNames="rotate-180 size-10" />
+                </button>
+              )}
+              <h2 className={`${newCourse && "ms-2"} font-bold text-4xl text-wrap`}>Comencemos creando un curso</h2>
             </div>
             <div className="flex flex-col items-center gap-9 w-[337px] my-14">
               {INPUTS_INFO.map((input) => (
@@ -204,22 +271,25 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
           </form>
 
           {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-              <div className="flex flex-col gap-2 bg-yellow-100 p-4 rounded-lg size-[448px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+            <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+              <div className="flex flex-col gap-2 bg-yellow-100 rounded-lg size-[31.5rem] py-9 px-6 filter drop-shadow-modal">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-lg">Revisa los detalles de tu clase</h3>
-                  <button type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
+                  <h3 className="font-bold text-lg my-2">Revisá los detalles de tu curso</h3>
+                  <button className="absolute top-4 right-4" type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
                 </div>
-                <p>Tu clase está casi lista y queremos que todo quede perfecto</p>
-                <div className="flex justify-center mb-4">
+                <p className="text-modal-text">Tu curso está casi listo y queremos que todo quede perfecto.</p>
+                <div className="flex justify-center my-6">
                   <CourseCard courses={{
                     schoolName: data.schoolName || '',
                     subjectName: data.subjectName || '',
                     courseName: data.courseName || ''
-                  }} color="" />
+                  }}
+                    color="bg-blue-light-100"
+                    isInModal
+                  />
                 </div>
-                <p>¿Se ve bien? Más Adelante podrás modificar y crear todas las clases que necesites.😊</p>
-                <div className="flex justify-end space-x-4 mt-auto">
+                <p className="text-modal-text">¿Se ve bien? Más adelante podrás modificar y crear todas las clases que necesites.😊</p>
+                <div className="flex justify-center gap-6 mt-auto">
 
                   <ButtonContinue text="Volver a editar" color="bg-white" onClick={handleCancel} type="button" />
                   <ButtonContinue text="Guardar y continuar" onClick={handleConfirm} />
@@ -230,7 +300,10 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
           )}
         </>
       )}
-      <DialogInfo small={true} text="Comienza configurando tu primer grupo." />
+      {!newCourse && (
+        <DialogInfo small={false} text="Empezá configurando un curso a la vez.
+Te guiaremos para completar todo lo necesario." />
+      )}
     </div>
   );
 }

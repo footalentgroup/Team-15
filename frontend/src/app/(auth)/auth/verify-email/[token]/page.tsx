@@ -12,12 +12,8 @@ async function Page({ params }: {
   const user = (await cookieStore).get("tempUser");
   const password = user ? JSON.parse(user.value).password : '';
   const email = user ? JSON.parse(user.value).email : '';
-  console.log('user', user);
-  console.log('pass', password);
 
-  const message = await verifyEmailAction(token);
-  console.log('message', message);
-
+  await verifyEmailAction(token);
 
   return (
     <VerifyEmail mail={email} password={password} />

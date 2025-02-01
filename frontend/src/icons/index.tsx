@@ -1,1 +1,1 @@
-export { IconArrow, IconInfo, IconEdit, IconTrash, IconCalendar, IconFollowUp, IconHome, IconNotes, IconResources, IconSearch, IconBookmark, IconCalendarInput, IconForward, IconUser, IconMenuDotsHorizontal, IconHand, IconArrowUp } from './Icons';
+export { IconArrow, IconInfo, IconEdit, IconTrash, IconCalendar, IconFollowUp, IconHome, IconNotes, IconResources, IconSearch, IconBookmark, IconCalendarInput, IconForward, IconUser, IconMenuDotsHorizontal, IconHand, IconArrowUp, IconLogout, IconFlag, IconArrowBackCurved } from './Icons';

@@ -3,14 +3,27 @@ import React, { useState, useEffect } from "react";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { IAttendance } from "@/interfaces/IAttendance.interfaces";
+import { ICourses } from "@/interfaces/ICourses.interface";
 import DropdownAttendance from "@/components/studentsMonitoring/dropdown/dropdownAttendance";
+import withAuth from "@/actions/withAuth";
 
-export default function Attendance() {
+const Attendance: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [monthIndex, setMonthIndex] = useState(0);
-    const [selectedDays, setSelectedDays] = useState<string[]>([]); 
+    const [selectedDays, setSelectedDays] = useState<string[]>([]);
     const [studentList, setStudentList] = useState<IStudents[] | null>(null);
-    const [attendanceData, setAttendanceData] = useState<IAttendance[]>([]); // Estado para las asistencias filtradas
+    const [attendanceData, setAttendanceData] = useState<IAttendance[]>([]);
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
@@ -33,7 +46,7 @@ export default function Attendance() {
 
                 const attendanceEntry: IAttendance = {
                     id: newId,
-                    curso_id: 1,
+                    curso_id: courseId,
                     nombre_valoracion: dayName,
                     fecha: formattedDate,
                     falta_justificada: false,
@@ -73,22 +86,25 @@ export default function Attendance() {
         const studentData = localStorage.getItem("studentsData");
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
             setStudentList(null);
         }
 
         setSelectedDays(attendanceConfig);
-        console.log("Selected days from localStorage:", attendanceConfig);
         setMounted(true);
+    }, []);
 
-        const days = getDaysInMonth(monthIndex);
-        setAttendanceData(days);
-        if (days.length > 0) {
-            saveAttendance(days);
+    useEffect(() => {
+        if (mounted) {
+            const days = getDaysInMonth(monthIndex);
+            setAttendanceData(days);
+            if (days.length > 0) {
+                saveAttendance(days);
+            }
         }
-    }, [monthIndex]);
+    }, [monthIndex, selectedDays, mounted]);
 
     useEffect(() => {
         const storedAttendance = JSON.parse(localStorage.getItem("attendanceData") || "[]");
@@ -96,8 +112,8 @@ export default function Attendance() {
             (attendance: IAttendance) =>
                 attendance.mes === monthIndex && attendance.id
         );
-        setAttendanceData(filteredAttendance); 
-    }, [monthIndex]);
+        setAttendanceData(filteredAttendance);
+    }, [monthIndex, mounted]);
 
     if (!mounted) {
         return null;
@@ -112,7 +128,7 @@ export default function Attendance() {
                         <div key={attendance.id} className="inline-block">
                             <button
                                 type="button"
-                                className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                                className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                                 data-date={attendance.fecha}
                             >
                                 {`${attendance.nombre_valoracion} ${attendance.fecha.split("-")[2]}/${(monthIndex + 1).toString().padStart(2, "0")}`}
@@ -123,7 +139,7 @@ export default function Attendance() {
                                         <DropdownAttendance
                                             key={`${student.id}-${attendance.id}`}
                                             studentId={student.id}
-                                            attendanceId={attendance.id} 
+                                            attendanceId={attendance.id}
                                         />
                                     ))}
                                 </div>
@@ -136,3 +152,5 @@ export default function Attendance() {
         </div>
     );
 }
+
+export default withAuth(Attendance);

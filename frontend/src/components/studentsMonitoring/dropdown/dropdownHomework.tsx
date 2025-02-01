@@ -44,7 +44,6 @@ export default function DropdownHomework({
 
     useEffect(() => {
         if (typeof studentId === "undefined" || typeof homeworkId === "undefined") {
-            console.error("Error: studentId or homeworkId is undefined");
             return;
         }
 
@@ -83,36 +82,51 @@ export default function DropdownHomework({
         if (!numericValue) {
             return "bg-gray-100";
         }
-    
+
         const numeric = Number(numericValue);
         if (!isNaN(numeric) && numeric < passingGrade) {
-            return "bg-red-200"; 
+            return "bg-[#FEE6F3]";
         } else if (!isNaN(numeric) && numeric >= passingGrade) {
-            return "bg-green-200"; 
+            return "bg-[#E6FAF2]";
         }
-    
+
         return "bg-gray-100";
     };
 
 
     const getOptionBackgroundColor = () => {
         if (selectedOption === "Aprobado") {
-            return "bg-green-100";
+            return "bg-[#E6FAF2]";
         } else if (selectedOption === "Desaprobado") {
-            return "bg-red-100";
+            return "bg-[#FEE6F3]";
         } else if (selectedOption === "Sin asignar") {
             return "bg-gray-100";
         } else if (selectedOption === "Excelente") {
-            return "bg-green-100";
+            return "bg-[#E6FAF2]";
         } else if (selectedOption === "Muy Bien") {
-            return "bg-blue-100";
+            return "bg-[#E6FAFE]";
         } else if (selectedOption === "Bien") {
-            return "bg-yellow-100";
+            return "bg-[#FFFAEA]";
         } else if (selectedOption === "Deficiente") {
-            return "bg-red-100";
+            return "bg-[#FEE6F3]";
         }
-        return "bg-gray-100";
+
+        const colorChange = options;
+        const index = Math.min(colorChange.indexOf(selectedOption), 3);
+        switch (index) {
+            case 0:
+                return "bg-[#FEE6F3]";
+            case 1:
+                return "bg-[#FFFAEA]";
+            case 2:
+                return "bg-[#E6FAFE]";
+            case 3:
+                return "bg-[#E6FAF2]";
+            default:
+                return "bg-gray-100";
+        }
     };
+
 
     return (
         <div className="flex bg-white border-2 border-gray-600 rounded-md p-2 w-full h-[52px] text-sm">

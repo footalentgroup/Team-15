@@ -35,7 +35,6 @@ export function ContentSlider({ setCurrentItem, data, setInitialData }: Props) {
   }
 
   const handleDelete = (themeId: number) => {
-    console.log('delete', activeId);
     const newTheme = currentData[0].temas.filter((item) => item.id !== themeId)
     const newData = [{ ...currentData[0], temas: newTheme }]
     setCurrentData(newData)
@@ -50,7 +49,6 @@ export function ContentSlider({ setCurrentItem, data, setInitialData }: Props) {
   }
 
   const handleSave = () => {
-    console.log('save', editValue);
     const newTheme = currentData[0].temas.map((item, i) => {
       if (i === editItemId) {
         return { ...item, nombre: editValue }
@@ -58,17 +56,14 @@ export function ContentSlider({ setCurrentItem, data, setInitialData }: Props) {
       return item
     })
 
-    console.log('newTheme', newTheme);
 
     const newData = [{ ...currentData[0], temas: newTheme }]
-    console.log('newData', newData);
     setCurrentData(newData)
 
     setEditItemId(null)
     setEditValue('')
   }
 
-  console.log(data);
 
   return (
     <div className="flex relative">

@@ -3,11 +3,14 @@ import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { IHomework } from "@/interfaces/IHomework.interfaces";
+import { ICourses } from "@/interfaces/ICourses.interface";
 import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownHomework from "@/components/studentsMonitoring/dropdown/dropdownHomework";
+import withAuth from "@/actions/withAuth";
+import Snackbar from "@/ui/snackbars/successBar";
 
-export default function Homework() {
+const Homework: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [homeworkName, setHomeworkName] = useState("");
@@ -18,6 +21,18 @@ export default function Homework() {
     const [homeworkGrade, setHomeworkGrade] = useState<string | number>("Sin asignar");
     const [homeworkGradeType, setHomeworkGradeType] = useState("");
     const [homeworks, setHomeworks] = useState<IHomework[]>([]);
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+    const [showSnackbar, setShowSnackbar] = useState(false);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const [quarterIndex, setQuarterIndex] = useState(0);
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
@@ -28,7 +43,7 @@ export default function Homework() {
         const studentData = localStorage.getItem("studentsData");
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
             setStudentList(null);
@@ -44,7 +59,6 @@ export default function Homework() {
             const parsedConfig = JSON.parse(configData);
             setHomeworkGradeType(parsedConfig.homework?.gradeType || "");
         }
-        console.log("Cuatrimestre cambiado a:", quarterIndex);
 
         setMounted(true);
     }, []);
@@ -54,8 +68,9 @@ export default function Homework() {
     }
 
     const filteredHomeworks = homeworks.filter(
-        (homework) => homework.cuatrimestre === quarterIndex && homework.tarea_asignada_id
+        (homework) => homework.curso_id === courseId && homework.cuatrimestre === quarterIndex && homework.tarea_asignada_id
     );
+
 
     const isExam = pathname.includes("exam");
     const singular = isExam ? "examen" : "tarea";
@@ -70,6 +85,7 @@ export default function Homework() {
     const handleSaveHomework = () => {
         if (homeworkName.trim() && homeworkDate.trim() && homeworkType.trim()) {
             const newHomework: IHomework = {
+                curso_id: courseId,
                 tarea_asignada_id: homeworks.length + 1,
                 nombre: homeworkName,
                 fecha: homeworkDate,
@@ -82,6 +98,7 @@ export default function Homework() {
             const updatedHomeworks = [...homeworks, newHomework];
             setHomeworks(updatedHomeworks);
             localStorage.setItem("homeworks", JSON.stringify(updatedHomeworks));
+            setShowSnackbar(true);
 
             handleModalToggle();
             setHomeworkName("");
@@ -110,7 +127,7 @@ export default function Homework() {
                     <div key={homework.tarea_asignada_id}>
                         <button
                             type="button"
-                            className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                            className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                         >
                             {homework.nombre}
                         </button>
@@ -120,8 +137,8 @@ export default function Homework() {
                                 {studentList.slice(0, 7).map((student) => (
                                     <DropdownHomework
                                         key={`${student.id}-${homework.tarea_asignada_id}`}
-                                        studentId={student.id} 
-                                        homeworkId={homework.tarea_asignada_id} 
+                                        studentId={student.id}
+                                        homeworkId={homework.tarea_asignada_id}
                                         onGradeChange={handleGradeChange}
                                     />
                                 ))}
@@ -134,7 +151,7 @@ export default function Homework() {
                     <button
                         type="button"
                         onClick={handleModalToggle}
-                        className="min-w-[170px] min-h-8 bg-yellow-100 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                        className="min-w-[170px] min-h-8 bg-yellow-100 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general"
                     >
                         +
                     </button>
@@ -173,13 +190,13 @@ export default function Homework() {
                                 placeholder="Fecha de la clase"
                                 value={homeworkDate}
                                 onChange={(event) => setHomeworkDate(event.target.value)}
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
                             />
 
                             <select
                                 value={homeworkType}
                                 onChange={(event) => setHomeworkType(event.target.value)}
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
                             >
                                 <option value="">Tipo de tarea</option>
                                 <option value="Cuestionario">Cuestionario</option>
@@ -191,7 +208,7 @@ export default function Homework() {
                                 value={homeworkTheme}
                                 onChange={(event) => setHomeworkTheme(event.target.value)}
                                 disabled
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-[4px_4px_0px_#000000] cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-general cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
                             >
                                 <option value="">Tema</option>
                             </select>
@@ -208,7 +225,7 @@ export default function Homework() {
                             <button
                                 type="button"
                                 onClick={handleSaveHomework}
-                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
                             >
                                 Guardar
                             </button>
@@ -216,6 +233,13 @@ export default function Homework() {
                     </div>
                 </div>
             )}
+
+            {showSnackbar && (
+                <Snackbar message="Creaste una tarea con éxito" onClose={() => setShowSnackbar(false)} />
+            )}
+
         </div>
     );
 }
+
+export default withAuth(Homework);

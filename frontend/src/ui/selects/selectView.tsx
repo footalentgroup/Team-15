@@ -35,15 +35,15 @@ function SelectView({ options, value, onChange, isDaily }: Props) {
   };
 
   return (
-    <div className="relative">
-      <div onClick={handleInputClick} className="flex items-center bg-white min-w-[136px] min-h-12 border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]">
+    <div className="relative cursor-pointer select-none z-50">
+      <div onClick={handleInputClick} className="flex items-center bg-white min-w-[136px] min-h-12 border border-black font-semibold px-4 rounded-md filter drop-shadow-general">
         <div className="">{getDisplay()}</div>
         <div className="transform rotate-90 text-black">
           <IconArrow color='black' />
         </div>
       </div>
       {showMenu && (
-        <div className="absolute top-14 z-10 bg-white rounded-md h-16 w-full justify-items-center content-center border-2 border-black filter drop-shadow-[4px_4px_0px_#000000]">
+        <div className="absolute top-14 z-10 bg-white rounded-md h-16 w-full justify-items-center content-center border border-black filter drop-shadow-general">
           {options.map(option => (
             <div key={option} onClick={() => handleOptionClick(option)} className={`w-full text-center ${value === option ? "font-bold" : ""}`}>
               {option}

@@ -109,3 +109,29 @@ input:focus {
   border-color: #01caf8;
   box-shadow: 0 0 0 2px #01caf8;
 }
+
+.snackbar {
+  position: fixed;
+  bottom: 40px;
+  left: 192px;
+  background-color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  border: 2px solid black;
+  font-weight: nprmal;
+  box-shadow: 4px 4px 0px #00cf7f;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 250px;
+  height: 64px;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: black;
+  font-size: 30px;
+  font-weight: normal;
+  cursor: pointer;
+}

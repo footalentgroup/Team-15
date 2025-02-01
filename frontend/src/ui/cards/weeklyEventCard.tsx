@@ -12,7 +12,7 @@ function WeeklyEventCard({ event, setCurrentPlanification }: Props) {
     setCurrentPlanification!(event)
   }
   return (
-    <div className='bg-yellow-100 border border-black px-2 pt-1 pb-2 rounded flex flex-col text-black relative text-sm capitalize' onClick={() => handleClick()}>
+    <div className='bg-pink-50 border border-yellow-500 px-2 pt-1 pb-2 rounded flex flex-col text-black relative text-sm capitalize' onClick={() => handleClick()}>
       <h3 className='font-semibold'>{event.title}</h3>
       <span >{event.schoolName}</span>
       <span >{event.subjectName}</span>
