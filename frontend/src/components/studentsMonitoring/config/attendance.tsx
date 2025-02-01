@@ -75,7 +75,7 @@ const AttendanceConfig = ({ onDataChange }: { onDataChange: (data: any) => void 
                 </p>
                 <div className="flex gap-4 mt-2 mb-4">
                     {conceptualScale.map((value, index) => (
-                        <div key={index} className="flex items-center space-x-2">
+                        <div key={index} className="flex items-center space-x-2 relative">
                             <input
                                 type="text"
                                 placeholder={value}
@@ -95,7 +95,7 @@ const AttendanceConfig = ({ onDataChange }: { onDataChange: (data: any) => void 
                     <button
                         type="button"
                         onClick={addConceptualValue}
-                        className="border-1 rounded-[15px] p-2 text-white w-10 text-sm bg-pink-500 drop-shadow-general w-[48px]"
+                        className="border-1 rounded-[15px] p-2 text-white w-12 text-sm bg-pink-500 drop-shadow-general"
                     >
                         <i className="fa-solid fa-plus"></i>
                     </button>

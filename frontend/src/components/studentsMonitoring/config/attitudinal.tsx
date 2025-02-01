@@ -67,7 +67,7 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
                 </p>
                 <div className="flex gap-4 mt-2">
                     {conceptualScale.map((value, index) => (
-                        <div key={index} className="flex items-center space-x-2">
+                        <div key={index} className="flex items-center space-x-2 relative">
                             <input
                                 type="text"
                                 placeholder={value}
