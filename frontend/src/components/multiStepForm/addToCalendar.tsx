@@ -21,10 +21,7 @@ interface Props {
   currentPlanification: IPlanification | null
 }
 
-export default function AddToCalendar({ contentList, planificationStep, period, currentPlanification }: Props) {
-  console.log("currentPlanification", currentPlanification);
-  console.log(contentList);
-  console.log(period);
+export default function AddToCalendar({ planificationStep, period, currentPlanification }: Props) {
   const monthsLength = period?.duracion === 'semestral' ? 6 : period?.duracion === 'trimestral' ? 3 : 4
   const periodTitle = period?.duracion === 'semestral' ? 'semestre' : period?.duracion === 'trimestral' ? 'trimestre' : 'cuatrimestre'
   const startMonthFromPeriod = Number(period?.periodos[0].fecha_inicio.split('-')[1])
@@ -63,8 +60,6 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
   const handlePreviousMonths = () => {
     const newIndex = Math.max(currentMonthIndex - monthsLength, 0)
     const newPeriodIndex = currentPeriodIndex - 1
-    console.log("newPeriodIndex", newPeriodIndex);
-    console.log("currentPeriodIndex", currentPeriodIndex);
 
     setCurrentPeriodIndex(newPeriodIndex)
     setCurrentPeriod(period?.periodos[newPeriodIndex])
@@ -76,8 +71,6 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
   const handleNextMonths = () => {
     const newIndex = Math.min(currentMonthIndex + monthsLength, INITIAL_MONTHS.length - 4)
     const newPeriodIndex = currentPeriodIndex + 1
-    console.log("newPeriodIndex", newPeriodIndex);
-    console.log("currentPeriodIndex", currentPeriodIndex);
 
     if (newPeriodIndex >= period!.periodos.length) {
       return
@@ -97,7 +90,6 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
         monthPlanification.push(content);
       });
     });
-    console.log("monthPlanification", monthPlanification);
 
     createNewMonthPlanificationAction(monthPlanification).then((data) => {
       if (data?.success) {
@@ -118,11 +110,8 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
     if (over) {
       const [contentSubIndex] = (active.id as string).replace('content-', '').split('-').map(Number);
       const monthIndex = parseInt((over.id as string).replace('month-', ''), 10);
-      console.log("monthIndex", monthIndex);
-      console.log("contentSubIndex", contentSubIndex);
 
-
-      const currentMonth = monthContent[monthIndex]
+      /* const currentMonth = monthContent[monthIndex] */
       const currentContent = allSubthemes.find((subtheme) => subtheme.id === contentSubIndex)
 
       if (currentContent) {
@@ -136,16 +125,11 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
         }
         updatedMonthContent[monthIndex].content.push(newContent)
         setMonthContent(updatedMonthContent)
-        console.log("updatedMonthContent", updatedMonthContent);
       }
-      console.log("currentMonth", currentMonth);
-      console.log("currentContent", currentContent);
     }
   }
 
   const handleDragStart = (event: DragEndEvent) => {
-    console.log('drag start', event.active.id);
-    console.log('drag start', event);
     setActiveId(event.active.id as string);
   };
 
@@ -173,9 +157,9 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
           <StepIndicator step={planificationStep} />
         </div>
         <div className='flex flex-col gap-2 p-16 pt-0 h-[89%]'>
-          <h3 className="font-bold text-4xl">¿Quieres crear tu planificación anual?</h3>
+          <h3 className="font-bold text-4xl">¿Querés crear tu planificación anual?</h3>
           <div className="text-gray-600 text-xl my-2">
-            <p>Ya que tenés los contenidos, arrastralos al mes que elijas para su dictado. Luego podrás cambiar su organización. </p>
+            <p>Ya que tenés los contenidos, arrastralos al mes que elijas para dictarlos. Luego podrás reorganizarlos.</p>
           </div>
           <div className="w-10/12 self-center h-[400px] overflow-y-auto">
             <ul className="columns-1 sm:columns-2 lg:columns-3 gap-4 mt-4 px-6 overflow-y-auto">
@@ -246,8 +230,8 @@ export default function AddToCalendar({ contentList, planificationStep, period, 
       )}
 
       {isImported && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-modal">
             <div className="flex justify-between items-center">
               <h3 className="font-bold text-lg">¡Planificación creada con éxito!</h3>
             </div>

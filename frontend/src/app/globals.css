@@ -23,27 +23,55 @@ body {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
   background: #dddddd;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-left: 3px solid white;
-  border-right: 3px solid white;
   border-radius: 2px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #01caf8;
-  width: 19px;
+  background-image: url('/icons/view-list.svg');
+  background-position: center center, center -40px;
+  background-repeat: no-repeat, no-repeat;
+  background-size: contain, contain;
+  width: 20px;
   height: 62px;
-  border-radius: 2px;
+  border-radius: 6px;
   border: 1px solid black;
   background-clip: content-box;
+}
+
+::-webkit-scrollbar-button:single-button {
+  background-color: #dddddd;
+  display: block;
+  height: 13px;
+  width: 16px;
+}
+/* Up */
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  border-radius: 0px 0px 5px 5px;
+  height: 16px;
+  width: 16px;
+  background-position: center center;
+  background-image: url('/icons/arrow.svg');
+}
+
+::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+  border-color: transparent transparent #777777 transparent;
+}
+/* Down */
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  border-radius: 0px 0px 5px 5px;
+  height: 16px;
+  width: 16px;
+  background-position: center center;
+  background-image: url('/icons/arrow-down.svg');
 }
 
 [type='date']::-webkit-inner-spin-button {
@@ -76,17 +104,17 @@ input[type='date']::-moz-focus-outer {
 }
 
 @layer base {
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
 }
 
-  input[type="number"] {
-    -moz-appearance: textfield;
-    appearance: none;
-  }
+input[type='number'] {
+  -moz-appearance: textfield;
+  appearance: none;
+}
 
 .trapezoid {
   --p: 17px;
@@ -108,4 +136,41 @@ input[type='date']::-moz-focus-outer {
 input:focus {
   border-color: #01caf8;
   box-shadow: 0 0 0 2px #01caf8;
+}
+
+.snackbar {
+  position: fixed;
+  bottom: 40px;
+  left: 192px;
+  background-color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  border: 2px solid black;
+  font-weight: nprmal;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 250px;
+  height: 64px;
+}
+
+.success {
+  box-shadow: 4px 4px 0px #00cf7f;
+}
+
+.error {
+  box-shadow: 4px 4px 0px #d71519;
+}
+
+.info {
+  box-shadow: 4px 4px 0px #fbc82d;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: black;
+  font-size: 30px;
+  font-weight: normal;
+  cursor: pointer;
 }

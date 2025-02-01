@@ -1,7 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { IStudents } from "@/interfaces/IStudents.interface";
-import { IStudentRequest } from "@/interfaces/IRequests.interface";
+import { ICourses } from "@/interfaces/ICourses.interface";
+import { deleteStudentAction } from "@/actions/studentsActions";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 export default function AddNewStudent() {
     const [data, setData] = useState<IStudents[]>([]);
@@ -9,10 +11,21 @@ export default function AddNewStudent() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [studentName, setStudentName] = useState("");
-    const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
     const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
     const [editingStudentId, setEditingStudentId] = useState<number | null>(null);
     const [isInputVisible, setIsInputVisible] = useState(false);;
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+    const { showSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const showNext = () => {
         setStartIndex((prevIndex) => (prevIndex + 1) % data.length);
@@ -22,28 +35,38 @@ export default function AddNewStudent() {
         setStartIndex((prevIndex) => (prevIndex - 1 + data.length) % data.length);
     };
 
-    const studentsToShow = Array.isArray(data) && data.length <= 7
+    const studentsToShow = Array.isArray(data)
         ? data
-        : Array.isArray(data)
-            ? isEditMode
-                ? data.slice(startIndex, startIndex + 6)
-                : data.slice(startIndex, startIndex + 7)
-            : [];
+            .filter(student => student.curso_id === courseId)
+            .slice(startIndex, startIndex + (isEditMode ? 6 : 7))
+        : [];
+
 
     const handleDelete = (id: number) => {
         setStudentToDelete(id);
         setShowModal(true);
     };
 
-    const confirmDelete = () => {
+    const confirmDelete = async () => {
         if (studentToDelete !== null) {
-            const updatedData = data.filter(student => student.id !== studentToDelete);
-            console.log("Datos después de eliminar:", updatedData);
-            setData(updatedData);
-            localStorage.setItem("studentsData", JSON.stringify({ alumnos: updatedData }));
+            try {
+                if (!courseId) {
+                    throw new Error("No se encontró un ID de curso válido.");
+                }
+
+                await deleteStudentAction(studentToDelete, courseId);
+
+                const updatedData = data.filter(student => student.id !== studentToDelete);
+                setData(updatedData);
+                localStorage.setItem("studentsData", JSON.stringify(updatedData));
+            } catch (error) {
+                console.error(error);
+                alert("Ocurrio un error al eliminar el alumno.");
+            }
         }
         setShowModal(false);
     };
+
 
 
     const cancelDelete = () => {
@@ -56,7 +79,7 @@ export default function AddNewStudent() {
 
     const handleEditModeToggle = () => {
         setIsEditMode((prevMode) => !prevMode);
-    
+
         if (isEditMode) {
             window.location.reload();
         }
@@ -82,21 +105,22 @@ export default function AddNewStudent() {
         if (studentName.trim()) {
             const [lastName, ...firstNameParts] = studentName.split(" ");
             const firstName = firstNameParts.join(" ");
-    
-            const newId = data && data.length > 0 
-                ? Math.max(...data.map(student => student.id)) + 1 
-                : 1; 
-    
-            const newStudent = { id: newId, curso_id: 1, nombre: firstName, apellido: lastName };
-    
+
+            const newId = data && data.length > 0
+                ? Math.max(...data.map(student => student.id)) + 1
+                : 1;
+
+            const newStudent = { id: newId, curso_id: courseId, nombre: firstName, apellido: lastName };
+
             const updatedData = [...data, newStudent];
             setData(updatedData);
-    
-            const updatedList = { alumnos: updatedData };
-            localStorage.setItem("studentsData", JSON.stringify(updatedList));
-    
+
+            localStorage.setItem("studentsData", JSON.stringify(updatedData));
+
             setStudentName("");
             setIsInputVisible(false);
+
+            showSnackbar("Agregaste un nuevo alumno a la lista");
         }
     };
 
@@ -106,15 +130,14 @@ export default function AddNewStudent() {
     };
 
     useEffect(() => {
-        const alumnos = localStorage.getItem("studentsData"); 
+        const alumnos = localStorage.getItem("studentsData");
         try {
             const parsedData = alumnos ? JSON.parse(alumnos) : { alumnos: [] };
-            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
-            console.log("Datos procesados:", studentsArray);
+            const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setData(studentsArray);
         } catch (error) {
-            console.error("Error parsing students data:", error);
-            setData([]); 
+            console.error(error);
+            setData([]);
         }
     }, [])
 
@@ -125,7 +148,7 @@ export default function AddNewStudent() {
                     <button
                         type="button"
                         onClick={handleEditModeToggle}
-                        className="min-w-[190px] min-h-8 bg-white text-black border-2 border-black font-semibold text-sm px-4 mt-[23px] mb-6 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                        className="min-w-[190px] min-h-8 bg-white text-black border-2 border-black font-semibold text-sm px-4 mt-[23px] mb-6 rounded-md filter drop-shadow-general"
                     >
                         {isEditMode ? "Finalizar edición" : "Editar lista de alumnos"}
                     </button>
@@ -134,7 +157,7 @@ export default function AddNewStudent() {
                         <button
                             onClick={() => setIsInputVisible(true)}
                             type="button"
-                            className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] flex justify-center items-center"
+                            className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general flex justify-center items-center"
                         >
                             <i className="fa-solid fa-plus"></i>
                         </button>
@@ -181,9 +204,9 @@ export default function AddNewStudent() {
                             ) : (
                                 <button
                                     type="button"
-                                    className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] flex justify-between items-center"
+                                    className="min-w-[190px] min-h-12 bg-white text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general flex justify-between items-center"
                                 >
-                                    <span className={`${isEditMode ? "" : "mx-auto"}`}>{student.nombre} {student.apellido}</span>
+                                    <span className={`${isEditMode ? "" : "mx-auto"} capitalize`}>{student.apellido} {student.nombre} </span>
 
                                     {isEditMode && (
                                         <div className="flex gap-2">
@@ -245,14 +268,14 @@ export default function AddNewStudent() {
                             <button
                                 type="button"
                                 onClick={confirmDelete}
-                                className="bg-white text-black text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                                className="bg-white text-black text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
                             >
                                 Aceptar
                             </button>
                             <button
                                 type="button"
                                 onClick={cancelDelete}
-                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
                             >
                                 Cancelar
                             </button>

@@ -1,6 +1,7 @@
 "use server"
 
 import { IAuth } from "@/interfaces/IAuth.interfaces";
+import { redirect } from 'next/navigation';
 import { cookies } from "next/headers";
 
 const API_URL = process.env.BASE_URL;
@@ -44,7 +45,7 @@ export async function refreshToken() {
     return updatedUserData;
   }
 
-  throw new Error("No user found in cookies");
+  redirect('/login')
 
 }
 
@@ -72,7 +73,6 @@ export async function login(email: string, password: string) {
     });
 
     const responseData = await response.json();
-    console.log(responseData);
 
     if (!responseData.user) {
       throw new Error(responseData.message || "Error al iniciar sesión");
@@ -84,7 +84,7 @@ export async function login(email: string, password: string) {
     return responseData;
 
   } catch (error) {
-    console.log('error', error);
+    console.error(error);
   }
 
 }
@@ -97,10 +97,25 @@ export async function verifyEmailAction(token: string) {
         "Content-Type": "application/json",
       },
     });
+    console.log("response", response);
 
     const data = await response.json();
+    console.log("data", data);
     return data;
   } catch (error) {
     throw error;
   }
+}
+
+export async function deleteUserCookie() {
+  const cookieStore = cookies();
+
+  (await cookieStore).delete("user");
+}
+
+export async function resetCookies() {
+  const cookieStore = cookies();
+  (await cookieStore).delete("user");
+  (await cookieStore).delete("currentCourse");
+  (await cookieStore).delete("period");
 }

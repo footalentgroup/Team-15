@@ -1,13 +1,16 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
-import { IStudents } from "@/interfaces/IStudents.interface";
 import { usePathname } from "next/navigation";
+import { IStudents } from "@/interfaces/IStudents.interface";
 import { IExam } from "@/interfaces/IExam.interfaces";
+import { ICourses } from "@/interfaces/ICourses.interface";
+import EmptyState from "@/components/studentsMonitoring/emptyState";
 import SliderView from "@/components/studentsMonitoring/sliderOptionView";
 import DropdownExam from "@/components/studentsMonitoring/dropdown/dropdownExam";
-import EmptyState from "@/components/studentsMonitoring/emptyState";
+import withAuth from "@/actions/withAuth";
+import Snackbar from "@/ui/snackbars/successBar";
 
-export default function Exam() {
+const Exam: React.FC = () => {
     const [mounted, setMounted] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [examName, setExamName] = useState("");
@@ -18,6 +21,18 @@ export default function Exam() {
     const [examGrade, setExamGrade] = useState<string | number>("Sin asignar");
     const [examGradeType, setExamGradeType] = useState("");
     const [exams, setExams] = useState<IExam[]>([]);
+    const [currentCourse, setCurrentCourse] = useState<ICourses | null>(null);
+    const [showSnackbar, setShowSnackbar] = useState(false);
+
+    useEffect(() => {
+        const currentCourse = localStorage.getItem("currentCourse");
+        if (currentCourse) {
+            const parsedData = JSON.parse(currentCourse);
+            setCurrentCourse(parsedData);
+        }
+    }, []);
+
+    const courseId = currentCourse?.courseId || '';
 
     const [quarterIndex, setQuarterIndex] = useState(0);
     const colors = ["bg-pink-300", "bg-yellow-100", "bg-green-200", "bg-cyan-200"];
@@ -28,7 +43,7 @@ export default function Exam() {
         const studentData = localStorage.getItem("studentsData");
         if (studentData) {
             const parsedData = JSON.parse(studentData);
-            const studentsArray = Array.isArray(parsedData.alumnos) ? parsedData.alumnos : [];
+            const studentsArray = Array.isArray(parsedData) ? parsedData : [];
             setStudentList(studentsArray);
         } else {
             setStudentList(null);
@@ -53,7 +68,7 @@ export default function Exam() {
     }
 
     const filteredExams = exams.filter(
-        (exam) => exam.cuatrimestre === quarterIndex && exam.examen_asignado_id
+        (exam) => exam.curso_id === courseId && exam.cuatrimestre === quarterIndex && exam.examen_asignado_id
     );
 
     const isExam = pathname.includes("exam");
@@ -69,6 +84,7 @@ export default function Exam() {
     const handleSaveExam = () => {
         if (examName.trim() && examDate.trim() && examType.trim()) {
             const newExam: IExam = {
+                curso_id: courseId,
                 examen_asignado_id: exams.length + 1,
                 nombre: examName,
                 fecha: examDate,
@@ -81,6 +97,7 @@ export default function Exam() {
             const updatedExams = [...exams, newExam];
             setExams(updatedExams);
             localStorage.setItem("exams", JSON.stringify(updatedExams));
+            setShowSnackbar(true);
 
             handleModalToggle();
             setExamName("");
@@ -109,7 +126,7 @@ export default function Exam() {
                     <div key={exam.examen_asignado_id}>
                         <button
                             type="button"
-                            className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${colors[index % colors.length]}`}
+                            className={`min-w-[170px] min-h-8 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${colors[index % colors.length]}`}
                         >
                             {exam.nombre}
                         </button>
@@ -133,7 +150,7 @@ export default function Exam() {
                     <button
                         type="button"
                         onClick={handleModalToggle}
-                        className="min-w-[170px] min-h-8 bg-yellow-100 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]"
+                        className="min-w-[170px] min-h-8 bg-yellow-100 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general"
                     >
                         +
                     </button>
@@ -172,13 +189,13 @@ export default function Exam() {
                                 placeholder="Fecha de la clase"
                                 value={examDate}
                                 onChange={(event) => setExamDate(event.target.value)}
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
                             />
 
                             <select
                                 value={examType}
                                 onChange={(event) => setExamType(event.target.value)}
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-[4px_4px_0px_#000000]"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 drop-shadow-general"
                             >
                                 <option value="">Tipo de examen</option>
                                 <option value="Regular">Examen Regular</option>
@@ -189,7 +206,7 @@ export default function Exam() {
                                 value={examTheme}
                                 onChange={(event) => setExamTheme(event.target.value)}
                                 disabled
-                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-[4px_4px_0px_#000000] cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
+                                className="p-2 mb-4 rounded w-[170px] border-2 border-gray-500 bg-gray-200 text-gray-500 drop-shadow-general cursor-not-allowed disabled:bg-gray-400 disabled:text-white disabled:opacity-75"
                             >
                                 <option value="">Unidad</option>
                                 <option value="1">Unidad 1</option>
@@ -208,7 +225,7 @@ export default function Exam() {
                             <button
                                 type="button"
                                 onClick={handleSaveExam}
-                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-[4px_4px_0px_#000000]"
+                                className="bg-pink-500 text-white text-semibold px-4 py-2 rounded border-2 border-black drop-shadow-general"
                             >
                                 Guardar
                             </button>
@@ -216,6 +233,13 @@ export default function Exam() {
                     </div>
                 </div>
             )}
+
+            {showSnackbar && (
+                <Snackbar message="Creaste un exámen con éxito" onClose={() => setShowSnackbar(false)} />
+            )}
+
         </div>
     )
 }
+
+export default withAuth(Exam);

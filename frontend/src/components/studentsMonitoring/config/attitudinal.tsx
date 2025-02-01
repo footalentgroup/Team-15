@@ -49,7 +49,7 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
                     <button
                         type="button"
                         key={button}
-                        className={`min-w-[170px] min-h-12 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000] ${selectedButton === button ? "bg-yellow-400" : "bg-white"
+                        className={`min-w-[170px] min-h-12 text-black border-2 border-black font-semibold text-sm px-4 rounded-md filter drop-shadow-general ${selectedButton === button ? "bg-yellow-400" : "bg-white"
                             }`}
                         onClick={() => handleButtonClick(button)}
                     >
@@ -67,7 +67,7 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
                 </p>
                 <div className="flex gap-4 mt-2">
                     {conceptualScale.map((value, index) => (
-                        <div key={index} className="flex items-center space-x-2">
+                        <div key={index} className="flex items-center space-x-2 relative">
                             <input
                                 type="text"
                                 placeholder={value}
@@ -87,7 +87,7 @@ const AttitudinalConfig = ({ onDataChange }: { onDataChange: (data: any) => void
                     <button
                         type="button"
                         onClick={addConceptualValue}
-                        className="border-1 rounded-[15px] p-2 text-white w-10 text-sm bg-pink-500 drop-shadow-[4px_4px_0px_#000000] w-[48px]"
+                        className="border-1 rounded-[15px] p-2 text-white w-10 text-sm bg-pink-500 drop-shadow-general w-[48px]"
                     >
                         <i className="fa-solid fa-plus"></i>
                     </button>

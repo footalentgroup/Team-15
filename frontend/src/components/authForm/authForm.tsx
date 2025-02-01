@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { setTempUser, setUserCookie } from "@/actions/authActions";
 import ButtonContinue from "@/ui/buttons/buttonContinue";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 type AuthFormProps = {
   type: "login" | "register";
@@ -18,13 +19,15 @@ const AuthForm = ({ type }: AuthFormProps) => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const { showSnackbar } = useSnackbar();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     const isValidPassword = password.length >= 6 && password.length <= 20 && password.match(/(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])/);
     if (!isValidPassword) {
-      setError('La contraseña debe tener entre 6 y 20 caracteres, al menos una letra mayúscula, una letra minúscula y un número.');
+      showSnackbar('La contraseña debe tener entre 6 y 20 caracteres, al menos una letra mayúscula, una letra minúscula y un número.', 'error');
+      setLoading(false);
       return;
     }
     setError("");
@@ -42,13 +45,14 @@ const AuthForm = ({ type }: AuthFormProps) => {
         });
 
         const data = await response.json();
-        console.log(data);
 
         if (data.error) {
-          if (data.error === "invalid credentials") {
-            setError("Credenciales inválidas");
+          if (data.error === "Invalid credentials") {
+            showSnackbar('Credenciales inválidas', 'error');
+            setLoading(false);
           } else {
-            setError(data.error);
+            showSnackbar(data.error, 'error');
+            setLoading(false);
           }
           return;
         }
@@ -56,14 +60,14 @@ const AuthForm = ({ type }: AuthFormProps) => {
         const token = data.access_token;
 
         if (!token) {
-          setError("Token no encontrado");
+          showSnackbar('Token no encontrado', 'error');
+          setLoading(false);
           return;
         }
 
         localStorage.setItem("token", token);
         localStorage.setItem("username", JSON.stringify(data.user.name));
         await setUserCookie(data);
-        setLoading(false);
         router.push("/home");
 
       } else {
@@ -84,25 +88,17 @@ const AuthForm = ({ type }: AuthFormProps) => {
         const data = await response.json();
         if (!data.message) {
           for (const [key, value] of Object.entries(data as { [key: string]: string[] })) {
-            setError(`${key}: ${value.join(", ")}`);
+            showSnackbar(`${key}: ${value.join(", ")}`, 'error');
           }
           return;
         }
-        console.log("Se registró la cuenta con:", {
-          username,
-          first_name,
-          last_name,
-          email,
-          password,
-        });
         localStorage.setItem("username", JSON.stringify(username));
         setTempUser({ email, password });
-        setLoading(false);
         router.push(`/register/confirm/${email}`);
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("Hubo un error al procesar tu solicitud, por favor comunicate con soporte.");
+      console.error(error);
+      showSnackbar('Hubo un error al procesar tu solicitud, por favor comunicate con soporte.', 'error');
     }
   };
 
@@ -110,7 +106,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
     <div className="authform flex items-center justify-center min-h-screen bg-yellow-light-100">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm p-6 bg-white border-2 border-black rounded-md filter drop-shadow-[4px_4px_0px_#000000] "
+        className="w-full max-w-sm p-6 bg-white border-2 border-black rounded-md filter drop-shadow-general "
       >
         <h2 className="mb-6 text-2xl font-semibold text-center text-gray-700">
           {type === "login" ? "Iniciar Sesión" : "Registro"}

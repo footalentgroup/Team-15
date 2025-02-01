@@ -8,6 +8,7 @@ import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { IconInfo } from "@/icons";
 import FlagStepIndicator from "./flagStepIndicator";
 import { useRouter } from "next/navigation";
+import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
 
 const INITIAL_STATE = {
   data: null
@@ -20,27 +21,32 @@ interface Props {
 }
 
 export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [formState, formAction] = useActionState(
     AddStudentAction,
     INITIAL_STATE
   );
-  console.log(formState);
-  console.log('courseId', courseId);
   const [studentName, setStudentName] = useState("");
   const [studentList, setStudentList] = useState<IStudentRequest>({ alumnos: [] });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [excelFile, setExcelFile] = useState<File | null>(null);
-  const [importError, setImportError] = useState<string | null>(null);
-  const [importSuccess, setImportSuccess] = useState<string | null>(null);
   const [isImported, setIsImported] = useState(false);
   const router = useRouter()
+  const { showSnackbar } = useSnackbar();
 
   const handleAddStudent = () => {
     if (studentName.trim()) {
       const [lastName, ...firstNameParts] = studentName.split(' ');
       const firstName = firstNameParts.length > 1 ? firstNameParts.join(' ') : firstNameParts[0];
+
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!nameRegex.test(studentName)) {
+        showSnackbar("El nombre no debe contener números ni caracteres especiales", "error");
+        return;
+      }
+
       setStudentList({ alumnos: [...studentList.alumnos, { curso_id: courseId!, nombre: firstName, apellido: lastName }] });
       setStudentName("");
     }
@@ -61,7 +67,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
   const handleConfirm = () => {
     setIsModalOpen(false);
-    setImportSuccess('Estudiantes importados correctamente, será redirigido en breve...');
+    showSnackbar("Lista de alumnos cargada con éxito");
     startTransition(() => {
       formAction(studentList);
     });
@@ -87,26 +93,25 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   //cambiar nombre de la funcion y la logica cuando se pueda conectar
   const handleImportData = async () => {
     setLoading(true);
-    setImportError(null);
 
-    if (studentList.alumnos.length === 0 && excelFile) {
+    if (excelFile) {
       const formData = new FormData();
       formData.append('file', excelFile);
       formData.append('curso_id', courseId!.toString());
 
       try {
         const result = await ImportStudentsAction(formData);
-        console.log(result);
         if (result.success) {
-          setStudentList({ alumnos: result.data.alumnos });
+          setStudentList({ alumnos: [...studentList.alumnos, ...result.data.alumnos] });
           setIsImportModalOpen(false);
           setExcelFile(null);
+          showSnackbar("Lista de alumnos importada con éxito");
         } else {
-          setImportError('Ocurrio un error al importar estudiantes');
+          showSnackbar("Ocurrio un error al importar estudiantes", "error");
         }
       } catch (error) {
-        console.log(error);
-        setImportError('Ocurrio un error al importar estudiantes');
+        console.error(error);
+        showSnackbar("Ocurrio un error al importar estudiantes", "error");
       } finally {
         setLoading(false);
       }
@@ -121,10 +126,10 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
   return (
     <div className="relative">
       <FlagStepIndicator step={2} title="Alumnos" />
-      <form onSubmit={handleSubmit} className="w-full h-screen p-16 flex flex-col">
+      <form onSubmit={handleSubmit} className="w-full h-screen px-16 py-14 flex flex-col">
         <div className="flex flex-col items-baseline gap-2">
-          <h2 className="font-semibold text-4xl">¿Quieres añadir tu lista de alumnos?</h2>
-          <span className="text-gray-500 text-xl">No te preocupes si ahora no tienes la lista competa, podrás agregar o editar alumnos más tarde</span>
+          <h2 className="font-semibold text-4xl">¿Querés añadir tu lista de alumnos?</h2>
+          <span className="text-gray-500 text-xl">No te preocupes si ahora no tenés la lista completa, podrás agregar o editar alumnos más tarde.</span>
         </div>
         <div className="flex flex-col gap-4 pt-11">
           <label htmlFor="studentName" className="mr-2 font-bold text-2xl">Apellido y nombre del alumno:</label>
@@ -166,13 +171,13 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
       </form>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-modal">
             <div className="flex justify-between items-center">
-              <h3 className="font-bold text-lg">Omitir Paso</h3>
+              <h3 className="font-bold text-lg">¿Querés omitir este paso?</h3>
               <button type="button" onClick={() => setIsModalOpen(!isModalOpen)}>✖</button>
             </div>
-            <p>Puedes añadir esta información más tarde desde la sección de seguimiento.</p>
+            <p>Si lo deseás, podés omitir este paso y añadir estos datos más tarde desde la sección de seguimiento.</p>
             <div className="flex justify-end space-x-4 mt-auto">
               <ButtonContinue type="button" text="Cancelar" color="bg-white" onClick={handleCancel} />
               <ButtonContinue text="Omitir este paso" onClick={handleNextStep} />
@@ -183,12 +188,12 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
       {isImportModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="flex flex-col gap-2 bg-yellow-100 text-black-300 p-10 rounded-lg px-6 filter drop-shadow-[18px_14px_0px_#000000] w-5/6">
+          <div className="flex flex-col gap-2 bg-yellow-100 text-black-300 p-10 rounded-lg px-6 filter drop-shadow-modal w-5/6">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-bold text-3xl mb-2">Importar desde Excel</h3>
-                <p className="text-gray-600">Subí tu archivo Excel con la lista de alumnos. Asegúrate de que incluya una única columna para &apos;Apellido&apos; y &apos;Nombre&apos;.</p>
-                <p className="text-gray-600">¡Si lo deseas puedes descargar nuestra plantilla y rellenarla! <a className="text-blue-light-500" href="media/files/alumnos.xlsx" download="alumnos">Clica aquí para descargar la plantilla.</a></p>
+                <p className="text-gray-600">Subí tu archivo Excel con la lista de alumnos. Asegurate de que incluya una única columna para &apos;Apellido&apos; y &apos;Nombre&apos;.</p>
+                <p className="text-gray-600">¡Si lo deseas puedes descargar nuestra plantilla y rellenarla! <a className="text-blue-light-500" href="media/files/alumnos.xlsx" download="alumnos">Hacé clic aquí para descargarla.</a></p>
               </div>
               <button type="button" onClick={() => setIsImportModalOpen(!isImportModalOpen)}>✖</button>
             </div>
@@ -219,21 +224,19 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
               <ButtonContinue text="Cancelar" type="button" color="bg-white" onClick={handleCancelImport} />
               <ButtonContinue text={loading ? "Cargando..." : "Subir archivo Excel"} onClick={handleImportData} />
             </div>
-            {importError && <div className="text-red-500 font-semibold capitalize">{importError}</div>}
-            {importSuccess && <div className="text-green-500 font-semibold capitalize">{importSuccess}</div>}
           </div>
         </div>
       )}
 
       {isImported && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
-          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+        <div className="fixed inset-0 flex items-center justify-center bg-black-modal">
+          <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-modal">
             <div className="flex justify-between items-center">
               <h3 className="font-bold text-lg">¡Lista creada con éxito!</h3>
             </div>
             <div>
-              <p>Tu lista de alumnos fue creada con éxito</p>
-              <p>Esta disponible en Seguimiento</p>
+              <p>Tu lista de alumnos fue creada con éxito.</p>
+              <p>Estará disponible en la sección de seguimiento.</p>
             </div>
             <div className="flex justify-end space-x-4 mt-auto">
               <ButtonContinue type="button" text="Confirmar" onClick={handleNextStep} />

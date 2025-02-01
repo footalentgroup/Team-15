@@ -11,6 +11,8 @@ import { CalendarEvent } from '@/interfaces/IPlanification.interfaces';
 import { normalizeDate } from '@/utils/utils';
 import WeeklyCustomToolbar from './weeklyCalendar/weeklyToolbar';
 import WeeklyCustomHeader from './weeklyCalendar/weeklyHeader';
+import customDayLayoutAlgorithm from './weeklyCalendar/customDayLayoutAlgorithm';
+
 
 const localizer = momentLocalizer(moment);
 
@@ -24,8 +26,6 @@ interface Props {
 }
 
 function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanification }: Props) {
-  console.log("date from calendar", date);
-  console.log("events from calendar", events);
   /* const newEvents = events.map((content) => {
     const title = content.subtema?.nombre
     return ({
@@ -36,7 +36,7 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
     }
     )
   }).flat();
-  console.log("newEvents", newEvents); */
+ */
   const formats = {
     dayFormat: (date: Date, culture?: string, localizer?: DateLocalizer) =>
       localizer!.format(date, 'dddd DD', culture),
@@ -53,7 +53,6 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
   //al hacer click en un dia, se muestren los eventos de ese dia
 
   const handleClick = (date: Date) => {
-    console.log('Header clicked from weeklyCalendar:', date);
     setDate(date);
     /* setIsDaily(true); */
   }
@@ -64,7 +63,7 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
   }
 
   return (
-    <div className='h-full max-h-[490px] px-16 weekly-calendar'>
+    <div className='h-full max-h-[490px] weekly-calendar'>
       <Calendar
         components={{
           event: ({ event }) => (
@@ -92,6 +91,8 @@ function WeeklyCalendar({ date, events, setDate, setIsDaily, setCurrentPlanifica
         toolbar={true}
         culture='es'
         style={{ border: 'none!important' }}
+        showAllEvents={true}
+        dayLayoutAlgorithm={customDayLayoutAlgorithm}
       />
     </div>
   );

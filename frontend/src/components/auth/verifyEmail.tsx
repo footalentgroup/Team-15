@@ -1,6 +1,6 @@
 "use client"
 
-import { login } from '@/actions/authActions';
+import { login, resetCookies } from '@/actions/authActions';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import ProgressBar from '../multiStepForm/progressBar';
@@ -12,11 +12,14 @@ function VerifyEmail({ mail, password }: { mail: string, password: string }) {
 
   const handleContinue = async () => {
     try {
-      console.log("Iniciando sesión...");
-      await login(formattedMail, password);
-      router.push("/onboarding");
+      await resetCookies();
+      const response = await login(formattedMail, password);
+      if (response) {
+        router.push("/onboarding");
+      }
+
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
+      console.error(error);
       setError("Error al iniciar sesión");
     }
   };
@@ -31,7 +34,7 @@ function VerifyEmail({ mail, password }: { mail: string, password: string }) {
 
   return (
     <div className='h-screen flex items-center justify-center'>
-      <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-[18px_14px_0px_#000000]">
+      <div className="flex flex-col gap-4 bg-yellow-100 p-4 rounded-lg w-[448px] h-[189px] px-6 filter drop-shadow-modal">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-lg">Procesando datos</h3>
         </div>

@@ -7,6 +7,16 @@ interface Props {
   events: CalendarEvent[]
 }
 
+const ClassTypeFlag: React.FC<{ type?: string }> = ({ type }) => {
+  const color = type === "" ? "bg-blue-light-500" : type === "Examen" || type === "examen" ? "bg-pink-100" : "bg-green-500"
+  const text = type === "" ? "Clase teórica" : type === "Examen" || type === "examen" ? "Clase evaluativa" : "Clase práctica"
+  return (
+    <div className={`w-20.5 rounded-[4px] px-1 ${color}`}>
+      <p className="text-xs text-center font-semibold">{text}</p>
+    </div>
+  )
+}
+
 function DailyCalendar({ date, events }: Props) {
   const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
   const dayName = days[date.getDay()];
@@ -14,19 +24,19 @@ function DailyCalendar({ date, events }: Props) {
   const fullDate = `${dayName} ${dayNumber}`;
   const currentEvents = events.filter(event => event.start!.getDate() === date.getDate());
   return (
-    <div className='mx-16 w-[90%] h-full max-h-[474px] rounded-xl filter drop-shadow-[4px_4px_0px_#000000] mt-20'>
-      <div className='bg-yellow-light text-center border-2 border-b-0 border-black content-center h-16 w-full text-lg font-semibold rounded-t-xl'>
+    <div className='h-full rounded-xl filter drop-shadow-general content-end'>
+      <div className='mx-28 bg-yellow-light text-center border-2 border-b-0 border-black content-center h-16 text-lg font-semibold rounded-t-xl'>
         <h2>{fullDate}</h2>
       </div>
-      <div className='bg-white h-[410px] border-2 border-black rounded-b-xl flex flex-wrap gap-6 px-28 py-10'>
+      <div className='min-h-72 bg-white grid grid-cols-4 grid-rows-2 mx-28 border-2 border-black rounded-b-xl gap-2.5 p-12'>
         {currentEvents.map((event, i) => (
-          <div key={i} className='flex flex-col bg-yellow-100 border border-black rounded-xl max-h-36 max-w-[230px] items-center justify-center p-2'>
-            <h3 className='text-lg font-semibold'>{event.title}</h3>
-            <div className='flex flex-wrap gap-1 justify-center text-sm mb-2'>
+          <div key={i} className='flex flex-col bg-yellow-100 border border-black rounded-xl max-h-36 items-center justify-center p-2'>
+            <h3 className='text-lg font-semibold capitalize'>{event.title}</h3>
+            <div className='flex flex-wrap gap-1 justify-center text-sm mb-2 capitalize'>
               <p >{event.schoolName}</p>
               <p >{event.subjectName}</p>
             </div>
-            <span>{event.resource?.tipo_actividad}</span>
+            <ClassTypeFlag type={event.resource?.tipo_actividad} />
           </div>
         ))}
       </div>

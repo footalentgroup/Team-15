@@ -12,7 +12,7 @@ interface Props {
 
 const ButtonContinue = ({ text, onClick, color, type, width, height, loading }: Props) => {
   return (
-    <button type={type ? type : "submit"} onClick={onClick} className={` ${width ?? "min-w-[136px]"} ${height ?? "min-h-12"} ${color ? color : 'bg-pink-500 text-white'} border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-[4px_4px_0px_#000000]`}>
+    <button type={type ? type : "submit"} onClick={onClick} className={` ${width ?? "min-w-[136px]"} ${height ?? "min-h-12"} ${color ? color : 'bg-pink-500 text-white'} border-2 border-black font-semibold px-4 rounded-md filter drop-shadow-general`}>
       {
         loading ?
           <div className='flex items-center justify-center'>

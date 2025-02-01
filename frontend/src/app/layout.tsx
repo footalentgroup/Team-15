@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { SnackbarProvider } from "@/contexts/snackbar/SnackbarContext";
 
 export const metadata: Metadata = {
   title: "PalProfe",
@@ -8,8 +9,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.js",
 };
 
-const inter = Inter({ subsets: ['latin'] })
-
+const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`bg-yellow-light-100 ${inter.className}`}>
-        {children}
+        <SnackbarProvider>
+          {children}
+        </SnackbarProvider>
       </body>
     </html>
   );
