@@ -8,6 +8,8 @@ import { redirect } from 'next/navigation';
   subjectIdFromProps?: number;
   periodFromProps?: PeriodFromAction; */
 
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
+
 export default async function AddCourse(props: {
   searchParams?: Promise<{
     page?: string;
@@ -23,7 +25,7 @@ export default async function AddCourse(props: {
   const cookieStore = cookies()
   const user = await refreshToken();
 
-  if (!user) {
+  if (!user && OFFLINE === "false") {
     redirect('/login')
   }
   const currentCourse = (await cookieStore).get("currentCourse");

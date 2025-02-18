@@ -3,8 +3,10 @@
 import { Course, ICourses, School, Subject } from "@/interfaces/ICourses.interface";
 import { getColorByPosition } from "@/utils/getRandomColor";
 import { refreshToken } from "./authActions";
+import { cookies } from "next/headers";
 
 const API_URL = process.env.BASE_URL;
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
 
 export async function getCourses() {
 
@@ -23,6 +25,73 @@ export async function getCourses() {
 
   if (user) {
     TOKEN = user.access_token;
+  }
+
+  if (OFFLINE === "true") {
+    const cookieStore = cookies();
+    const currentCourse = (await cookieStore).get("currentCourseData")
+    const currentPlanification = (await cookieStore).get("currentPlanification")
+    const currentStudents = (await cookieStore).get("currentStudents")
+
+    const parsedCurrentCourse = JSON.parse(currentCourse!.value);
+    const parsedCurrentPlanification = JSON.parse(currentPlanification!.value);
+    const parsedCurrentStudents = JSON.parse(currentStudents!.value);
+
+    const schoolDataParsed = parsedCurrentCourse.school;
+    const schoolData: School[] = schoolDataParsed ? [schoolDataParsed.institucion] : [];
+
+    const courseData: Course[] = parsedCurrentCourse.course ? [parsedCurrentCourse.course] : [];
+    if (courseData.length > 0) {
+      courseData[0].alumnos = parsedCurrentStudents;
+    }
+
+    const subjectData: Subject[] = parsedCurrentCourse.subject ? [parsedCurrentCourse.subject] : [];
+    if (subjectData.length > 0) {
+      subjectData[0].planificacion = parsedCurrentPlanification.planificacion;
+    }
+
+    const professorSchools = schoolData.filter((school: School) => school.docente === Number(professorId));
+
+    const professorCourses = professorSchools.map((school: School) => {
+      return courseData.filter((course: Course) => course.institucion_id === school.id);
+    }).flat();
+
+    const professorSubjects = professorCourses.map((course: Course) => {
+      return subjectData.filter((subject: Subject) => subject.curso_id === course.id);
+    }).flat();
+
+    const result: ICourses[] = [];
+
+    professorSchools.forEach((school: School) => {
+      const courses = professorCourses.filter((course: Course) => course.institucion_id === school.id);
+      courses.forEach((course: Course) => {
+        const subjects = professorSubjects.filter((subject: Subject) => subject.curso_id === course.id);
+        subjects.forEach((subject: Subject) => {
+          result.push({
+            schoolName: school.nombre,
+            courseName: course.nombre,
+            subjectName: subject.nombre,
+            courseId: course.id,
+            subjectId: subject.id,
+            periodName: course.duracion,
+            periods: course.periodos,
+            havePlanification: subject.planificacion ? true : false,
+            planification: subject.planificacion,
+            haveStudents: course.alumnos && course.alumnos.length > 0 ? true : false,
+            students: course.alumnos
+          });
+        });
+      });
+    });
+
+    result.forEach((course, index) => {
+      course.color = getColorByPosition(index);
+    });
+
+    return {
+      data: result,
+      success: true
+    }
   }
 
   try {

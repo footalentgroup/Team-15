@@ -2,8 +2,10 @@
 
 import { IStudents } from "@/interfaces/IStudents.interface";
 import { refreshToken } from "./authActions";
+import { cookies } from "next/headers";
 
 const API_URL = process.env.BASE_URL;
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
 
 export async function getStudentsAction(courseId: number) {
   const user = await refreshToken();
@@ -11,6 +13,14 @@ export async function getStudentsAction(courseId: number) {
 
   if (user) {
     TOKEN = user.access_token;
+  }
+
+  if (OFFLINE === "true") {
+    const cookieStore = cookies();
+    const currentStudents = (await cookieStore).get("currentStudents")
+    const parsedCurrentStudents = JSON.parse(currentStudents!.value);
+
+    return parsedCurrentStudents.alumnos;
   }
 
   const response = await fetch(`${API_URL}/alumno/list`, {

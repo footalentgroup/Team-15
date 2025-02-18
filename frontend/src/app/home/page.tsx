@@ -5,11 +5,15 @@ import { IUser } from '@/interfaces/IAuth.interfaces';
 import { ICourses } from '@/interfaces/ICourses.interface';
 import { redirect } from 'next/navigation';
 
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
+console.log("OFFLINE", OFFLINE);
+console.log("process.env.NEXT_PUBLIC_OFFLINE", process.env.NEXT_PUBLIC_OFFLINE);
+
 export default async function HomePage() {
   const user = await refreshToken();
   const userData: IUser = user.user ?? null;
 
-  if (!user) {
+  if (!user && OFFLINE === "false") {
     redirect('/login')
   }
 

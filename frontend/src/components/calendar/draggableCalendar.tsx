@@ -122,7 +122,7 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       setMonths(newMonths);
 
     } catch (error) {
-      alert("Ocurrio un error al guardar la planificación mensual" + error);
+      console.log("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
@@ -159,21 +159,22 @@ function DraggableCalendarWithExternalEvents({ months, startIndex, lastIndex, se
       return data;
 
     } catch (error) {
-      alert("Ocurrio un error al guardar la planificación mensual" + error);
+      console.log("Ocurrio un error al guardar la planificación mensual" + error);
     }
   }
 
   const onEventDrop: withDragAndDropProps['onEventDrop'] = (data) => {
     const newEvent: CalendarEvent = data.event
+    console.log("newEvent", newEvent);
     const newDate = new Date(data.start!);
 
     onUpdateMonthPlanification({
       id: newEvent.id as number,
-      planificacion_id: newEvent.resource!.planificacion_id,
-      subtema_id: newEvent.resource!.subtema_id,
+      planificacion_id: newEvent.resource! ? newEvent.resource!.planificacion_id : 1,
+      subtema_id: newEvent.resource ? newEvent.resource!.subtema_id : 1,
       tipo_actividad: 'teorico',
       fecha: formatDate(newDate),
-      theme: newEvent.resource!.theme,
+      theme: newEvent.resource ? newEvent.resource!.theme : undefined,
     });
 
     setAllEvents((prevEvents) =>

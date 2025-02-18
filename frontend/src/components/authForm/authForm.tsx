@@ -5,10 +5,13 @@ import { useRouter } from "next/navigation";
 import { setTempUser, setUserCookie } from "@/actions/authActions";
 import ButtonContinue from "@/ui/buttons/buttonContinue";
 import { useSnackbar } from "@/contexts/snackbar/SnackbarContext";
+import { dummyUser } from "@/utils/dummyData";
 
 type AuthFormProps = {
   type: "login" | "register";
 };
+
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
 
 const AuthForm = ({ type }: AuthFormProps) => {
   const [username, setUsername] = useState("");
@@ -33,6 +36,18 @@ const AuthForm = ({ type }: AuthFormProps) => {
     setError("");
     try {
       if (type === "login") {
+        if (OFFLINE === "true") {
+          const data = dummyUser
+
+          showSnackbar('Usted está desconectado de los servidores. Tendrá datos de prueba.', 'warning');
+
+          localStorage.setItem("token", data.access_token);
+          localStorage.setItem("username", JSON.stringify(data.user.first_name));
+          await setUserCookie(data);
+          router.push("/home");
+          return
+        }
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/basic-login/`, {
           method: "POST",
           headers: {
@@ -71,6 +86,13 @@ const AuthForm = ({ type }: AuthFormProps) => {
         router.push("/home");
 
       } else {
+        if (OFFLINE === "true") {
+          localStorage.setItem("username", JSON.stringify(username));
+          setTempUser({ email, password });
+          await setUserCookie(dummyUser);
+          router.push(`/onboarding`);
+          return
+        }
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/basic-register/`, {
           method: "POST",
           headers: {

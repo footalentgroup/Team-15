@@ -111,7 +111,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
           if (result.success) {
             setContentList(result.data)
             setPlanificationFile(null)
-            showSnackbar("Contenidos extraídos correctamente")
+            showSnackbar("Contenidos extraídos correctamente", "success")
           } else {
             showSnackbar("Hubo un error al importar los datos. Por favor, intenta de nuevo.", "error")
           }
@@ -130,7 +130,7 @@ export default function AddPlanification({ contentList, setContentList, setActiv
           if (result.success) {
             setContentList(result.data)
             setPlanificationFile(null)
-            showSnackbar("Contenidos extraídos correctamente")
+            showSnackbar("Contenidos extraídos correctamente", "success")
           } else {
             showSnackbar("Hubo un error al importar los datos. Por favor, intenta de nuevo.", "error")
 

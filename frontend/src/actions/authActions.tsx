@@ -1,10 +1,11 @@
 "use server"
 
 import { IAuth } from "@/interfaces/IAuth.interfaces";
-import { redirect } from 'next/navigation';
+//import { redirect } from 'next/navigation';
 import { cookies } from "next/headers";
 
 const API_URL = process.env.BASE_URL;
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
 
 
 export async function setUserCookie(data: IAuth) {
@@ -20,7 +21,7 @@ export async function refreshToken() {
   const cookieStore = cookies();
   const user = (await cookieStore).get("user");
 
-  if (user) {
+  if (user && OFFLINE === "false") {
     const userData = JSON.parse(user.value);
     const response = await fetch(`${API_URL}/auth/refresh-token/`, {
       method: "POST",
@@ -45,7 +46,8 @@ export async function refreshToken() {
     return updatedUserData;
   }
 
-  redirect('/login')
+  return user ? JSON.parse(user.value) : null;
+  //redirect('/login')
 
 }
 
@@ -97,10 +99,8 @@ export async function verifyEmailAction(token: string) {
         "Content-Type": "application/json",
       },
     });
-    console.log("response", response);
 
     const data = await response.json();
-    console.log("data", data);
     return data;
   } catch (error) {
     throw error;

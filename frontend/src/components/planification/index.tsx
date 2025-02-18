@@ -118,6 +118,7 @@ function Planification({ data, user, currentCourse }: Props) {
               createNewMonthPlanification([newPlan]).then((newItemFromResponse) => {
                 const newPlanificationMonthFromResponse = {
                   ...newItemFromResponse?.data.planificacion_mensual,
+                  ...newItemFromResponse?.data,
                   theme: newTheme,
                 };
                 const newPlanificationMonth = {

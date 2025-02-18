@@ -67,7 +67,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
 
   const handleConfirm = () => {
     setIsModalOpen(false);
-    showSnackbar("Lista de alumnos cargada con éxito");
+    showSnackbar("Lista de alumnos cargada con éxito", "success");
     startTransition(() => {
       formAction(studentList);
     });
@@ -105,7 +105,7 @@ export default function AddStudentForm({ setActiveTab, courseId, onlyStudents }:
           setStudentList({ alumnos: [...studentList.alumnos, ...result.data.alumnos] });
           setIsImportModalOpen(false);
           setExcelFile(null);
-          showSnackbar("Lista de alumnos importada con éxito");
+          showSnackbar("Lista de alumnos importada con éxito", "success");
         } else {
           showSnackbar("Ocurrio un error al importar estudiantes", "error");
         }

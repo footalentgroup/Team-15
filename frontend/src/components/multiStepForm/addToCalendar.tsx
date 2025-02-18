@@ -200,7 +200,7 @@ export default function AddToCalendar({ planificationStep, period, currentPlanif
               )}
 
             </div>
-            <div className={`flex gap-6 justify-between h-full ${monthsLength > 4 ? "overflow-x-scroll overflow-y-hidden" : ""}`}>
+            <div className={`flex gap-6 justify-between h-full ${monthsLength > 4 ? "overflow-x-auto overflow-y-hidden" : ""}`}>
               {currentMonthsView.map((month) => (
                 <DroppableMonth key={month.id} month={month} index={month.id} handleDelete={handleRemoveContent} />
               ))}

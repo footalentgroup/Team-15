@@ -34,6 +34,8 @@ const INPUTS_INFO = [
   }
 ]
 
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
+
 interface Props {
   setActiveTab: (index: number) => void;
   setCourseId: (id: number) => void;
@@ -106,15 +108,21 @@ export default function AddCourseForm({ setActiveTab, setCourseId, setSubjectId,
   };
 
   useEffect(() => {
-    if (formState.success) {
+    if (formState.success && OFFLINE === "false") {
       setLoading(false);
       setCourseId(formState.data.course.id);
       setSubjectId(formState.data.subject.materia.id);
       showSnackbar('Curso creado correctamente', 'success');
       setActiveTab(1);
     }
+    if (formState.success && OFFLINE === "true") {
+      setCourseId(1);
+      setSubjectId(1);
+      showSnackbar('Curso creado correctamente', 'success');
+      setActiveTab(1);
+    }
 
-    if (formState.error) {
+    if (formState.error && OFFLINE === "false") {
       setLoading(false);
       showSnackbar(`${formState.data.message}`, 'error');
     }

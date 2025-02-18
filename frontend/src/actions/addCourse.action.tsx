@@ -4,8 +4,11 @@ import { Content, ICourses, Period, PeriodFromAction } from "@/interfaces/ICours
 import { IStudentRequest } from "@/interfaces/IRequests.interface";
 import { cookies } from "next/headers";
 import { refreshToken } from "./authActions";
+import { dummyPlanification, dummyStudents } from "@/utils/dummyData";
+import { ITheme } from "@/interfaces/IPlanification.interfaces";
 
 const API_URL = process.env.BASE_URL;
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addCourseAction(prevState: any, body: { data: ICourses, period: Period }) {
@@ -24,6 +27,66 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
     TOKEN = user.access_token;
   }
 
+  if (OFFLINE === "true") {
+    const schoolData = {
+      institucion: {
+        id: 1,
+        nombre: data.schoolName,
+        docente: 1
+      }
+    };
+
+    const newPeriod: PeriodFromAction = {
+      duracion: period.period,
+      periodos: [
+        {
+          fecha_inicio: period['0 input start'],
+          fecha_cierre: period['0 input end']
+        },
+        {
+          fecha_inicio: period['1 input start'],
+          fecha_cierre: period['1 input end']
+        },
+      ]
+    };
+
+    if (newPeriod.duracion === 'trimestral') {
+      newPeriod.periodos.push({
+        fecha_inicio: period['2 input start'],
+        fecha_cierre: period['2 input end']
+      });
+    }
+
+    const courseData = {
+      id: 1,
+      nombre: data.courseName,
+      institucion_id: schoolData.institucion.id,
+      duracion: newPeriod.duracion,
+      periodos: newPeriod.periodos
+    };
+
+    const subjectData = {
+      id: 1,
+      nombre: data.subjectName,
+      curso_id: courseData.id
+    };
+
+    const responseData = {
+      school: schoolData,
+      course: courseData,
+      subject: subjectData
+    };
+
+    const cookieStore = cookies();
+    (await cookieStore).set('currentCourseData', JSON.stringify(responseData));
+
+    return {
+      ...prevState,
+      data: responseData,
+      success: true
+    };
+  }
+
   try {
     const schoolResponse = await fetch(schoolUrl, {
       method: 'POST',
@@ -35,7 +98,6 @@ export async function addCourseAction(prevState: any, body: { data: ICourses, pe
         nombre: data.schoolName
       })
     });
-
 
     const schoolData = await schoolResponse.json();
 
@@ -138,6 +200,16 @@ export async function AddStudentAction(prevState: any, body: IStudentRequest) {
     TOKEN = user.access_token;
   }
 
+  if (OFFLINE === "true") {
+    const cookieStore = cookies();
+    (await cookieStore).set('currentStudents', JSON.stringify(body));
+    return {
+      ...prevState,
+      data: body,
+      success: true
+    }
+  }
+
   try {
     const response = await fetch(studentsUrl, {
       method: 'POST',
@@ -177,6 +249,13 @@ export async function ImportStudentsAction(formData: FormData) {
 
 
   const studentsUrl = `${API_URL}/alumno/process_excel/`;
+
+  if (OFFLINE === "true") {
+    return {
+      data: { alumnos: dummyStudents },
+      success: true
+    }
+  }
 
   try {
     const response = await fetch(studentsUrl, {
@@ -316,6 +395,12 @@ export async function ImportPlanificationPdfAction(formData: FormData) {
   }
 
 
+  if (OFFLINE === "true") {
+    return {
+      data: dummyPlanification,
+      success: true
+    }
+  }
 
   const planificationUrl = `${API_URL}/planificacion/extract-pdf-text/`;
 
@@ -363,7 +448,45 @@ export async function AddPlanificationAction(prevState: any, data: { subjectId: 
     TOKEN = user.access_token;
   }
 
-
+  if (OFFLINE === "true") {
+    const newThemes: ITheme[] = data.list.map((theme: Content, index: number) => {
+      return {
+        id: index + 1,
+        id_planificacion: 1,
+        nombre: theme.tema,
+        unidad: index + 1,
+        fecha_inicio: "",
+        fecha_fin: "",
+        subtemas: theme.subtemas.map((subtema: string, subIndex: number) => {
+          return {
+            id: Number(index.toString() + (subIndex + 1).toString()),
+            id_tema: index + 1,
+            nombre: subtema,
+            fecha_inicio: "",
+            fecha_fin: "",
+            subtemas_anuales: []
+          }
+        })
+      }
+    });
+    const planification = {
+      planificacion: {
+        id: 1,
+        materia_id: data.subjectId ?? 1,
+        fecha_inicio: "",
+        fecha_fin: "",
+        temas: newThemes,
+        planificacion_mensual: [],
+        planificacion_diaria: []
+      },
+    }
+    const cookieStore = cookies();
+    (await cookieStore).set('currentPlanification', JSON.stringify(planification));
+    return {
+      data: planification,
+      success: true
+    }
+  }
 
   const planificationUrl = `${API_URL}/planificacion/register/`;
 

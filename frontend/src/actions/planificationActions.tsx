@@ -2,8 +2,10 @@
 
 import { IDailyPlanification, IMonthPlanification, IPlanification } from "@/interfaces/IPlanification.interfaces";
 import { refreshToken } from "./authActions";
+import { cookies } from "next/headers";
 
 const API_URL = process.env.BASE_URL;
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE;
 
 export async function getPlanification(subjectId: number) {
   const user = await refreshToken();
@@ -11,6 +13,13 @@ export async function getPlanification(subjectId: number) {
 
   if (user) {
     TOKEN = user.access_token;
+  }
+
+  if (OFFLINE === "true") {
+    const cookieStore = cookies();
+    const currentPlanification = (await cookieStore).get("currentPlanification")
+    const parsedCurrentPlanification = JSON.parse(currentPlanification!.value);
+    return [parsedCurrentPlanification.planificacion];
   }
 
   const response = await fetch(`${API_URL}/planificacion/list/`, {
@@ -40,7 +49,14 @@ export async function createNewMonthPlanificationAction(monthPlanification: IMon
     TOKEN = user.access_token;
   }
 
-
+  if (OFFLINE === "true") {
+    const cookieStore = cookies();
+    (await cookieStore).set('monthPlanification', JSON.stringify(monthPlanification))
+    return {
+      data: monthPlanification,
+      success: true
+    }
+  }
 
   const monthPlanificationUrl = `${API_URL}/planificacion_mensual/list-register/`;
 
@@ -82,7 +98,11 @@ export async function deleteMonthPlanificationAction(monthPlanificationId: numbe
     TOKEN = user.access_token;
   }
 
-
+  if (OFFLINE === "true") {
+    return {
+      success: true
+    }
+  }
 
   const monthPlanificationUrl = `${API_URL}/planificacion_mensual/delete/${monthPlanificationId}/`;
 
@@ -247,7 +267,12 @@ export async function updateMonthlyPlanificationAction(monthlyPlanification: IMo
     TOKEN = user.access_token;
   }
 
-
+  if (OFFLINE === "true") {
+    return {
+      data: monthlyPlanification,
+      success: true
+    }
+  }
 
   const dailyPlanificationUrl = `${API_URL}/planificacion_mensual/update/${monthlyPlanification.id}/`;
 
@@ -269,6 +294,6 @@ export async function updateMonthlyPlanificationAction(monthlyPlanification: IMo
     }
 
   } catch (error) {
-    alert('Error al actualizar la planificacion mensual' + error);
+    console.log('Error al actualizar la planificacion mensual' + error);
   }
 }
