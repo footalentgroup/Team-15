@@ -46,7 +46,7 @@ export async function refreshToken() {
     return updatedUserData;
   }
 
-  return user ? JSON.parse(user.value) : null;
+  return user?.value ? JSON.parse(user.value) : null;
   //redirect('/login')
 
 }

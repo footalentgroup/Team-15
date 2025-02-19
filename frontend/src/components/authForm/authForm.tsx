@@ -44,7 +44,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
           localStorage.setItem("token", data.access_token);
           localStorage.setItem("username", JSON.stringify(data.user.first_name));
           await setUserCookie(data);
-          router.push("/home");
+          localStorage.getItem("")
+          router.push("/onboarding");
           return
         }
 
@@ -87,6 +88,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
 
       } else {
         if (OFFLINE === "true") {
+          showSnackbar('Usted está desconectado de los servidores. Tendrá datos de prueba.', 'warning');
+
           localStorage.setItem("username", JSON.stringify(username));
           setTempUser({ email, password });
           await setUserCookie(dummyUser);

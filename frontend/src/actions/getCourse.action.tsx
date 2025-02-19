@@ -33,6 +33,13 @@ export async function getCourses() {
     const currentPlanification = (await cookieStore).get("currentPlanification")
     const currentStudents = (await cookieStore).get("currentStudents")
 
+    if (!currentCourse || !currentPlanification || !currentStudents) {
+      return {
+        data: 'No se encontraron los datos',
+        success: false
+      }
+    }
+
     const parsedCurrentCourse = JSON.parse(currentCourse!.value);
     const parsedCurrentPlanification = JSON.parse(currentPlanification!.value);
     const parsedCurrentStudents = JSON.parse(currentStudents!.value);
